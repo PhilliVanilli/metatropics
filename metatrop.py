@@ -44,6 +44,7 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
         else:
             seq_summary_file = file
 
+
     time_stamp = str('{:%Y-%m-%d_%Hh%M}'.format(datetime.datetime.now()))
     log_file = Path(project_dir, f"{time_stamp}_{run_name}_log_file.txt")
     log_file_final = Path(project_dir, f"{time_stamp}_{run_name}_log_file_final.txt")
@@ -61,7 +62,7 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
 
     # basecalling
     if run_step == 0:
-        print(f"\nRunning: basecalling\n")
+        print(f"\n________________\n\nRunning: basecalling\n________________\n")
         with open(log_file, "a") as handle:
             handle.write(f"\nRunning: basecalling\n")
         run = gupppy_basecall(fast5_dir, guppy_dir, fastq_dir, basecall_mode, real_time, script_dir)
@@ -75,7 +76,7 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
             sys.exit("Basecalling failed")
 
     if run_step == 1:
-        print(f"\nRunning: demultiplexing")
+        print(f"\n________________\n\nRunning: demultiplexing________________\n")
         with open(log_file, "a") as handle:
             handle.write(f"\nRunning: demultiplexing")
         if not list(fastq_dir.glob("*.fastq*")):
@@ -92,6 +93,9 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
 
     # length filtering and primer trimming allowing for multiple fastqs from multiple exp per barcode
     if run_step == 2:
+        print("\n________________\n\nRunning: length filtering & primer trim\n________________\n")
+        with open(log_file, "a") as handle:
+            handle.write(f"\nRunning: length filtering & primer trim\n")
         pre_existing_files = list(demultiplexed_dir.glob("*.fastq"))
         if pre_existing_files:
             print("Found existing files in demultiplex folder.\nThese files will be deleted\n")
@@ -133,7 +137,7 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
 
     # concatenate multiple barcodes per sample and rename according to sample file
     if run_step == 3:
-        print("Collecting demultiplexed files into sample.fastq files based on specified sample barcode combinations\n")
+        print("\n________________\n\nRunning: concatenate & rename\n________________\n")
         with open(log_file, "a") as handle:
             handle.write(f"\nCollecting demultiplexed files into sample.fastq files based on specified sample "
                          f"barcode combinations\n")
@@ -144,16 +148,16 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
         sample_names_dict = sample_names_df.set_index('sample_name').T.to_dict(orient='list')
 
         for sample_name, [barcode_1, barcode_2] in sample_names_dict.items():
-            all_sample_dir = Path(all_sample_dir, sample_name)
-            if not all_sample_dir.exists():
-                Path(all_sample_dir).mkdir(mode=0o777, parents=True, exist_ok=True)
+            sample_dir = Path(all_sample_dir, sample_name)
+            if not sample_dir.exists():
+                Path(sample_dir).mkdir(mode=0o777, parents=True, exist_ok=True)
             barcode_1_file = Path(demultiplexed_dir, barcode_1)
             # allow for case where only one barcode was specified per sample.
             if barcode_2 == " ":
                 barcode_2_file = ""
             else:
                 barcode_2_file = Path(demultiplexed_dir, barcode_2)
-            cat_outfile = Path(all_sample_dir, f"{sample_name}.fastq")
+            cat_outfile = Path(sample_dir, f"{sample_name}.fastq")
             cat_cmd = f"cat {str(barcode_1_file)} {str(barcode_2_file)} > {cat_outfile}"
             print(cat_cmd)
             with open(log_file, "a") as handle:
@@ -171,7 +175,7 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
 
     # Reference-based assembly
     if run_step == 4:
-        print("Starting reference-based assembly ")
+        print("\n________________\n\nRunning: reference-based assembly\n________________\n")
         with open(log_file, "a") as handle:
             handle.write(f"\nStarting reference-based assembly\n")
 
@@ -190,11 +194,8 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
         log_file_msa_temp = Path(project_dir, f"{time_stamp}_{run_name}_log_file_msa_temp.txt")
         log_file_msa = Path(project_dir, f"{time_stamp}_{run_name}_log_file_msa.txt")
 
-        print(f"\n________________\n\nStarting MSA processing samples\n________________\n")
         print(f"min_depth = {min_depth}")
         with open(log_file_msa_temp, "a") as handle:
-            handle.write(
-                f"\n________________\n\nStarting MSA processing samples\n________________\n")
             handle.write(f"\nmin_depth = {min_depth}\n")
 
         all_sample_files = Path(all_sample_dir).glob("*/*.fastq")
@@ -233,7 +234,7 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
                     f"\n\n------->Running majority consensus pipeline for {sample_no} st/nd sample {sample_name} in new window\n")
 
             # start majority consensus pipeline in new window
-            majority_cmd = f"python ~/nanopore_pipeline_wrapper/msa_consensus.py -in {sample_fastq} -lf {log_file_msa_sample} " \
+            majority_cmd = f"python ~/metatropics/msa_consensus.py -in {sample_fastq} -lf {log_file_msa_sample} " \
                            f"-rs {reference_seqs_file} " \
                            f"-t {msa_threads} -d {min_depth} {use_gaps}"
             print(majority_cmd)
@@ -255,7 +256,6 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
             os.remove(path)
         os.remove(log_file_msa_temp)
         os.remove(log_file_msa)
-        os.remove(log_file)
         os.remove(log_file)
 
     # print end time
@@ -312,7 +312,7 @@ if __name__ == "__main__":
                              "1 = basecall in high accuracy mode\n", required=False)
     parser.add_argument("-c", "--cpu_threads", type=int, default=16, choices=range(0, 16),
                         help="The number of cpu threads to use", required=False)
-    parser.add_argument("-ug", "--use_gaps", default=False, action="store_true",
+    parser.add_argument("-ug", "--use_gaps", default='', action="store_const", const='-ug',
                         help="use gap characters when making the consensus sequences", required=False)
     parser.add_argument("-p", "--guppy_path", default=argparse.SUPPRESS, type=str,
                         help="The path to the guppy executables eg: '.../ont-guppy/bin/'", required=True)
