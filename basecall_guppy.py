@@ -20,7 +20,7 @@ def main(inpath, guppy_path, outpath, bascall_mode, real_time, script_folder):
     guppy_path = pathlib.Path(guppy_path).absolute()
     guppy_basecaller = pathlib.Path(guppy_path, "guppy_basecaller")
     cuda_device = "CUDA:0"
-    config_option = ["dna_r9.4.1_450bps_fast.cfg ", "dna_r9.4.1_450bps_hac.cfg"]
+    config_option = ["dna_r10_450bps_hac.cfg", "dna_r9.4.1_450bps_hac.cfg"]
     config = config_option[bascall_mode]
     gpu_settings = f"--gpu_runners_per_device 4  --num_callers 4 -x 'auto' "
     if real_time:
@@ -62,7 +62,7 @@ def main(inpath, guppy_path, outpath, bascall_mode, real_time, script_folder):
                     shutil.move(file, basecalling_folder)
 
             guppy_basecall_cmd = f"{str(guppy_basecaller)} -i {basecalling_folder} -r -s {outpath} -c {config} " \
-                                 f"--records_per_fastq 4000 --qscore_filtering 7 {resume}" \
+                                 f"--records_per_fastq 4000 --min_qscore 7 {resume}" \
                                  f"{gpu_settings}"
 
             run = try_except_continue_on_fail(guppy_basecall_cmd)

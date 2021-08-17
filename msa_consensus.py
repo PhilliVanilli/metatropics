@@ -126,7 +126,7 @@ def main(infile, log_file, chosen_ref_file, threads,
         run = try_except_continue_on_fail(sort_sam_cmd)
         if not run:
             return False
-        depth_sam_cmd = f"samtools depth -a -g UNMAP,QCFAIl,SECONDARY,DUP {sorted_bam_file} > {depth_file} " \
+        depth_sam_cmd = f"samtools depth -g SECONDARY -a {sorted_bam_file} > {depth_file} " \
                        f"2>&1 | tee -a {log_file}"
         print("\n", depth_sam_cmd, "\n")
         with open(log_file, "a") as handle:
