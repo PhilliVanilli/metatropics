@@ -34,7 +34,10 @@ def main(infile, log_file, chosen_ref_file, threads,
     sample_name = pathlib.Path(sample_fastq).stem
     sample_dir = pathlib.Path(sample_fastq).parent
     project_dir = sample_dir.parent.parent
-    sample_viruses_file = pathlib.Path(project_dir, sample_name + "_viruses.fasta")
+    seq_folder = pathlib.Path(project_dir, "seq_files")
+    seq_folder.mkdir(mode=0o777, parents=True, exist_ok=True)
+    sample_viruses_file = pathlib.Path(seq_folder, sample_name + "_viruses.fasta")
+    plot_folder = pathlib.Path(project_dir, "seq_depth_plots")
 
     # initialize the fasta files with viruses per sample
     reference_d = fasta_to_dct(chosen_ref_file)
@@ -51,14 +54,12 @@ def main(infile, log_file, chosen_ref_file, threads,
         # generate virus dir and individual reference files
         ref_name = k[0:-7]
         print(ref_name)
-        ref_seq = v.replace('-', '').lower()
+        ref_seq = v.replace('-', '')
         reference_slice = f"{ref_name}:1-{len(ref_seq)}"
-        single_ref_file = pathlib.Path(script_dir, ref_name + ".fasta")
+        single_ref_file = pathlib.Path(sample_dir, ref_name + ".fasta")
         with open(single_ref_file, 'w') as fh:
             fh.write(f">{ref_name}\n{ref_seq}\n")
         virus_dir = pathlib.Path(sample_dir, ref_name)
-        if os.path.exists(virus_dir):
-            shutil.rmtree(virus_dir)
         virus_dir.mkdir(mode=0o777, parents=True, exist_ok=True)
         os.chdir(virus_dir)
 
@@ -69,40 +70,37 @@ def main(infile, log_file, chosen_ref_file, threads,
         depth_file = pathlib.Path(virus_dir, sample_name + "_depth.tsv")
         msa_fasta = pathlib.Path(virus_dir, sample_name + "_msa_from_bam_file.fasta")
         msa_cons = pathlib.Path(virus_dir, sample_name + "_msa_consensus.fasta")
-        plot_folder = pathlib.Path(virus_dir, "seq_depth_plots")
-        if os.path.exists(plot_folder):
-            shutil.rmtree(plot_folder)
-        plot_folder.mkdir(mode=0o777, parents=True, exist_ok=True)
 
-        # run read mapping using minimap
-        print(f"\nRunning: minimap2 read mapping")
-        minimap2_cmd = f"minimap2 -a -Y -t 8 -x ava-ont {single_ref_file} {sample_fastq} -o {sam_file} " \
-                       f"2>&1 | tee -a {log_file}"
-        print("\n", minimap2_cmd, "\n")
-        with open(log_file, "a") as handle:
-            handle.write(f"\nRunning: minimap read mapping\n")
-            handle.write(f"{minimap2_cmd}\n")
-        run = try_except_continue_on_fail(minimap2_cmd)
-        if not run:
-            return False
 
-        # # run read mapping using bwa
-        # make_index_cmd = f"bwa index {single_ref_file}"
+        # # run read mapping using minimap
+        # print(f"\nRunning: minimap2 read mapping")
+        # minimap2_cmd = f"minimap2 -a -Y -t 8 -x ava-ont {single_ref_file} {sample_fastq} -o {sam_file} " \
+        #                f"2>&1 | tee -a {log_file}"
+        # print("\n", minimap2_cmd, "\n")
         # with open(log_file, "a") as handle:
-        #     handle.write(f"\n{make_index_cmd}\n")
-        #
-        # try_except_exit_on_fail(make_index_cmd)
-        #
-        # print(f"\nrunning: bwa read mapping\n")
-        # bwa_cmd = f"bwa mem -t {threads} -x ont2d {single_ref_file} {sample_fastq} -o {sam_file} " \
-        #           f"2>&1 | tee -a {log_file}"
-        # print("\n", bwa_cmd, "\n")
-        # with open(log_file, "a") as handle:
-        #     handle.write(f"\nrunning: bwa read mapping\n")
-        #     handle.write(f"{bwa_cmd}\n")
-        # run = try_except_continue_on_fail(bwa_cmd)
+        #     handle.write(f"\nRunning: minimap read mapping\n")
+        #     handle.write(f"{minimap2_cmd}\n")
+        # run = try_except_continue_on_fail(minimap2_cmd)
         # if not run:
         #     return False
+
+        # run read mapping using bwa
+        make_index_cmd = f"bwa index {single_ref_file}"
+        with open(log_file, "a") as handle:
+            handle.write(f"\n{make_index_cmd}\n")
+
+        try_except_exit_on_fail(make_index_cmd)
+
+        print(f"\nrunning: bwa read mapping\n")
+        bwa_cmd = f"bwa mem -t {threads} -x ont2d {single_ref_file} {sample_fastq} -o {sam_file} " \
+                  f"2>&1 | tee -a {log_file}"
+        print("\n", bwa_cmd, "\n")
+        with open(log_file, "a") as handle:
+            handle.write(f"\nrunning: bwa read mapping\n")
+            handle.write(f"{bwa_cmd}\n")
+        run = try_except_continue_on_fail(bwa_cmd)
+        if not run:
+            return False
 
 
         # convert sam to bam
@@ -126,7 +124,7 @@ def main(infile, log_file, chosen_ref_file, threads,
         run = try_except_continue_on_fail(sort_sam_cmd)
         if not run:
             return False
-        depth_sam_cmd = f"samtools depth -g SECONDARY -a {sorted_bam_file} > {depth_file} " \
+        depth_sam_cmd = f"samtools depth -a {sorted_bam_file} > {depth_file} " \
                        f"2>&1 | tee -a {log_file}"
         print("\n", depth_sam_cmd, "\n")
         with open(log_file, "a") as handle:
@@ -178,22 +176,17 @@ def main(infile, log_file, chosen_ref_file, threads,
         fasta_msa_d = fasta_to_dct(msa_fasta)
 
         if len(fasta_msa_d) == 0:
-            print(f"{sam_file} alignment had no sequences\nskipping to next sample\n")
-            # with open(log_file, "a") as handle:
-            #     handle.write(f"{sam_name} alignment had no sequences\nskipping to next sample\n")
-            depth_outfile = pathlib.Path(plot_folder, sample_name + "_sequencing_depth.png")
+            print(f"\nNo MSA made from Bam file\nNo reads may have been mapped\n\n")
+            with open(log_file, 'a') as handle:
+                handle.write(f"\nNo MSA made from Bam file\nNo reads may have been mapped\n\n")
+            empty_file = open(msa_cons, 'w')
+            empty_file.close()
+            depth_outfile = pathlib.Path(plot_folder, sample_name + '_' + ref_name + "_sequencing_depth.png")
             empty_file = open(depth_outfile, 'w')
             empty_file.close()
-            return False
-        print("till here")
-        # build the consensus sequence
-        try:
-            cons, depth_profile = consensus_maker(fasta_msa_d, positional_depth, min_depth, use_gaps)
-        except IndexError as e:
-            print(f"\nNo MSA made from Bam file\nNo reads may have been mapped\n{e}\n")
-            with open(log_file, 'a') as handle:
-                handle.write(f"\nNo MSA made from Bam file\nNo reads may have been mapped\n{e}\n")
+
         else:
+            cons, depth_profile = consensus_maker(fasta_msa_d, positional_depth, min_depth, use_gaps)
             with open(msa_cons, 'w') as handle:
                 handle.write(f">{sample_name}_msa\n{cons}\n")
 
@@ -208,11 +201,17 @@ def main(infile, log_file, chosen_ref_file, threads,
             depth_outfile = pathlib.Path(plot_folder, sample_name + '_' + ref_name + "_sequencing_depth.png")
             plot_depth(depth_list, sample_name, depth_outfile)
 
-        os.remove(single_ref_file)
+    # delete single ref files
+    for file in pathlib.Path(sample_dir).glob("*fasta*"):
+        os.remove(file)
 
-        print(f"Completed processing sample: {sample_name}\n\n")
+    completed_empty_file = pathlib.Path(sample_dir, sample_name + ".completed")
+    empty_file = open(completed_empty_file, 'w')
+    empty_file.close()
 
-        print("Done")
+    print(f"Completed processing sample: {sample_name}\n\n")
+
+    print("Done")
 
 
 if __name__ == "__main__":

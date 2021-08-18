@@ -7,6 +7,7 @@ import datetime
 import pandas as pd
 import shutil
 import csv
+import glob
 from basecall_guppy import main as gupppy_basecall
 from demultiplex_guppy import main as guppy_demultiplex
 from src.misc_functions import try_except_continue_on_fail
@@ -43,7 +44,10 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
             sys.exit("Could not find sequencing_summary*.txt in project dir")
         else:
             seq_summary_file = file
-
+    plot_folder = Path(project_dir, "seq_depth_plots")
+    if os.path.exists(plot_folder):
+        shutil.rmtree(plot_folder)
+    plot_folder.mkdir(mode=0o777, parents=True, exist_ok=True)
 
     time_stamp = str('{:%Y-%m-%d_%Hh%M}'.format(datetime.datetime.now()))
     log_file = Path(project_dir, f"{time_stamp}_{run_name}_log_file.txt")
@@ -175,6 +179,16 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
 
     # Reference-based assembly
     if run_step == 4:
+
+        os.chdir(all_sample_dir)
+
+        # delete pre existing files in project dir
+        for file in Path(project_dir).glob("*.fasta"):
+            os.remove(file)
+        for file in Path(project_dir).glob("*.txt"):
+            if not str(file).startswith("sequencing_summary"):
+                os.remove(file)
+
         print("\n________________\n\nRunning: reference-based assembly\n________________\n")
         with open(log_file, "a") as handle:
             handle.write(f"\nStarting reference-based assembly\n")
@@ -186,6 +200,9 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
         used_threads = 0
         msa_threads = 6
 
+        # delete pre existing virus folders
+        for folder in glob.glob("*/*/"):
+            shutil.rmtree(folder)
         # delete pre existing files
         for file in Path(all_sample_dir).glob("*/*.*"):
             if not str(file).endswith(".fastq"):
@@ -210,14 +227,15 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
             os.chdir(sample_dir)
 
             # check free threads
-            finished_threads = len(list(Path(sample_dir).glob("*/*_msa_consensus.fasta")))
+            finished_threads = len(list(Path(all_sample_dir).glob("*/*.completed")))*msa_threads
             free_threads = max_threads + finished_threads - used_threads
             print("\nfree_threads = " + str(free_threads))
             print('\n' + 'waiting for free threads')
             while free_threads < msa_threads:
                 time.sleep(5)
-                finished_threads = len(list(Path(sample_dir).glob("*/*_msa_consensus.fasta")))
+                finished_threads = len(list(Path(all_sample_dir).glob("*/*.completed")))*msa_threads
                 free_threads = max_threads + finished_threads - used_threads
+                print(free_threads)
 
             # check if fastq is present
             file_present = list(sample_dir.glob("*.fastq"))
@@ -238,25 +256,31 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
                            f"-rs {reference_seqs_file} " \
                            f"-t {msa_threads} -d {min_depth} {use_gaps}"
             print(majority_cmd)
-            try_except_continue_on_fail(f"gnome-terminal -- /bin/sh -c 'conda run -n nanop {majority_cmd}'")
+            try_except_continue_on_fail(f"gnome-terminal -- /bin/sh -c 'conda run -n meta {majority_cmd}'")
             used_threads += msa_threads
 
         # concat all log files
-        os.chdir(project_dir)
-        loglist_msa = []
-        for path in Path(project_dir).glob("*_log_file_msa_sample.txt"):
-            loglist_msa.append(str(path))
-        sep = " "
-        string_msa = sep.join(loglist_msa)
-        cat_cmd = f"cat {str(log_file_msa_temp)} {string_msa} > {log_file_msa}"
-        try_except_continue_on_fail(cat_cmd)
-        cat_cmd = f"cat {str(log_file)} {str(log_file_msa)} > {log_file_final}"
-        try_except_continue_on_fail(cat_cmd)
-        for path in list(Path(project_dir).glob("*_log_file_msa_sample.txt")):
-            os.remove(path)
-        os.remove(log_file_msa_temp)
-        os.remove(log_file_msa)
-        os.remove(log_file)
+        finished_threads = len(list(Path(all_sample_dir).glob("*/*.completed")))
+        while finished_threads < number_samples:
+            time.sleep(5)
+            finished_threads = len(list(Path(all_sample_dir).glob("*/*.completed")))
+
+        else:
+            os.chdir(project_dir)
+            loglist_msa = []
+            for path in Path(project_dir).glob("*_log_file_msa_sample.txt"):
+                loglist_msa.append(str(path))
+            sep = " "
+            string_msa = sep.join(loglist_msa)
+            cat_cmd = f"cat {str(log_file_msa_temp)} {string_msa} > {log_file_msa}"
+            try_except_continue_on_fail(cat_cmd)
+            cat_cmd = f"cat {str(log_file)} {str(log_file_msa)} > {log_file_final}"
+            try_except_continue_on_fail(cat_cmd)
+            for path in list(Path(project_dir).glob("*_log_file_msa_sample.txt")):
+                os.remove(path)
+            os.remove(log_file_msa_temp)
+            os.remove(log_file_msa)
+            os.remove(log_file)
 
     # print end time
     now = datetime.datetime.now()
@@ -268,6 +292,8 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
     print("Sample processing completed\n")
     with open(log_file_final, "a") as handle:
         handle.write(f"\nSample processing completed\n\n")
+    for file in Path(all_sample_dir).glob('*/*.completed'):
+        os.remove(file)
 
     # compress fast5 files
     targzpath = Path(project_dir.parent, run_name + ".tar.gz")
@@ -276,6 +302,8 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
     print(tarcmd)
     with open(log_file_final, "a") as handle:
         handle.write(f"\n{tarcmd}\n\n")
+
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Process raw nanopore reads to fasta consensus sequences",
