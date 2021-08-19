@@ -1,12 +1,10 @@
 import os, time
 import sys
 import argparse
-import re
 from pathlib import Path
 import datetime
 import pandas as pd
 import shutil
-import csv
 import glob
 from basecall_guppy import main as gupppy_basecall
 from demultiplex_guppy import main as guppy_demultiplex
@@ -14,7 +12,6 @@ from src.misc_functions import try_except_continue_on_fail
 from src.misc_functions import try_except_exit_on_fail
 from src.misc_functions import cat_sample_names
 from src.misc_functions import filter_length_trim_seq
-from src.misc_functions import fasta_to_dct
 
 __author__ = 'Philippe Selhorst'
 
