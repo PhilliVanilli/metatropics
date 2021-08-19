@@ -186,7 +186,7 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
         for file in Path(project_dir).glob("*.fasta"):
             os.remove(file)
         for file in Path(project_dir).glob("*.txt"):
-            if not str(file).startswith("sequencing_summary"):
+            if not "sequencing_summary" in str(file):
                 os.remove(file)
 
         print("\n________________\n\nRunning: reference-based assembly\n________________\n")
@@ -296,10 +296,18 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
         os.remove(file)
 
     # compress fast5 files
-    targzpath = Path(project_dir.parent, run_name + ".tar.gz")
-    tarcmd = f"tar cf - {fast5_dir} | pigz -7 -p 16  > {targzpath}"
-    try_except_exit_on_fail(tarcmd)
+    os.chdir(project_dir)
+    targzpath = Path(project_dir.parent, run_name + ".tar")
+    fast5_dir_name = fast5_dir.parts[-1]
+    seq_summary_file_name = Path(seq_summary_file).name
+    tarcmd = f"tar -cf {targzpath} {fast5_dir_name} {seq_summary_file_name}"
     print(tarcmd)
+    try_except_exit_on_fail(tarcmd)
+    zipcmd = f"pigz -7 -p 16 {targzpath}"
+    try_except_exit_on_fail(zipcmd)
+
+
+
     with open(log_file_final, "a") as handle:
         handle.write(f"\n{tarcmd}\n\n")
 
