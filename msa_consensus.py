@@ -1,10 +1,9 @@
 import argparse
 import pathlib
 import os
-import shutil
 import csv
 from statistics import mean
-
+from src.misc_functions import file_len
 from src.misc_functions import try_except_continue_on_fail
 from src.misc_functions import try_except_exit_on_fail
 from src.misc_functions import consensus_maker
@@ -47,6 +46,9 @@ def main(infile, log_file, chosen_ref_file, threads,
         with open(sample_viruses_file,'a') as handle:
             handle.write(f">{ref_name}\n{ref_seq}\n")
             handle.close()
+    depth_outfile1 = pathlib.Path(sample_dir, f"{sample_name}_depth.csv")
+    with open(depth_outfile1, 'a') as fh:
+        fh.write(f"sample_name,ref_name,mean_depth,total_reads,virus_reads,percentage\n")
 
     # iterate mapping over the references
     for k, v in reference_d.items():
@@ -68,9 +70,9 @@ def main(infile, log_file, chosen_ref_file, threads,
         bam_file = pathlib.Path(virus_dir, sample_name + "_mapped.bam")
         sorted_bam_file = pathlib.Path(virus_dir, sample_name + "_sorted.bam")
         depth_file = pathlib.Path(virus_dir, sample_name + "_depth.tsv")
+        reads_file = pathlib.Path(virus_dir, sample_name + "_reads.txt")
         msa_fasta = pathlib.Path(virus_dir, sample_name + "_msa_from_bam_file.fasta")
         msa_cons = pathlib.Path(virus_dir, sample_name + "_msa_consensus.fasta")
-
 
         # # run read mapping using minimap
         # print(f"\nRunning: minimap2 read mapping")
@@ -142,9 +144,25 @@ def main(infile, log_file, chosen_ref_file, threads,
             positional_depth_list.append(0)
 
         mean_depth = mean(positional_depth_list)
-        depth_outfile = pathlib.Path(sample_dir, f"{sample_name}_depth.csv")
-        with open(depth_outfile, 'a') as fh:
-            fh.write(f"{sample_name}_{ref_name},{mean_depth}\n")
+
+
+        #get total number of reads and calculate % virus
+        total_reads = file_len(sample_fastq)/4
+        sam_view_cmd = f"samtools view -F 0x904 -c {sorted_bam_file} -o {reads_file}"
+        print("\n", sam_view_cmd, "\n")
+        run = try_except_continue_on_fail(sam_view_cmd)
+        if not run:
+            return False
+        with open(reads_file,'r') as fh:
+            virus_reads = int(fh.readline())
+        percentage = virus_reads/total_reads*100
+
+        with open(log_file, "a") as handle:
+            handle.write(f"\nRunning: calculating % virus reads\n{sam_view_cmd}\n")
+            handle.write(f"\nTotal reads = {total_reads}\n Virus reads = {virus_reads} \n % virus reads = {percentage}\n")
+
+        with open(depth_outfile1, 'a') as fh:
+            fh.write(f"{sample_name},{ref_name},{mean_depth},{total_reads},{virus_reads},{percentage}\n")
 
         # index bam file
         print(f"\nRunning: indexing bam file")

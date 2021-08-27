@@ -9,6 +9,12 @@ import matplotlib.pyplot as plt
 
 __author__ = 'Colin Anthony'
 
+def file_len(fname):
+    with open(fname) as f:
+        i = -1
+        for i, l in enumerate(f):
+            pass
+    return i + 1
 
 def try_except_exit_on_fail(cmd):
     try:

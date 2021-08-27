@@ -215,6 +215,7 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
         all_sample_files = Path(all_sample_dir).glob("*/*.fastq")
         sample_no = 0
         for sample_fastq in all_sample_files:
+
             sample_no += 1
 
             # get fastq path and name
