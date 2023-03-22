@@ -74,40 +74,40 @@ def main(infile, log_file, chosen_ref_file, threads,
         msa_fasta = pathlib.Path(virus_dir, sample_name + "_msa_from_bam_file.fasta")
         msa_cons = pathlib.Path(virus_dir, sample_name + "_msa_consensus.fasta")
 
-        # # run read mapping using minimap
-        # print(f"\nRunning: minimap2 read mapping")
-        # minimap2_cmd = f"minimap2 -a -Y -t 8 -x ava-ont {single_ref_file} {sample_fastq} -o {sam_file} " \
-        #                f"2>&1 | tee -a {log_file}"
-        # print("\n", minimap2_cmd, "\n")
-        # with open(log_file, "a") as handle:
-        #     handle.write(f"\nRunning: minimap read mapping\n")
-        #     handle.write(f"{minimap2_cmd}\n")
-        # run = try_except_continue_on_fail(minimap2_cmd)
-        # if not run:
-        #     return False
-
-        # run read mapping using bwa
-        make_index_cmd = f"bwa index {single_ref_file}"
+        # run read mapping using minimap
+        print(f"\nRunning: minimap2 read mapping")
+        minimap2_cmd = f"minimap2 --secondary=no -a -Y -t 8 -x map-ont {single_ref_file} {sample_fastq} -o {sam_file} " \
+                       f"2>&1 | tee -a {log_file}"
+        print("\n", minimap2_cmd, "\n")
         with open(log_file, "a") as handle:
-            handle.write(f"\n{make_index_cmd}\n")
-
-        try_except_exit_on_fail(make_index_cmd)
-
-        print(f"\nrunning: bwa read mapping\n")
-        bwa_cmd = f"bwa mem -t {threads} -x ont2d {single_ref_file} {sample_fastq} -o {sam_file} " \
-                  f"2>&1 | tee -a {log_file}"
-        print("\n", bwa_cmd, "\n")
-        with open(log_file, "a") as handle:
-            handle.write(f"\nrunning: bwa read mapping\n")
-            handle.write(f"{bwa_cmd}\n")
-        run = try_except_continue_on_fail(bwa_cmd)
+            handle.write(f"\nRunning: minimap read mapping\n")
+            handle.write(f"{minimap2_cmd}\n")
+        run = try_except_continue_on_fail(minimap2_cmd)
         if not run:
             return False
+
+        # # run read mapping using bwa
+        # make_index_cmd = f"bwa index {single_ref_file}"
+        # with open(log_file, "a") as handle:
+        #     handle.write(f"\n{make_index_cmd}\n")
+        #
+        # try_except_exit_on_fail(make_index_cmd)
+        #
+        # print(f"\nrunning: bwa read mapping\n")
+        # bwa_cmd = f"bwa mem -t {threads} -x ont2d {single_ref_file} {sample_fastq} -o {sam_file} " \
+        #           f"2>&1 | tee -a {log_file}"
+        # print("\n", bwa_cmd, "\n")
+        # with open(log_file, "a") as handle:
+        #     handle.write(f"\nrunning: bwa read mapping\n")
+        #     handle.write(f"{bwa_cmd}\n")
+        # run = try_except_continue_on_fail(bwa_cmd)
+        # if not run:
+        #     return False
 
 
         # convert sam to bam
         print(f"\nRunning: sam to bam conversion of mapped file")
-        sam_bam_cmd = f"samtools view -bS {sam_file} -o {bam_file} 2>&1 | tee -a {log_file}"
+        sam_bam_cmd = f"samtools view -bS {sam_file} -F 2048 -o {bam_file} 2>&1 | tee -a {log_file}"
         print("\n", sam_bam_cmd,"\n")
         with open(log_file, "a") as handle:
             handle.write(f"\nRunning: sam to bam conversion of mapped file\n")

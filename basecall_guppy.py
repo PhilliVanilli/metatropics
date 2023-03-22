@@ -84,7 +84,7 @@ def main(inpath, guppy_path, outpath, bascall_mode, real_time, script_folder):
 
     else:
         guppy_basecall_cmd = f"{str(guppy_basecaller)} -i {inpath} -r -s {outpath} -c {config} " \
-                             f"--compress_fastq --records_per_fastq 4000 --qscore_filtering 7 " \
+                             f"--compress_fastq --records_per_fastq 4000 --min_qscore 7 " \
                              f"{gpu_settings}"
 
         run = try_except_continue_on_fail(guppy_basecall_cmd)

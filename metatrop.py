@@ -195,7 +195,7 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
         print("number of samples=" + str(number_samples))
         max_threads = cpu_threads
         used_threads = 0
-        msa_threads = 6
+        msa_threads = 2
 
         # delete pre existing virus folders
         for folder in glob.glob("*/*/"):
@@ -324,10 +324,10 @@ if __name__ == "__main__":
     parser.add_argument("-re", "--reference_end", default=False, type=int,
                         help="The end coordinate of the reference sequence for read mapping. Default = full length",
                         required=False)
-    parser.add_argument("-mi", "--min_len", type=int, default=700,
+    parser.add_argument("-mi", "--min_len", type=int, default=150,
                         help="The minimum read length allowed:\n = 300 for 400bp amplicon design"
                                                              "\n = 700 for 800bp amplicon design", required=False)
-    parser.add_argument("-ma", "--max_len", type=int, default=900,
+    parser.add_argument("-ma", "--max_len", type=int, default=1000000,
                         help="The maximum read length allowed:\n = 500 for 400bp amplicon design"
                              "                                \n = 900 for 800bp amplicon design", required=False)
     parser.add_argument("-d", "--min_depth", type=int, default=100, help="The minimum coverage to call a position in "
