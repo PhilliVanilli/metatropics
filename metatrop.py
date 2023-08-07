@@ -294,6 +294,7 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
             os.remove(log_file_msa)
             os.remove(log_file)
 
+
         #collect & concat all csv files
         for file in Path(project_dir).glob("*percentages.csv"):
             os.remove(file)
@@ -302,25 +303,40 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
         virusdct= fasta_to_dct(reference_seqs_file)
         for virusname, sequence in virusdct.items():
             viruslist.append(virusname)
-        print(viruslist)
+
         with open(percentages_file, 'a') as fh:
             writer = csv.writer(fh)
             writer.writerow(viruslist)
 
-        for csvfile in Path(all_sample_dir).glob("*/*.csv"):
+        for csvfile in Path(all_sample_dir).glob("*/*_basecount.csv"):
+            opencsv = open(csvfile, 'r')
+            csvfile_stem = csvfile.stem
+            counts = [csvfile_stem, 'count']
+            percentage = [csvfile_stem, 'percentage']
+            for line in csv.reader(opencsv):
+                counts.append(line[3])
+                percentage.append(line[4])
+            with open(percentages_file, 'a') as fh:
+                writer = csv.writer(fh)
+                writer.writerow(counts)
+                writer.writerow(percentage)
+            opencsv.close()
+
+        for csvfile in Path(all_sample_dir).glob("*/*_depth.csv"):
             opencsv = open(csvfile, 'r')
             csvfile_stem = csvfile.stem
             counts = [csvfile_stem, 'count']
             percentage = [csvfile_stem, 'percentage']
             for line in csv.reader(opencsv):
                 if line[0] !="sample_name":
-                    counts.append(line[3])
-                    percentage.append(line[4])
+                    counts.append(line[4])
+                    percentage.append(line[5])
             with open(percentages_file, 'a') as fh:
                 writer = csv.writer(fh)
                 writer.writerow(counts)
                 writer.writerow(percentage)
             opencsv.close()
+
 
     # print end time
     now = datetime.datetime.now()
