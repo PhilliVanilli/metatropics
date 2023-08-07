@@ -1,6 +1,7 @@
 import argparse
 import pathlib
 import os
+import subprocess
 import csv
 from statistics import mean
 from src.misc_functions import file_len
@@ -71,6 +72,7 @@ def main(infile, log_file, chosen_ref_file, threads,
         sorted_bam_file = pathlib.Path(virus_dir, sample_name + "_sorted.bam")
         depth_file = pathlib.Path(virus_dir, sample_name + "_depth.tsv")
         reads_file = pathlib.Path(virus_dir, sample_name + "_reads.txt")
+        basecount_file = pathlib.Path(sample_dir, sample_name + "_basecount.csv")
         msa_fasta = pathlib.Path(virus_dir, sample_name + "_msa_from_bam_file.fasta")
         msa_cons = pathlib.Path(virus_dir, sample_name + "_msa_consensus.fasta")
 
@@ -163,6 +165,22 @@ def main(infile, log_file, chosen_ref_file, threads,
 
         with open(depth_outfile1, 'a') as fh:
             fh.write(f"{sample_name},{ref_name},{mean_depth},{total_reads},{virus_reads},{percentage}\n")
+
+        # get total number of bases and calculate % virus
+        awk_cmd = f'awk "NR % 4 == 0" ORS="" {sample_fastq}|wc -m'
+        print("\n", awk_cmd, "\n")
+        total_basecount = int(subprocess.check_output(awk_cmd, shell=True))
+
+        sam_stats_cmd = f'samtools stats -in {sorted_bam_file} | grep "bases mapped (cigar):"| cut -f 3'
+        print("\n", sam_stats_cmd, "\n")
+        basecount = int(subprocess.check_output(sam_stats_cmd, shell=True))
+        base_percentage = basecount/total_basecount*100
+        with open(basecount_file,'a') as fh:
+            fh.write(f"{sample_name},{ref_name},{total_basecount},{basecount},{base_percentage}\n")
+
+        with open(log_file, "a") as handle:
+            handle.write(f"\nRunning: calculating % virus bases\n{sam_view_cmd}\n")
+            handle.write(f"\nTotal bases = {total_basecount}\n Virus bases = {basecount} \n % virus bases = {base_percentage}\n")
 
         # index bam file
         print(f"\nRunning: indexing bam file")

@@ -20,7 +20,7 @@ def main(inpath, guppy_path, outpath, bascall_mode, real_time, script_folder):
     guppy_path = pathlib.Path(guppy_path).absolute()
     guppy_basecaller = pathlib.Path(guppy_path, "guppy_basecaller")
     cuda_device = "CUDA:0"
-    config_option = ["dna_r10.4.1_e8.2_260bps_hac.cfg", "dna_r9.4.1_450bps_hac.cfg"]
+    config_option = ["dna_r10.4.1_e8.2_400bps_5khz_hac.cfg", "dna_r9.4.1_450bps_hac.cfg"]
     config = config_option[bascall_mode]
     gpu_settings = f"-x 'auto' "
     if real_time:

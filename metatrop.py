@@ -2,6 +2,7 @@ import os, time
 import sys
 import argparse
 from pathlib import Path
+import subprocess
 import datetime
 import pandas as pd
 import shutil
@@ -248,6 +249,13 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
             with open(log_file_msa_sample, "a") as handle:
                 handle.write(
                     f"\n\n------->Running majority consensus pipeline for {sample_no} st/nd sample {sample_name} in new window\n")
+
+            # do Nanoplot
+            nanoplotoutputdir= Path(project_dir, f"nanoplot/{sample_name}")
+            nanoplotcmd = f"NanoPlot --fastq {sample_fastq} -o {nanoplotoutputdir}"
+            print(nanoplotcmd)
+            subprocess.call(nanoplotcmd, shell=True)
+
 
             # start majority consensus pipeline in new window
             majority_cmd = f"python ~/metatropics/msa_consensus.py -in {sample_fastq} -lf {log_file_msa_sample} " \
