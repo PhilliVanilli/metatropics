@@ -294,7 +294,6 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
             os.remove(log_file_msa)
             os.remove(log_file)
 
-    if run_step == 5:
         #collect & concat all csv files
         for file in Path(project_dir).glob("*percentages.csv"):
             os.remove(file)
@@ -322,7 +321,7 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
                 writer.writerow(counts)
                 writer.writerow(percentage)
             opencsv.close()
-    sys.exit()
+
     # print end time
     now = datetime.datetime.now()
     date_time = now.strftime("%d/%m/%Y, %H:%M:%S")
