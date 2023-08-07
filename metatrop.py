@@ -7,12 +7,14 @@ import datetime
 import pandas as pd
 import shutil
 import glob
+import csv
 from basecall_guppy import main as gupppy_basecall
 from demultiplex_guppy import main as guppy_demultiplex
 from src.misc_functions import try_except_continue_on_fail
 from src.misc_functions import try_except_exit_on_fail
 from src.misc_functions import cat_sample_names
 from src.misc_functions import filter_length_trim_seq
+from src.misc_functions import fasta_to_dct
 
 __author__ = 'Philippe Selhorst'
 
@@ -34,6 +36,7 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
     demultiplexed_dir = Path(project_dir, "demultiplexed")
     all_sample_dir = Path(project_dir, "samples")
     sample_names_file = Path(project_dir, "sample_names.csv")
+    percentages_file = Path(project_dir, "virus_percentages.csv")
     if not sample_names_file:
         sys.exit("Could not find sample_names.csv in project dir")
     seq_summary_file = ""
@@ -183,9 +186,12 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
         # delete pre existing files in project dir
         for file in Path(project_dir).glob("*.fasta"):
             os.remove(file)
+
         for file in Path(project_dir).glob("*.txt"):
             if not "sequencing_summary" in str(file):
                 os.remove(file)
+        for folder in Path(project_dir).glob("nanoplot"):
+            shutil.rmtree(folder)
 
         print("\n________________\n\nRunning: reference-based assembly\n________________\n")
         with open(log_file, "a") as handle:
@@ -288,6 +294,35 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
             os.remove(log_file_msa)
             os.remove(log_file)
 
+    if run_step == 5:
+        #collect & concat all csv files
+        for file in Path(project_dir).glob("*percentages.csv"):
+            os.remove(file)
+        os.chdir(all_sample_dir)
+        viruslist=['sample_name', '']
+        virusdct= fasta_to_dct(reference_seqs_file)
+        for virusname, sequence in virusdct.items():
+            viruslist.append(virusname)
+        print(viruslist)
+        with open(percentages_file, 'a') as fh:
+            writer = csv.writer(fh)
+            writer.writerow(viruslist)
+
+        for csvfile in Path(all_sample_dir).glob("*/*.csv"):
+            opencsv = open(csvfile, 'r')
+            csvfile_stem = csvfile.stem
+            counts = [csvfile_stem, 'count']
+            percentage = [csvfile_stem, 'percentage']
+            for line in csv.reader(opencsv):
+                if line[0] !="sample_name":
+                    counts.append(line[3])
+                    percentage.append(line[4])
+            with open(percentages_file, 'a') as fh:
+                writer = csv.writer(fh)
+                writer.writerow(counts)
+                writer.writerow(percentage)
+            opencsv.close()
+    sys.exit()
     # print end time
     now = datetime.datetime.now()
     date_time = now.strftime("%d/%m/%Y, %H:%M:%S")
