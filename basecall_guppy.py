@@ -30,6 +30,7 @@ def main(inpath, guppy_path, outpath, bascall_mode, real_time, script_folder):
         basecalling_folder.mkdir(mode=0o777, parents=True, exist_ok=True)
         temp_folder = pathlib.Path(projectpath, "temp")
         temp_folder.mkdir(mode=0o777, parents=True, exist_ok=True)
+        leftover_folder = pathlib.Path(projectpath, "leftover")
         resume = ""
         passfolder = pathlib.Path(projectpath, "fastq/pass")
         passfolder.mkdir(mode=0o777, parents=True, exist_ok=True)
@@ -76,7 +77,7 @@ def main(inpath, guppy_path, outpath, bascall_mode, real_time, script_folder):
                 shutil.move(file, temp_folder)
             resume = '--resume '
 
-        os.rmdir(inpath)
+        os.rename(inpath, leftover_folder)
         os.rename(temp_folder, inpath)
         os.rmdir(basecalling_folder)
 
