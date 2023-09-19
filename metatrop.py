@@ -31,7 +31,7 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
     reference_seqs_file = Path(script_dir, "references.fasta")
     print(f"\nProject dir is {project_dir}")
     run_name = project_dir.parts[-1]
-    fast5_dir = Path(project_dir, "fast5")
+    pod5_dir = Path(project_dir, "pod5")
     fastq_dir = Path(project_dir, "fastq")
     demultiplexed_dir = Path(project_dir, "demultiplexed")
     all_sample_dir = Path(project_dir, "samples")
@@ -70,7 +70,7 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
         print(f"\n________________\n\nRunning: basecalling\n________________\n")
         with open(log_file, "a") as handle:
             handle.write(f"\nRunning: basecalling\n")
-        run = gupppy_basecall(fast5_dir, guppy_dir, fastq_dir, basecall_mode, real_time, script_dir)
+        run = gupppy_basecall(pod5_dir, guppy_dir, fastq_dir, basecall_mode, real_time, script_dir)
         faildir = Path(fastq_dir, "fail")
         shutil.rmtree(faildir)
         if run and not rerun_step_only:
@@ -351,12 +351,12 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
     for file in Path(all_sample_dir).glob('*/*.completed'):
         os.remove(file)
 
-    # compress fast5 files
+    # compress pod5 files
     os.chdir(project_dir)
     targzpath = Path(project_dir.parent, run_name + ".tar")
-    fast5_dir_name = fast5_dir.parts[-1]
+    pod5_dir_name = pod5_dir.parts[-1]
     seq_summary_file_name = Path(seq_summary_file).name
-    tarcmd = f"tar -cf {targzpath} {fast5_dir_name} {seq_summary_file_name}"
+    tarcmd = f"tar -cf {targzpath} {pod5_dir_name} {seq_summary_file_name}"
     print(tarcmd)
     try_except_exit_on_fail(tarcmd)
     zipcmd = f"pigz -7 -p 16 {targzpath}"
@@ -374,7 +374,7 @@ if __name__ == "__main__":
                                      formatter_class=Formatter)
 
     parser.add_argument("-in", "--project_dir", default=argparse.SUPPRESS, type=str,
-                        help="The path to the directory containing the 'fast5' and 'fastq' dirs ", required=True)
+                        help="The path to the directory containing the 'pod5' and 'fastq' dirs ", required=True)
     parser.add_argument("-r", "--reference", type=str, help="The reference genome and primer scheme to use",
                         choices=["ChikAsian_V1_400", "ChikECSA_V1_800", "ZikaAsian_V1_400", "SARS2_V1_800", "SARS2_V1_400", "DENV1_V1_400", "DENV2_V1_400"], required=False)
     parser.add_argument("-rs", "--reference_start", default=1, type=int,
@@ -400,8 +400,8 @@ if __name__ == "__main__":
     parser.add_argument("--run_step_only", default=False, action="store_true",
                         help="Only run the step specified in 'run_step'", required=False)
     parser.add_argument("-b", "--basecall_mode", default=1, choices=[0, 1], type=int,
-                        help="0 = basecall in fast mode\n"
-                             "1 = basecall in high accuracy mode\n", required=False)
+                        help="0 = basecall in R10 mode\n"
+                             "1 = basecall in R9 mode\n", required=False)
     parser.add_argument("-c", "--cpu_threads", type=int, default=14, choices=range(0, 16),
                         help="The number of cpu threads to use", required=False)
     parser.add_argument("-ug", "--use_gaps", default='', action="store_const", const='-ug',
@@ -409,7 +409,7 @@ if __name__ == "__main__":
     parser.add_argument("-p", "--guppy_path", default=argparse.SUPPRESS, type=str,
                         help="The path to the guppy executables eg: '.../ont-guppy/bin/'", required=True)
     parser.add_argument("-rt", "--real_time", default=False, action="store_true",
-                        help="start basecalling fast5 files in batches during sequencing", required=False)
+                        help="start basecalling pod5 files in batches during sequencing", required=False)
 
     args = parser.parse_args()
 
