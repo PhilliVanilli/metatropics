@@ -402,7 +402,7 @@ if __name__ == "__main__":
     parser.add_argument("-b", "--basecall_mode", default=1, choices=[0, 1], type=int,
                         help="0 = basecall in R10 mode\n"
                              "1 = basecall in R9 mode\n", required=False)
-    parser.add_argument("-c", "--cpu_threads", type=int, default=14, choices=range(0, 16),
+    parser.add_argument("-c", "--cpu_threads", type=int, default=14, choices=range(0, 17),
                         help="The number of cpu threads to use", required=False)
     parser.add_argument("-ug", "--use_gaps", default='', action="store_const", const='-ug',
                         help="use gap characters when making the consensus sequences", required=False)
