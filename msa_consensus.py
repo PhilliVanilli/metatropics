@@ -36,8 +36,10 @@ def main(infile, log_file, chosen_ref_file, threads,
     project_dir = sample_dir.parent.parent
     seq_folder = pathlib.Path(project_dir, "seq_files")
     seq_folder.mkdir(mode=0o777, parents=True, exist_ok=True)
-    sample_viruses_file = pathlib.Path(seq_folder, sample_name + "_viruses.fasta")
     plot_folder = pathlib.Path(project_dir, "seq_depth_plots")
+    raw_sample_name = sample_name.replace('.no_host', '')
+    raw_sample_fastq = pathlib.Path(project_dir, 'raw_samples', f'{raw_sample_name}.fastq')
+    sample_viruses_file = pathlib.Path(seq_folder, raw_sample_name + "_viruses.fasta")
 
     # initialize the fasta files with viruses per sample
     reference_d = fasta_to_dct(chosen_ref_file)
@@ -47,7 +49,7 @@ def main(infile, log_file, chosen_ref_file, threads,
         with open(sample_viruses_file,'a') as handle:
             handle.write(f">{ref_name}\n{ref_seq}\n")
             handle.close()
-    depth_outfile1 = pathlib.Path(sample_dir, f"{sample_name}_depth.csv")
+    depth_outfile1 = pathlib.Path(sample_dir, f"{raw_sample_name}.depth.csv")
     with open(depth_outfile1, 'a') as fh:
         fh.write(f"sample_name,ref_name,mean_depth,total_reads,virus_reads,percentage\n")
 
@@ -68,13 +70,13 @@ def main(infile, log_file, chosen_ref_file, threads,
 
         # set input and output file paths
         sam_file = pathlib.Path(virus_dir, sample_name + ".sam")
-        bam_file = pathlib.Path(virus_dir, sample_name + "_mapped.bam")
-        sorted_bam_file = pathlib.Path(virus_dir, sample_name + "_sorted.bam")
-        depth_file = pathlib.Path(virus_dir, sample_name + "_depth.tsv")
-        reads_file = pathlib.Path(virus_dir, sample_name + "_reads.txt")
-        basecount_file = pathlib.Path(sample_dir, sample_name + "_basecount.csv")
-        msa_fasta = pathlib.Path(virus_dir, sample_name + "_msa_from_bam_file.fasta")
-        msa_cons = pathlib.Path(virus_dir, sample_name + "_msa_consensus.fasta")
+        bam_file = pathlib.Path(virus_dir, sample_name + ".mapped.bam")
+        sorted_bam_file = pathlib.Path(virus_dir, sample_name + ".sorted.bam")
+        depth_file = pathlib.Path(virus_dir, raw_sample_name + ".depth.tsv")
+        reads_file = pathlib.Path(virus_dir, raw_sample_name + ".reads.txt")
+        basecount_file = pathlib.Path(sample_dir, raw_sample_name + ".basecount.csv")
+        msa_fasta = pathlib.Path(virus_dir, raw_sample_name + ".msa_from_bam_file.fasta")
+        msa_cons = pathlib.Path(virus_dir, raw_sample_name + ".msa_consensus.fasta")
 
         # run read mapping using minimap
         print(f"\nRunning: minimap2 read mapping")
@@ -149,7 +151,7 @@ def main(infile, log_file, chosen_ref_file, threads,
 
 
         #get total number of reads and calculate % virus
-        total_reads = file_len(sample_fastq)/4
+        total_reads = file_len(raw_sample_fastq)/4
         sam_view_cmd = f"samtools view -F 0x904 -c {sorted_bam_file} -o {reads_file}"
         print("\n", sam_view_cmd, "\n")
         run = try_except_continue_on_fail(sam_view_cmd)
@@ -167,7 +169,7 @@ def main(infile, log_file, chosen_ref_file, threads,
             fh.write(f"{sample_name},{ref_name},{mean_depth},{total_reads},{virus_reads},{percentage}\n")
 
         # get total number of bases and calculate % virus
-        awk_cmd = f'awk "NR % 4 == 0" ORS="" {sample_fastq}|wc -m'
+        awk_cmd = f'awk "NR % 4 == 0" ORS="" {raw_sample_fastq}|wc -m'
         print("\n", awk_cmd, "\n")
         total_basecount = int(subprocess.check_output(awk_cmd, shell=True))
 
@@ -192,7 +194,7 @@ def main(infile, log_file, chosen_ref_file, threads,
         run = try_except_continue_on_fail(index_bam_cmd)
         if not run:
             return False
-
+        
         # convert bam file to a mutli fasta alignment
         print(f"\nRunning: making consensuses sequence from bam to MSA with jvarkit\n")
 

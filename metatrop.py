@@ -23,7 +23,7 @@ class Formatter(argparse.ArgumentDefaultsHelpFormatter, argparse.RawTextHelpForm
 
 def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth, run_step,
          rerun_step_only, basecall_mode, cpu_threads,use_gaps,
-         guppy_dir, real_time):
+         guppy_dir, real_time, host):
 
     # set the dir paths
     script_dir = Path(__file__).absolute().parent
@@ -31,10 +31,11 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
     reference_seqs_file = Path(script_dir, "references.fasta")
     print(f"\nProject dir is {project_dir}")
     run_name = project_dir.parts[-1]
-    fast5_dir = Path(project_dir, "fast5")
+    pod5_dir = Path(project_dir, "pod5")
     fastq_dir = Path(project_dir, "fastq")
     demultiplexed_dir = Path(project_dir, "demultiplexed")
     all_sample_dir = Path(project_dir, "samples")
+    raw_sample_dir = Path(project_dir, "raw_samples")
     sample_names_file = Path(project_dir, "sample_names.csv")
     percentages_file = Path(project_dir, "virus_percentages.csv")
     if not sample_names_file:
@@ -49,6 +50,7 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
     if os.path.exists(plot_folder):
         shutil.rmtree(plot_folder)
     plot_folder.mkdir(mode=0o777, parents=True, exist_ok=True)
+    raw_sample_dir.mkdir(mode=0o777, parents=True, exist_ok=True)
 
     time_stamp = str('{:%Y-%m-%d_%Hh%M}'.format(datetime.datetime.now()))
     log_file = Path(project_dir, f"{time_stamp}_{run_name}_log_file.txt")
@@ -70,7 +72,7 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
         print(f"\n________________\n\nRunning: basecalling\n________________\n")
         with open(log_file, "a") as handle:
             handle.write(f"\nRunning: basecalling\n")
-        run = gupppy_basecall(fast5_dir, guppy_dir, fastq_dir, basecall_mode, real_time, script_dir)
+        run = gupppy_basecall(pod5_dir, guppy_dir, fastq_dir, basecall_mode, real_time, script_dir)
         faildir = Path(fastq_dir, "fail")
         shutil.rmtree(faildir)
         if run and not rerun_step_only:
@@ -103,7 +105,7 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
             handle.write(f"\nRunning: length filtering & primer trim\n")
         pre_existing_files = list(demultiplexed_dir.glob("*.fastq"))
         if pre_existing_files:
-            print("Found existing files in demultiplex folder.\nThese files will be deleted\n")
+            print("Found existing files in demultiplexed folder.\nThese files will be deleted\n")
             for file in pre_existing_files:
                 file.unlink()
         for folder in demultiplexed_dir.glob("barcode*"):
@@ -142,11 +144,12 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
 
     # concatenate multiple barcodes per sample and rename according to sample file
     if run_step == 3:
-        print("\n________________\n\nRunning: concatenate & rename\n________________\n")
+        print("\n________________\n\nRunning: concatenate, rename, and nanoplot\n________________\n")
         with open(log_file, "a") as handle:
             handle.write(f"\nCollecting demultiplexed files into sample.fastq files based on specified sample "
-                         f"barcode combinations\n")
+                         f"barcode combinations and run nanoplot\n")
 
+        # do rename
         sample_names_df = pd.read_csv(sample_names_file, sep=None, keep_default_na=False, na_values=['NA'], engine="python")
         sample_names_df['barcode_1'] = sample_names_df['barcode_1'].apply(lambda x: cat_sample_names(x, run_name))
         sample_names_df['barcode_2'] = sample_names_df['barcode_2'].apply(lambda x: cat_sample_names(x, run_name))
@@ -162,7 +165,7 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
                 barcode_2_file = ""
             else:
                 barcode_2_file = Path(demultiplexed_dir, barcode_2)
-            cat_outfile = Path(sample_dir, f"{sample_name}.fastq")
+            cat_outfile = Path(raw_sample_dir, f"{sample_name}.fastq")
             cat_cmd = f"cat {str(barcode_1_file)} {str(barcode_2_file)} > {cat_outfile}"
             print(cat_cmd)
             with open(log_file, "a") as handle:
@@ -173,13 +176,54 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
                 with open(log_file, "a") as handle:
                     handle.write("\nMissing one or more demultiplexed files for this sample\n")
                 continue
+
+        # do Nanoplot
+        for folder in Path(project_dir).glob("nanoplot"):
+            shutil.rmtree(folder)
+        all_nanoplot_files = Path(raw_sample_dir).glob("*.fastq")
+        for sample_fastq in all_nanoplot_files:
+            sample_name = Path(sample_fastq).stem
+            nanoplotoutputdir = Path(project_dir, f"nanoplot/{sample_name}")
+            nanoplotcmd = f"NanoPlot --fastq {sample_fastq} -o {nanoplotoutputdir}"
+            print(nanoplotcmd)
+            subprocess.call(nanoplotcmd, shell=True)
+
+
         if not rerun_step_only:
             run_step = 4
         else:
             sys.exit("Run step only completed, exiting")
 
-    # Reference-based assembly
     if run_step == 4:
+        print("\n________________\n\nRunning: host removal using minimap2\n________________\n")
+        with open(log_file, "a") as handle:
+            handle.write(f"\nRunning: host removal using minimap2\n")
+        pre_existing_files = list(raw_sample_dir.glob("*.fastq"))
+        if not pre_existing_files:
+            sys.exit("No files found in raw sample folder\n")
+        host_dir = Path(script_dir, "host_genomes", host)
+        host_name = list(host_dir.glob("*.fasta"))[0]
+        print(f'Host genome to remove is {host_name}')
+        for file in pre_existing_files:
+            sample_name = file.stem
+            unmapped_outfile = Path(all_sample_dir, sample_name, f"{sample_name}.no_host.fastq")
+            minimap_cmd = f"minimap2 --secondary=no -a -Y -t 15 -x map-ont {host_name} {file} | samtools view -f4 - | samtools fastq - > {unmapped_outfile}"
+            print(minimap_cmd)
+            with open(log_file, "a") as handle:
+                handle.write(f"\n{minimap_cmd}\n")
+            run = try_except_continue_on_fail(minimap_cmd)
+            if not run:
+                print("Host removal failed")
+                with open(log_file, "a") as handle:
+                    handle.write("\nHost removal failed\n")
+                continue
+        if not rerun_step_only:
+            run_step = 5
+        else:
+            sys.exit("Run step only completed, exiting")
+
+    # Reference-based assembly
+    if run_step == 5:
 
         os.chdir(all_sample_dir)
 
@@ -190,27 +234,33 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
         for file in Path(project_dir).glob("*.txt"):
             if not "sequencing_summary" in str(file):
                 os.remove(file)
-        for folder in Path(project_dir).glob("nanoplot"):
+
+        # delete pre existing virus folders
+        for folder in glob.glob("*/*/"):
             shutil.rmtree(folder)
+
+        # delete pre existing files
+        for file in Path(all_sample_dir).glob("*/*.*"):
+            if not str(file).endswith(".fastq"):
+                os.remove(file)
+
+        # delete pre existing files in sample dir
+        for file in Path(all_sample_dir).glob("*/*.*"):
+            if not ".fastq" in str(file):
+                os.remove(file)
 
         print("\n________________\n\nRunning: reference-based assembly\n________________\n")
         with open(log_file, "a") as handle:
             handle.write(f"\nStarting reference-based assembly\n")
 
         # get number of samples and threads
-        number_samples = (len(list(all_sample_dir.glob('*/*.fastq'))))
+        number_samples = (len(list(all_sample_dir.glob('*/*.no_host.fastq'))))
         print("number of samples=" + str(number_samples))
         max_threads = cpu_threads
         used_threads = 0
         msa_threads = 2
 
-        # delete pre existing virus folders
-        for folder in glob.glob("*/*/"):
-            shutil.rmtree(folder)
-        # delete pre existing files
-        for file in Path(all_sample_dir).glob("*/*.*"):
-            if not str(file).endswith(".fastq"):
-                os.remove(file)
+
 
         log_file_msa_temp = Path(project_dir, f"{time_stamp}_{run_name}_log_file_msa_temp.txt")
         log_file_msa = Path(project_dir, f"{time_stamp}_{run_name}_log_file_msa.txt")
@@ -219,7 +269,7 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
         with open(log_file_msa_temp, "a") as handle:
             handle.write(f"\nmin_depth = {min_depth}\n")
 
-        all_sample_files = Path(all_sample_dir).glob("*/*.fastq")
+        all_sample_files = Path(all_sample_dir).glob("*/*.no_host.fastq")
         sample_no = 0
         for sample_fastq in all_sample_files:
 
@@ -256,11 +306,7 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
                 handle.write(
                     f"\n\n------->Running majority consensus pipeline for {sample_no} st/nd sample {sample_name} in new window\n")
 
-            # do Nanoplot
-            nanoplotoutputdir= Path(project_dir, f"nanoplot/{sample_name}")
-            nanoplotcmd = f"NanoPlot --fastq {sample_fastq} -o {nanoplotoutputdir}"
-            print(nanoplotcmd)
-            subprocess.call(nanoplotcmd, shell=True)
+
 
 
             # start majority consensus pipeline in new window
@@ -308,7 +354,7 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
             writer = csv.writer(fh)
             writer.writerow(viruslist)
 
-        for csvfile in Path(all_sample_dir).glob("*/*_basecount.csv"):
+        for csvfile in Path(all_sample_dir).glob("*/*basecount.csv"):
             opencsv = open(csvfile, 'r')
             csvfile_stem = csvfile.stem
             counts = [csvfile_stem, 'count']
@@ -322,7 +368,7 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
                 writer.writerow(percentage)
             opencsv.close()
 
-        for csvfile in Path(all_sample_dir).glob("*/*_depth.csv"):
+        for csvfile in Path(all_sample_dir).glob("*/*depth.csv"):
             opencsv = open(csvfile, 'r')
             csvfile_stem = csvfile.stem
             counts = [csvfile_stem, 'count']
@@ -351,12 +397,12 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
     for file in Path(all_sample_dir).glob('*/*.completed'):
         os.remove(file)
 
-    # compress fast5 files
+    # compress pod5 files
     os.chdir(project_dir)
     targzpath = Path(project_dir.parent, run_name + ".tar")
-    fast5_dir_name = fast5_dir.parts[-1]
+    pod5_dir_name = pod5_dir.parts[-1]
     seq_summary_file_name = Path(seq_summary_file).name
-    tarcmd = f"tar -cf {targzpath} {fast5_dir_name} {seq_summary_file_name}"
+    tarcmd = f"tar -cf {targzpath} {pod5_dir_name} {seq_summary_file_name}"
     print(tarcmd)
     try_except_exit_on_fail(tarcmd)
     zipcmd = f"pigz -7 -p 16 {targzpath}"
@@ -374,7 +420,7 @@ if __name__ == "__main__":
                                      formatter_class=Formatter)
 
     parser.add_argument("-in", "--project_dir", default=argparse.SUPPRESS, type=str,
-                        help="The path to the directory containing the 'fast5' and 'fastq' dirs ", required=True)
+                        help="The path to the directory containing the 'pod5' and 'fastq' dirs ", required=True)
     parser.add_argument("-r", "--reference", type=str, help="The reference genome and primer scheme to use",
                         choices=["ChikAsian_V1_400", "ChikECSA_V1_800", "ZikaAsian_V1_400", "SARS2_V1_800", "SARS2_V1_400", "DENV1_V1_400", "DENV2_V1_400"], required=False)
     parser.add_argument("-rs", "--reference_start", default=1, type=int,
@@ -396,20 +442,23 @@ if __name__ == "__main__":
                              "--run_step 1 = demultiplex with Guppy\n"
                              "--run_step 2 = size filer and rename demultiplexed fastq file\n"
                              "--run_step 3 = concatenate demultiplexed files into sample files\n"
-                             "--run_step 4 = run reference-based viral genome assembly on each sample\n")
+                             "--run_step 4 = remove host reads from sample files\n"
+                             "--run_step 5 = run reference-based viral genome assembly on each sample\n")
     parser.add_argument("--run_step_only", default=False, action="store_true",
                         help="Only run the step specified in 'run_step'", required=False)
-    parser.add_argument("-b", "--basecall_mode", default=1, choices=[0, 1], type=int,
-                        help="0 = basecall in fast mode\n"
-                             "1 = basecall in high accuracy mode\n", required=False)
-    parser.add_argument("-c", "--cpu_threads", type=int, default=14, choices=range(0, 16),
+    parser.add_argument("-b", "--basecall_mode", default=0, choices=[0, 1], type=int,
+                        help="0 = basecall in R10 mode\n"
+                             "1 = basecall in R9 mode\n", required=False)
+    parser.add_argument("-c", "--cpu_threads", type=int, default=14, choices=range(0, 17),
                         help="The number of cpu threads to use", required=False)
     parser.add_argument("-ug", "--use_gaps", default='', action="store_const", const='-ug',
                         help="use gap characters when making the consensus sequences", required=False)
     parser.add_argument("-p", "--guppy_path", default=argparse.SUPPRESS, type=str,
                         help="The path to the guppy executables eg: '.../ont-guppy/bin/'", required=True)
     parser.add_argument("-rt", "--real_time", default=False, action="store_true",
-                        help="start basecalling fast5 files in batches during sequencing", required=False)
+                        help="start basecalling pod5 files in batches during sequencing", required=False)
+    parser.add_argument("-ho", "--host", default=argparse.SUPPRESS, type=str, required=True,
+                        help="name of host species to remove")
 
     args = parser.parse_args()
 
@@ -427,6 +476,8 @@ if __name__ == "__main__":
     use_gaps = args.use_gaps
     guppy_path = args.guppy_path
     real_time = args.real_time
+    host = args.host
 
     main(project_dir, reference, reference_start, reference_end, min_len, max_len, min_depth, run_step,
-         run_step_only, basecall_mode, cpu_threads, use_gaps, guppy_path, real_time)
+         run_step_only, basecall_mode, cpu_threads, use_gaps, guppy_path, real_time, host)
+

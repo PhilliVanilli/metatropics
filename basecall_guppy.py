@@ -30,6 +30,7 @@ def main(inpath, guppy_path, outpath, bascall_mode, real_time, script_folder):
         basecalling_folder.mkdir(mode=0o777, parents=True, exist_ok=True)
         temp_folder = pathlib.Path(projectpath, "temp")
         temp_folder.mkdir(mode=0o777, parents=True, exist_ok=True)
+        leftover_folder = pathlib.Path(projectpath, "leftover")
         resume = ""
         passfolder = pathlib.Path(projectpath, "fastq/pass")
         passfolder.mkdir(mode=0o777, parents=True, exist_ok=True)
@@ -40,23 +41,23 @@ def main(inpath, guppy_path, outpath, bascall_mode, real_time, script_folder):
         counter = 0
         w = 0
         while w == 0:
-            fast5files = sorted(os.listdir(inpath), key=lambda y: os.path.getmtime(os.path.join(inpath, y)))
-            firstlength = len(fast5files)
+            pod5files = sorted(os.listdir(inpath), key=lambda y: os.path.getmtime(os.path.join(inpath, y)))
+            firstlength = len(pod5files)
             if firstlength > 10:
                 x = 10
                 counter += x
             else:
                 time.sleep(900)
-                fast5files = sorted(os.listdir(inpath), key=lambda y: os.path.getmtime(os.path.join(inpath, y)))
-                secondlength = len(fast5files)
+                pod5files = sorted(os.listdir(inpath), key=lambda y: os.path.getmtime(os.path.join(inpath, y)))
+                secondlength = len(pod5files)
                 if firstlength < secondlength:
-                    x = len(fast5files)
+                    x = len(pod5files)
                 else:
-                    x = len(fast5files)
+                    x = len(pod5files)
                     w = 1
                 counter += x
 
-            for filename in fast5files[0:x]:
+            for filename in pod5files[0:x]:
                 if not filename.startswith('.'):
                     file = os.path.join(inpath, filename)
                     shutil.move(file, basecalling_folder)
@@ -67,7 +68,7 @@ def main(inpath, guppy_path, outpath, bascall_mode, real_time, script_folder):
 
             run = try_except_continue_on_fail(guppy_basecall_cmd)
             if run:
-                print(f"Basecalled {counter} fast5 files")
+                print(f"Basecalled {counter} pod5 files")
             else:
                 print("Basecalling failed")
 
@@ -76,7 +77,7 @@ def main(inpath, guppy_path, outpath, bascall_mode, real_time, script_folder):
                 shutil.move(file, temp_folder)
             resume = '--resume '
 
-        os.rmdir(inpath)
+        os.rename(inpath, leftover_folder)
         os.rename(temp_folder, inpath)
         os.rmdir(basecalling_folder)
 
@@ -101,7 +102,7 @@ if __name__ == "__main__":
                                      formatter_class=Formatter)
 
     parser.add_argument('-in', '--inpath', type=str, default=None, required=True,
-                        help='The path to the fast5 folder')
+                        help='The path to the pod5 folder')
     parser.add_argument('-p', '--guppy_path', type=str, default=None, required=True,
                         help='The path to guppy exexutable')
     parser.add_argument('-sf', '--script_folder', type=str, default=None, required=True,
@@ -112,7 +113,7 @@ if __name__ == "__main__":
                         help='0 = Fast mode\n'
                              '1 = high accuracy mode')
     parser.add_argument("-rt", "--real_time", default=False, action="store_true",
-                        help="start basecalling fast5 files in batches during sequencing", required=False)
+                        help="start basecalling pod5 files in batches during sequencing", required=False)
 
 
     args = parser.parse_args()

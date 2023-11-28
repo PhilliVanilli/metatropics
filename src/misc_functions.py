@@ -6,8 +6,34 @@ import collections
 from itertools import groupby
 from Bio import SeqIO
 import matplotlib.pyplot as plt
+import csv
 
-__author__ = 'Colin Anthony'
+__author__ = 'Colin Anthony & Philippe Selhorst'
+
+def create_coverage_mask(depth_file_path, threshold):
+    depth_values = []
+    refname=''
+    with open(depth_file_path, 'r') as tsv_file:
+        tsv_reader = csv.reader(tsv_file, delimiter='\t')
+        for row in tsv_reader:
+            refname=str(row[0])
+            if len(row) >= 3:  # Ensure the row has at least three columns
+                depth_values.append(int(row[2]))    
+    low_depth_intervals = []
+    start = None
+    for i, depth in enumerate(depth_values):
+        if depth < threshold:
+            if start is None:
+                start = i+1
+        elif start is not None:
+            low_depth_intervals.append((start, i))
+            start = None
+    # Check if a low-depth interval extends to the end of the list
+    if start is not None:
+        low_depth_intervals.append((start, len(depth_values)))
+    with open ('coverage_mask.txt','w') as fh:
+        for interval in low_depth_intervals:
+            fh.write(f"{refname}\t{interval[0]}\t{interval[1]}\n")   
 
 def file_len(fname):
     with open(fname) as f:
