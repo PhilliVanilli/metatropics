@@ -192,7 +192,7 @@ def main(infile, log_file, chosen_ref_file, threads,
         run = try_except_continue_on_fail(index_bam_cmd)
         if not run:
             return False
-
+        
         # convert bam file to a mutli fasta alignment
         print(f"\nRunning: making consensuses sequence from bam to MSA with jvarkit\n")
 
