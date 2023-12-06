@@ -40,6 +40,31 @@ def main(infile, log_file, chosen_ref_file, threads,
     raw_sample_name = sample_name.replace('.no_host', '')
     raw_sample_fastq = pathlib.Path(project_dir, 'raw_samples', f'{raw_sample_name}.fastq')
     sample_viruses_file = pathlib.Path(seq_folder, raw_sample_name + "_viruses.fasta")
+    sam_outfile = pathlib.Path(sample_dir, sample_name + ".no_host.ref.sam")
+    bam_outfile = pathlib.Path(sample_dir, sample_name + ".no_host_ref.sorted.bam")
+
+    # run minimap2 on multi_ref file
+    print(f"\nRunning: minimap2 read mapping")
+    minimap2_cmd = f"minimap2 --secondary=no -a -Y -t {threads} -x map-ont {chosen_ref_file} " \
+                   f"{infile} -o {sam_outfile} 2>&1 | tee -a {log_file}"
+    print("\n", minimap2_cmd, "\n")
+    with open(log_file, "a") as handle:
+        handle.write(f"\nRunning: minimap read mapping\n")
+        handle.write(f"{minimap2_cmd}\n")
+    run = try_except_continue_on_fail(minimap2_cmd)
+    if not run:
+        return False
+
+    # convert sam to sorted and indexed bam
+    print(f"\nCreating sorted & indexed bam file")
+    samtools_cmd = f"samtools view {sam_outfile} -bS -F 2048 | samtools sort - -o {bam_outfile} | samtools index -"
+    print("\n", samtools_cmd, "\n")
+    with open(log_file, "a") as handle:
+        handle.write(f"\nRunning: creating sorted & indexed bam file\n")
+        handle.write(f"{samtools_cmd}\n")
+    run = try_except_continue_on_fail(samtools_cmd)
+    if not run:
+        return False
 
     # initialize the fasta files with viruses per sample
     reference_d = fasta_to_dct(chosen_ref_file)
@@ -56,37 +81,30 @@ def main(infile, log_file, chosen_ref_file, threads,
     # iterate mapping over the references
     for k, v in reference_d.items():
 
-        # generate virus dir and individual reference files
+        # generate virus dir & set input and output file paths
         ref_name = k[0:-7]
         print(ref_name)
         ref_seq = v.replace('-', '')
         reference_slice = f"{ref_name}:1-{len(ref_seq)}"
-        single_ref_file = pathlib.Path(sample_dir, ref_name + ".fasta")
-        with open(single_ref_file, 'w') as fh:
-            fh.write(f">{ref_name}\n{ref_seq}\n")
         virus_dir = pathlib.Path(sample_dir, ref_name)
         virus_dir.mkdir(mode=0o777, parents=True, exist_ok=True)
         os.chdir(virus_dir)
-
-        # set input and output file paths
-        sam_file = pathlib.Path(virus_dir, sample_name + ".sam")
-        bam_file = pathlib.Path(virus_dir, sample_name + ".mapped.bam")
-        sorted_bam_file = pathlib.Path(virus_dir, sample_name + ".sorted.bam")
         depth_file = pathlib.Path(virus_dir, raw_sample_name + ".depth.tsv")
         reads_file = pathlib.Path(virus_dir, raw_sample_name + ".reads.txt")
         basecount_file = pathlib.Path(sample_dir, raw_sample_name + ".basecount.csv")
         msa_fasta = pathlib.Path(virus_dir, raw_sample_name + ".msa_from_bam_file.fasta")
         msa_cons = pathlib.Path(virus_dir, raw_sample_name + ".msa_consensus.fasta")
+        ref_aligned_outfile = pathlib.Path(virus_dir, sample_name + f".{ref_name}.bam")
 
-        # run read mapping using minimap
-        print(f"\nRunning: minimap2 read mapping")
-        minimap2_cmd = f"minimap2 --secondary=no -a -Y -t 8 -x map-ont {single_ref_file} {sample_fastq} -o {sam_file} " \
-                       f"2>&1 | tee -a {log_file}"
-        print("\n", minimap2_cmd, "\n")
+        # extract ref specific alignment from multiref bam file
+        print(f"\nRunning: extracting {ref_name} alignment")
+        extract_cmd = f"samtools view -b {bam_outfile} {k} -o - | samtools sort -o {ref_aligned_outfile} - | samtools index - " \
+                      f"2>&1 | tee -a {log_file}"
+        print("\n", extract_cmd, "\n")
         with open(log_file, "a") as handle:
-            handle.write(f"\nRunning: minimap read mapping\n")
-            handle.write(f"{minimap2_cmd}\n")
-        run = try_except_continue_on_fail(minimap2_cmd)
+            handle.write(f"\nExtracting {ref_name} alignment\n")
+            handle.write(f"{extract_cmd}\n")
+        run = try_except_continue_on_fail(extract_cmd)
         if not run:
             return False
 
@@ -109,28 +127,28 @@ def main(infile, log_file, chosen_ref_file, threads,
         #     return False
 
 
-        # convert sam to bam
-        print(f"\nRunning: sam to bam conversion of mapped file")
-        sam_bam_cmd = f"samtools view -bS {sam_file} -F 2048 -o {bam_file} 2>&1 | tee -a {log_file}"
-        print("\n", sam_bam_cmd,"\n")
-        with open(log_file, "a") as handle:
-            handle.write(f"\nRunning: sam to bam conversion of mapped file\n")
-            handle.write(f"{sam_bam_cmd}\n")
-        run = try_except_continue_on_fail(sam_bam_cmd)
-        if not run:
-            return False
+        # # convert sam to bam
+        # print(f"\nRunning: sam to bam conversion of mapped file")
+        # sam_bam_cmd = f"samtools view -bS {sam_file} -F 2048 -o {bam_file} 2>&1 | tee -a {log_file}"
+        # print("\n", sam_bam_cmd,"\n")
+        # with open(log_file, "a") as handle:
+        #     handle.write(f"\nRunning: sam to bam conversion of mapped file\n")
+        #     handle.write(f"{sam_bam_cmd}\n")
+        # run = try_except_continue_on_fail(sam_bam_cmd)
+        # if not run:
+        #     return False
 
         # sort bam file & calculate depth
-        print(f"Running: sorting bam file and calculating depth")
-        sort_sam_cmd = f"samtools sort -T {sample_name} {bam_file} -o {sorted_bam_file} " \
-                       f"2>&1 | tee -a {log_file}"
-        print("\n", sort_sam_cmd, "\n")
-        with open(log_file, "a") as handle:
-            handle.write(f"\nRunning: sorting bam file\n{sort_sam_cmd}\n")
-        run = try_except_continue_on_fail(sort_sam_cmd)
-        if not run:
-            return False
-        depth_sam_cmd = f"samtools depth -a {sorted_bam_file} > {depth_file} " \
+        print(f"Running: calculating depth")
+        # sort_sam_cmd = f"samtools sort -T {sample_name} {bam_file} -o {sorted_bam_file} " \
+        #                f"2>&1 | tee -a {log_file}"
+        # print("\n", sort_sam_cmd, "\n")
+        # with open(log_file, "a") as handle:
+        #     handle.write(f"\nRunning: sorting bam file\n{sort_sam_cmd}\n")
+        # run = try_except_continue_on_fail(sort_sam_cmd)
+        # if not run:
+        #     return False
+        depth_sam_cmd = f"samtools depth -a {ref_aligned_outfile} > {depth_file} " \
                        f"2>&1 | tee -a {log_file}"
         print("\n", depth_sam_cmd, "\n")
         with open(log_file, "a") as handle:
@@ -152,7 +170,7 @@ def main(infile, log_file, chosen_ref_file, threads,
 
         #get total number of reads and calculate % virus
         total_reads = file_len(raw_sample_fastq)/4
-        sam_view_cmd = f"samtools view -F 0x904 -c {sorted_bam_file} -o {reads_file}"
+        sam_view_cmd = f"samtools view -F 0x904 -c {ref_aligned_outfile} -o {reads_file}"
         print("\n", sam_view_cmd, "\n")
         run = try_except_continue_on_fail(sam_view_cmd)
         if not run:
@@ -173,7 +191,7 @@ def main(infile, log_file, chosen_ref_file, threads,
         print("\n", awk_cmd, "\n")
         total_basecount = int(subprocess.check_output(awk_cmd, shell=True))
 
-        sam_stats_cmd = f'samtools stats -in {sorted_bam_file} | grep "bases mapped (cigar):"| cut -f 3'
+        sam_stats_cmd = f'samtools stats -in {ref_aligned_outfile} | grep "bases mapped (cigar):"| cut -f 3'
         print("\n", sam_stats_cmd, "\n")
         basecount = int(subprocess.check_output(sam_stats_cmd, shell=True))
         base_percentage = basecount/total_basecount*100
@@ -184,23 +202,23 @@ def main(infile, log_file, chosen_ref_file, threads,
             handle.write(f"\nRunning: calculating % virus bases\n{sam_view_cmd}\n")
             handle.write(f"\nTotal bases = {total_basecount}\n Virus bases = {basecount} \n % virus bases = {base_percentage}\n")
 
-        # index bam file
-        print(f"\nRunning: indexing bam file")
-        index_bam_cmd = f"samtools index {sorted_bam_file} 2>&1 | tee -a {log_file}"
-        print("\n", index_bam_cmd,"\n")
-        with open(log_file, "a") as handle:
-            handle.write(f"\nRunning: indexing bam file\n")
-            handle.write(f"{index_bam_cmd}\n")
-        run = try_except_continue_on_fail(index_bam_cmd)
-        if not run:
-            return False
+        # # index bam file
+        # print(f"\nRunning: indexing bam file")
+        # index_bam_cmd = f"samtools index {ref_aligned_outfile} 2>&1 | tee -a {log_file}"
+        # print("\n", index_bam_cmd,"\n")
+        # with open(log_file, "a") as handle:
+        #     handle.write(f"\nRunning: indexing bam file\n")
+        #     handle.write(f"{index_bam_cmd}\n")
+        # run = try_except_continue_on_fail(index_bam_cmd)
+        # if not run:
+        #     return False
         
-        # convert bam file to a mutli fasta alignment
+        # convert bam file to a fasta alignment
         print(f"\nRunning: making consensuses sequence from bam to MSA with jvarkit\n")
 
         sam4web = pathlib.Path(script_dir, "jvarkit", "dist", "sam4weblogo.jar")
         msa_from_bam = f"java -jar {sam4web} -r '{reference_slice}' -o {msa_fasta} " \
-                       f"{sorted_bam_file} 2>&1 | tee -a {log_file}"
+                       f"{ref_aligned_outfile} 2>&1 | tee -a {log_file}"
         print(msa_from_bam)
 
         with open(log_file, "a") as handle:
@@ -210,7 +228,7 @@ def main(infile, log_file, chosen_ref_file, threads,
         if not run:
             return False
 
-        # convert multi fasta alignment to consensus sequence
+        # convert fasta alignment to msa consensus sequence
         fasta_msa_d = fasta_to_dct(msa_fasta)
 
         if len(fasta_msa_d) == 0:
@@ -239,9 +257,14 @@ def main(infile, log_file, chosen_ref_file, threads,
             depth_outfile = pathlib.Path(plot_folder, sample_name + '_' + ref_name + "_sequencing_depth.png")
             plot_depth(depth_list, sample_name, depth_outfile)
 
-    # delete single ref files
-    for file in pathlib.Path(sample_dir).glob("*fasta*"):
-        os.remove(file)
+        # generate artic consensus sequence
+        medaka consensus --model r1041_e82_400bps_hac_g615 --threads 16 --chunk_len 800 --chunk_ovlp 400 PMP0012530.sorted.bam PMP0012530.hdf
+        medaka variant /home/user/artic-ncov2019/primer_schemes/SARS2_400/V1/SARS2_400.reference.fasta PMP0012530.hdf PMP0012530.vcf
+        bgzip -f PMP0012530.vcf tabix -f -p vcf PMP0012530.vcf.gz
+        longshot -P 0 -F -A --no_haps --bam PMP0012530.sorted.bam --ref /home/user/artic-ncov2019/primer_schemes/SARS2_400/V1/SARS2_400.reference.fasta --out PMP0012530.vcf --potential_variants PMP0012530.vcf.gz
+    # # delete single ref files
+    # for file in pathlib.Path(sample_dir).glob("*fasta*"):
+    #     os.remove(file)
 
     completed_empty_file = pathlib.Path(sample_dir, sample_name + ".completed")
     empty_file = open(completed_empty_file, 'w')
