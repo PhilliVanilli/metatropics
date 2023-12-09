@@ -23,7 +23,7 @@ class Formatter(argparse.ArgumentDefaultsHelpFormatter, argparse.RawTextHelpForm
 
 def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth, run_step,
          rerun_step_only, basecall_mode, cpu_threads,use_gaps,
-         guppy_dir, real_time):
+         guppy_dir, real_time,one_end):
 
     # set the dir paths
     script_dir = Path(__file__).absolute().parent
@@ -89,10 +89,10 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
             fastq_dir= Path(project_dir, "fastq_pass")
             if not list(fastq_dir.glob("*.fastq*")):
                 sys.exit(f"No fastq files found in {str(fastq_dir)} or {str(fastq_dir.parent)}")
-            run = guppy_demultiplex(fastq_dir, guppy_path, demultiplexed_dir)
+            run = guppy_demultiplex(fastq_dir, guppy_path, demultiplexed_dir,one_end)
         else:
             fastq_dir = Path(fastq_dir, "pass")
-            run = guppy_demultiplex(fastq_dir, guppy_path, demultiplexed_dir)
+            run = guppy_demultiplex(fastq_dir, guppy_path, demultiplexed_dir,one_end)
         if run and not rerun_step_only:
             run_step = 2
         elif run and rerun_step_only:
@@ -414,6 +414,8 @@ if __name__ == "__main__":
                         help="The path to the guppy executables eg: '.../ont-guppy/bin/'", required=True)
     parser.add_argument("-rt", "--real_time", default=False, action="store_true",
                         help="start basecalling pod5 files in batches during sequencing", required=False)
+    parser.add_argument("-oe", "--one_end", default=False, action="store_true",
+                        help="require barcode on only one end for demultiplexing", required=False)
 
     args = parser.parse_args()
 
@@ -431,6 +433,7 @@ if __name__ == "__main__":
     use_gaps = args.use_gaps
     guppy_path = args.guppy_path
     real_time = args.real_time
+    one_end = args.one_end
 
     main(project_dir, reference, reference_start, reference_end, min_len, max_len, min_depth, run_step,
-         run_step_only, basecall_mode, cpu_threads, use_gaps, guppy_path, real_time)
+         run_step_only, basecall_mode, cpu_threads, use_gaps, guppy_path, real_time, one_end)
