@@ -2,72 +2,72 @@
 <testng-results ignored="0" total="110" passed="110" failed="0" skipped="0">
   <reporter-output>
   </reporter-output>
-  <suite started-at="2023-11-04T14:04:42Z" name="Command line suite" finished-at="2023-11-04T14:04:44Z" duration-ms="1780">
+  <suite started-at="2023-12-07T16:09:58Z" name="Command line suite" finished-at="2023-12-07T16:10:01Z" duration-ms="2947">
     <groups>
     </groups>
-    <test started-at="2023-11-04T14:04:42Z" name="Command line test" finished-at="2023-11-04T14:04:44Z" duration-ms="1780">
+    <test started-at="2023-12-07T16:09:58Z" name="Command line test" finished-at="2023-12-07T16:10:01Z" duration-ms="2947">
       <class name="com.github.lindenb.jvarkit.tools.vcftrios.DeNovoDetectorTest">
-        <test-method signature="test01()[pri:0, instance:com.github.lindenb.jvarkit.tools.vcftrios.DeNovoDetectorTest@2a32de6c]" started-at="2023-11-04T14:04:44Z" name="test01" finished-at="2023-11-04T14:04:44Z" duration-ms="3" status="PASS">
+        <test-method signature="test01()[pri:0, instance:com.github.lindenb.jvarkit.tools.vcftrios.DeNovoDetectorTest@1e88b3c]" started-at="2023-12-07T16:09:58Z" name="test01" finished-at="2023-12-07T16:09:58Z" duration-ms="6" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- test01 -->
-        <test-method signature="test02()[pri:0, instance:com.github.lindenb.jvarkit.tools.vcftrios.DeNovoDetectorTest@2a32de6c]" started-at="2023-11-04T14:04:44Z" name="test02" finished-at="2023-11-04T14:04:44Z" duration-ms="1" status="PASS">
+        <test-method signature="test02()[pri:0, instance:com.github.lindenb.jvarkit.tools.vcftrios.DeNovoDetectorTest@1e88b3c]" started-at="2023-12-07T16:09:58Z" name="test02" finished-at="2023-12-07T16:09:58Z" duration-ms="1" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- test02 -->
-        <test-method signature="test03()[pri:0, instance:com.github.lindenb.jvarkit.tools.vcftrios.DeNovoDetectorTest@2a32de6c]" started-at="2023-11-04T14:04:44Z" name="test03" finished-at="2023-11-04T14:04:44Z" duration-ms="0" status="PASS">
+        <test-method signature="test03()[pri:0, instance:com.github.lindenb.jvarkit.tools.vcftrios.DeNovoDetectorTest@1e88b3c]" started-at="2023-12-07T16:09:58Z" name="test03" finished-at="2023-12-07T16:09:58Z" duration-ms="0" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- test03 -->
-        <test-method signature="test05()[pri:0, instance:com.github.lindenb.jvarkit.tools.vcftrios.DeNovoDetectorTest@2a32de6c]" started-at="2023-11-04T14:04:44Z" name="test05" finished-at="2023-11-04T14:04:44Z" duration-ms="0" status="PASS">
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- test05 -->
-        <test-method signature="test04()[pri:0, instance:com.github.lindenb.jvarkit.tools.vcftrios.DeNovoDetectorTest@2a32de6c]" started-at="2023-11-04T14:04:44Z" name="test04" finished-at="2023-11-04T14:04:44Z" duration-ms="0" status="PASS">
+        <test-method signature="test04()[pri:0, instance:com.github.lindenb.jvarkit.tools.vcftrios.DeNovoDetectorTest@1e88b3c]" started-at="2023-12-07T16:09:58Z" name="test04" finished-at="2023-12-07T16:09:58Z" duration-ms="1" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- test04 -->
+        <test-method signature="test05()[pri:0, instance:com.github.lindenb.jvarkit.tools.vcftrios.DeNovoDetectorTest@1e88b3c]" started-at="2023-12-07T16:09:58Z" name="test05" finished-at="2023-12-07T16:09:58Z" duration-ms="0" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- test05 -->
       </class> <!-- com.github.lindenb.jvarkit.tools.vcftrios.DeNovoDetectorTest -->
       <class name="com.github.lindenb.jvarkit.util.iterator.LineIteratorTest">
-        <test-method signature="testReader()[pri:0, instance:com.github.lindenb.jvarkit.util.iterator.LineIteratorTest@7d3a22a9]" started-at="2023-11-04T14:04:42Z" name="testReader" finished-at="2023-11-04T14:04:42Z" duration-ms="0" status="PASS">
+        <test-method signature="testReader()[pri:0, instance:com.github.lindenb.jvarkit.util.iterator.LineIteratorTest@42e26948]" started-at="2023-12-07T16:09:59Z" name="testReader" finished-at="2023-12-07T16:09:59Z" duration-ms="0" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- testReader -->
-        <test-method signature="testArray()[pri:0, instance:com.github.lindenb.jvarkit.util.iterator.LineIteratorTest@7d3a22a9]" started-at="2023-11-04T14:04:42Z" name="testArray" finished-at="2023-11-04T14:04:42Z" duration-ms="0" status="PASS">
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- testArray -->
-        <test-method signature="testList()[pri:0, instance:com.github.lindenb.jvarkit.util.iterator.LineIteratorTest@7d3a22a9]" started-at="2023-11-04T14:04:42Z" name="testList" finished-at="2023-11-04T14:04:42Z" duration-ms="0" status="PASS">
+        <test-method signature="testList()[pri:0, instance:com.github.lindenb.jvarkit.util.iterator.LineIteratorTest@42e26948]" started-at="2023-12-07T16:09:59Z" name="testList" finished-at="2023-12-07T16:09:59Z" duration-ms="0" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- testList -->
+        <test-method signature="testArray()[pri:0, instance:com.github.lindenb.jvarkit.util.iterator.LineIteratorTest@42e26948]" started-at="2023-12-07T16:09:59Z" name="testArray" finished-at="2023-12-07T16:09:59Z" duration-ms="0" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testArray -->
       </class> <!-- com.github.lindenb.jvarkit.util.iterator.LineIteratorTest -->
       <class name="com.github.lindenb.jvarkit.util.bio.samfilter.SamRecordFilterFactoryTest">
-        <test-method signature="testFilters()[pri:0, instance:com.github.lindenb.jvarkit.util.bio.samfilter.SamRecordFilterFactoryTest@78e94dcf]" started-at="2023-11-04T14:04:44Z" name="testFilters" finished-at="2023-11-04T14:04:44Z" duration-ms="9" status="PASS">
+        <test-method signature="testFilters()[pri:0, instance:com.github.lindenb.jvarkit.util.bio.samfilter.SamRecordFilterFactoryTest@39c0f4a]" started-at="2023-12-07T16:09:58Z" name="testFilters" finished-at="2023-12-07T16:09:58Z" duration-ms="9" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- testFilters -->
       </class> <!-- com.github.lindenb.jvarkit.util.bio.samfilter.SamRecordFilterFactoryTest -->
       <class name="com.github.lindenb.jvarkit.util.iterator.FilterIteratorTest">
-        <test-method signature="test1()[pri:0, instance:com.github.lindenb.jvarkit.util.iterator.FilterIteratorTest@2805c96b]" started-at="2023-11-04T14:04:44Z" name="test1" finished-at="2023-11-04T14:04:44Z" duration-ms="1" status="PASS">
+        <test-method signature="test1()[pri:0, instance:com.github.lindenb.jvarkit.util.iterator.FilterIteratorTest@6d4b1c02]" started-at="2023-12-07T16:10:01Z" name="test1" finished-at="2023-12-07T16:10:01Z" duration-ms="1" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- test1 -->
       </class> <!-- com.github.lindenb.jvarkit.util.iterator.FilterIteratorTest -->
       <class name="com.github.lindenb.jvarkit.util.bio.IntervalParserTest">
-        <test-method signature="withDict()[pri:0, instance:com.github.lindenb.jvarkit.util.bio.IntervalParserTest@7f1302d6]" started-at="2023-11-04T14:04:44Z" name="withDict" finished-at="2023-11-04T14:04:44Z" duration-ms="0" status="PASS">
+        <test-method signature="withDict()[pri:0, instance:com.github.lindenb.jvarkit.util.bio.IntervalParserTest@604ed9f0]" started-at="2023-12-07T16:09:59Z" name="withDict" finished-at="2023-12-07T16:09:59Z" duration-ms="1" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- withDict -->
       </class> <!-- com.github.lindenb.jvarkit.util.bio.IntervalParserTest -->
       <class name="com.github.lindenb.jvarkit.util.CounterTest">
-        <test-method signature="testWithInt()[pri:0, instance:com.github.lindenb.jvarkit.util.CounterTest@1d082e88]" started-at="2023-11-04T14:04:42Z" name="testWithInt" finished-at="2023-11-04T14:04:42Z" duration-ms="1" status="PASS">
+        <test-method signature="testWithInt()[pri:0, instance:com.github.lindenb.jvarkit.util.CounterTest@685cb137]" started-at="2023-12-07T16:10:01Z" name="testWithInt" finished-at="2023-12-07T16:10:01Z" duration-ms="0" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- testWithInt -->
       </class> <!-- com.github.lindenb.jvarkit.util.CounterTest -->
       <class name="com.github.lindenb.jvarkit.util.samtools.ContigDictComparatorTest">
-        <test-method signature="test(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.util.samtools.ContigDictComparatorTest@233fe9b6]" started-at="2023-11-04T14:04:44Z" name="test" data-provider="src1" finished-at="2023-11-04T14:04:44Z" duration-ms="2" status="PASS">
+        <test-method signature="test(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.util.samtools.ContigDictComparatorTest@91161c7]" started-at="2023-12-07T16:09:59Z" name="test" data-provider="src1" finished-at="2023-12-07T16:09:59Z" duration-ms="1" status="PASS">
           <params>
             <param index="0">
               <value>
@@ -78,7 +78,7 @@
           <reporter-output>
           </reporter-output>
         </test-method> <!-- test -->
-        <test-method signature="test(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.util.samtools.ContigDictComparatorTest@233fe9b6]" started-at="2023-11-04T14:04:44Z" name="test" data-provider="src1" finished-at="2023-11-04T14:04:44Z" duration-ms="1" status="PASS">
+        <test-method signature="test(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.util.samtools.ContigDictComparatorTest@91161c7]" started-at="2023-12-07T16:09:59Z" name="test" data-provider="src1" finished-at="2023-12-07T16:09:59Z" duration-ms="1" status="PASS">
           <params>
             <param index="0">
               <value>
@@ -89,7 +89,7 @@
           <reporter-output>
           </reporter-output>
         </test-method> <!-- test -->
-        <test-method signature="test(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.util.samtools.ContigDictComparatorTest@233fe9b6]" started-at="2023-11-04T14:04:44Z" name="test" data-provider="src1" finished-at="2023-11-04T14:04:44Z" duration-ms="1" status="PASS">
+        <test-method signature="test(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.util.samtools.ContigDictComparatorTest@91161c7]" started-at="2023-12-07T16:09:59Z" name="test" data-provider="src1" finished-at="2023-12-07T16:09:59Z" duration-ms="1" status="PASS">
           <params>
             <param index="0">
               <value>
@@ -102,75 +102,75 @@
         </test-method> <!-- test -->
       </class> <!-- com.github.lindenb.jvarkit.util.samtools.ContigDictComparatorTest -->
       <class name="com.github.lindenb.jvarkit.util.bio.SequenceDictionaryUtilsTest">
-        <test-method signature="testIsGRCh37()[pri:0, instance:com.github.lindenb.jvarkit.util.bio.SequenceDictionaryUtilsTest@5db250b4]" started-at="2023-11-04T14:04:44Z" name="testIsGRCh37" finished-at="2023-11-04T14:04:44Z" duration-ms="8" status="PASS">
+        <test-method signature="testIsGRCh37()[pri:0, instance:com.github.lindenb.jvarkit.util.bio.SequenceDictionaryUtilsTest@5622fdf]" started-at="2023-12-07T16:09:58Z" name="testIsGRCh37" finished-at="2023-12-07T16:09:58Z" duration-ms="24" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- testIsGRCh37 -->
-        <test-method signature="testIsHuman()[pri:0, instance:com.github.lindenb.jvarkit.util.bio.SequenceDictionaryUtilsTest@5db250b4]" started-at="2023-11-04T14:04:44Z" name="testIsHuman" finished-at="2023-11-04T14:04:44Z" duration-ms="1" status="PASS">
+        <test-method signature="testIsHuman()[pri:0, instance:com.github.lindenb.jvarkit.util.bio.SequenceDictionaryUtilsTest@5622fdf]" started-at="2023-12-07T16:09:58Z" name="testIsHuman" finished-at="2023-12-07T16:09:58Z" duration-ms="2" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- testIsHuman -->
       </class> <!-- com.github.lindenb.jvarkit.util.bio.SequenceDictionaryUtilsTest -->
       <class name="com.github.lindenb.jvarkit.lang.CharSplitterTest">
-        <test-method signature="testCharSequenceIterator()[pri:0, instance:com.github.lindenb.jvarkit.lang.CharSplitterTest@6b19b79]" started-at="2023-11-04T14:04:44Z" name="testCharSequenceIterator" finished-at="2023-11-04T14:04:44Z" duration-ms="0" status="PASS">
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- testCharSequenceIterator -->
-        <test-method signature="testSequenceList02()[pri:0, instance:com.github.lindenb.jvarkit.lang.CharSplitterTest@6b19b79]" started-at="2023-11-04T14:04:44Z" name="testSequenceList02" finished-at="2023-11-04T14:04:44Z" duration-ms="0" status="PASS">
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- testSequenceList02 -->
-        <test-method signature="testSequenceList01()[pri:0, instance:com.github.lindenb.jvarkit.lang.CharSplitterTest@6b19b79]" started-at="2023-11-04T14:04:44Z" name="testSequenceList01" finished-at="2023-11-04T14:04:44Z" duration-ms="0" status="PASS">
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- testSequenceList01 -->
-        <test-method signature="testStringArray02()[pri:0, instance:com.github.lindenb.jvarkit.lang.CharSplitterTest@6b19b79]" started-at="2023-11-04T14:04:44Z" name="testStringArray02" finished-at="2023-11-04T14:04:44Z" duration-ms="1" status="PASS">
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- testStringArray02 -->
-        <test-method signature="testStringArray01()[pri:0, instance:com.github.lindenb.jvarkit.lang.CharSplitterTest@6b19b79]" started-at="2023-11-04T14:04:44Z" name="testStringArray01" finished-at="2023-11-04T14:04:44Z" duration-ms="0" status="PASS">
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- testStringArray01 -->
-        <test-method signature="testCount()[pri:0, instance:com.github.lindenb.jvarkit.lang.CharSplitterTest@6b19b79]" started-at="2023-11-04T14:04:44Z" name="testCount" finished-at="2023-11-04T14:04:44Z" duration-ms="0" status="PASS">
+        <test-method signature="testCount()[pri:0, instance:com.github.lindenb.jvarkit.lang.CharSplitterTest@1bce4f0a]" started-at="2023-12-07T16:09:58Z" name="testCount" finished-at="2023-12-07T16:09:58Z" duration-ms="0" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- testCount -->
-        <test-method signature="testSequenceList03()[pri:0, instance:com.github.lindenb.jvarkit.lang.CharSplitterTest@6b19b79]" started-at="2023-11-04T14:04:44Z" name="testSequenceList03" finished-at="2023-11-04T14:04:44Z" duration-ms="0" status="PASS">
+        <test-method signature="testSequenceList01()[pri:0, instance:com.github.lindenb.jvarkit.lang.CharSplitterTest@1bce4f0a]" started-at="2023-12-07T16:09:58Z" name="testSequenceList01" finished-at="2023-12-07T16:09:58Z" duration-ms="0" status="PASS">
           <reporter-output>
           </reporter-output>
-        </test-method> <!-- testSequenceList03 -->
-        <test-method signature="testStringList01()[pri:0, instance:com.github.lindenb.jvarkit.lang.CharSplitterTest@6b19b79]" started-at="2023-11-04T14:04:44Z" name="testStringList01" finished-at="2023-11-04T14:04:44Z" duration-ms="0" status="PASS">
+        </test-method> <!-- testSequenceList01 -->
+        <test-method signature="testSequenceList02()[pri:0, instance:com.github.lindenb.jvarkit.lang.CharSplitterTest@1bce4f0a]" started-at="2023-12-07T16:09:58Z" name="testSequenceList02" finished-at="2023-12-07T16:09:58Z" duration-ms="0" status="PASS">
           <reporter-output>
           </reporter-output>
-        </test-method> <!-- testStringList01 -->
-        <test-method signature="testStringList02()[pri:0, instance:com.github.lindenb.jvarkit.lang.CharSplitterTest@6b19b79]" started-at="2023-11-04T14:04:44Z" name="testStringList02" finished-at="2023-11-04T14:04:44Z" duration-ms="0" status="PASS">
+        </test-method> <!-- testSequenceList02 -->
+        <test-method signature="testCharSequenceIterator()[pri:0, instance:com.github.lindenb.jvarkit.lang.CharSplitterTest@1bce4f0a]" started-at="2023-12-07T16:09:58Z" name="testCharSequenceIterator" finished-at="2023-12-07T16:09:58Z" duration-ms="0" status="PASS">
           <reporter-output>
           </reporter-output>
-        </test-method> <!-- testStringList02 -->
-        <test-method signature="testStringIterator()[pri:0, instance:com.github.lindenb.jvarkit.lang.CharSplitterTest@6b19b79]" started-at="2023-11-04T14:04:44Z" name="testStringIterator" finished-at="2023-11-04T14:04:44Z" duration-ms="0" status="PASS">
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- testStringIterator -->
-        <test-method signature="testStringList03()[pri:0, instance:com.github.lindenb.jvarkit.lang.CharSplitterTest@6b19b79]" started-at="2023-11-04T14:04:44Z" name="testStringList03" finished-at="2023-11-04T14:04:44Z" duration-ms="0" status="PASS">
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- testStringList03 -->
-        <test-method signature="testStringArray03()[pri:0, instance:com.github.lindenb.jvarkit.lang.CharSplitterTest@6b19b79]" started-at="2023-11-04T14:04:44Z" name="testStringArray03" finished-at="2023-11-04T14:04:44Z" duration-ms="0" status="PASS">
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- testStringArray03 -->
-        <test-method signature="testStringStream()[pri:0, instance:com.github.lindenb.jvarkit.lang.CharSplitterTest@6b19b79]" started-at="2023-11-04T14:04:44Z" name="testStringStream" finished-at="2023-11-04T14:04:44Z" duration-ms="0" status="PASS">
+        </test-method> <!-- testCharSequenceIterator -->
+        <test-method signature="testStringStream()[pri:0, instance:com.github.lindenb.jvarkit.lang.CharSplitterTest@1bce4f0a]" started-at="2023-12-07T16:09:58Z" name="testStringStream" finished-at="2023-12-07T16:09:58Z" duration-ms="0" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- testStringStream -->
+        <test-method signature="testStringArray02()[pri:0, instance:com.github.lindenb.jvarkit.lang.CharSplitterTest@1bce4f0a]" started-at="2023-12-07T16:09:58Z" name="testStringArray02" finished-at="2023-12-07T16:09:58Z" duration-ms="0" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testStringArray02 -->
+        <test-method signature="testStringList02()[pri:0, instance:com.github.lindenb.jvarkit.lang.CharSplitterTest@1bce4f0a]" started-at="2023-12-07T16:09:58Z" name="testStringList02" finished-at="2023-12-07T16:09:58Z" duration-ms="0" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testStringList02 -->
+        <test-method signature="testStringArray03()[pri:0, instance:com.github.lindenb.jvarkit.lang.CharSplitterTest@1bce4f0a]" started-at="2023-12-07T16:09:58Z" name="testStringArray03" finished-at="2023-12-07T16:09:58Z" duration-ms="0" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testStringArray03 -->
+        <test-method signature="testSequenceList03()[pri:0, instance:com.github.lindenb.jvarkit.lang.CharSplitterTest@1bce4f0a]" started-at="2023-12-07T16:09:58Z" name="testSequenceList03" finished-at="2023-12-07T16:09:58Z" duration-ms="0" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testSequenceList03 -->
+        <test-method signature="testStringList03()[pri:0, instance:com.github.lindenb.jvarkit.lang.CharSplitterTest@1bce4f0a]" started-at="2023-12-07T16:09:58Z" name="testStringList03" finished-at="2023-12-07T16:09:58Z" duration-ms="0" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testStringList03 -->
+        <test-method signature="testStringList01()[pri:0, instance:com.github.lindenb.jvarkit.lang.CharSplitterTest@1bce4f0a]" started-at="2023-12-07T16:09:58Z" name="testStringList01" finished-at="2023-12-07T16:09:58Z" duration-ms="0" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testStringList01 -->
+        <test-method signature="testStringIterator()[pri:0, instance:com.github.lindenb.jvarkit.lang.CharSplitterTest@1bce4f0a]" started-at="2023-12-07T16:09:58Z" name="testStringIterator" finished-at="2023-12-07T16:09:58Z" duration-ms="0" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testStringIterator -->
+        <test-method signature="testStringArray01()[pri:0, instance:com.github.lindenb.jvarkit.lang.CharSplitterTest@1bce4f0a]" started-at="2023-12-07T16:09:58Z" name="testStringArray01" finished-at="2023-12-07T16:09:58Z" duration-ms="0" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testStringArray01 -->
       </class> <!-- com.github.lindenb.jvarkit.lang.CharSplitterTest -->
       <class name="com.github.lindenb.jvarkit.util.iterator.MergingIteratorTest">
-        <test-method signature="test1()[pri:0, instance:com.github.lindenb.jvarkit.util.iterator.MergingIteratorTest@37918c79]" started-at="2023-11-04T14:04:44Z" name="test1" finished-at="2023-11-04T14:04:44Z" duration-ms="3" status="PASS">
+        <test-method signature="test1()[pri:0, instance:com.github.lindenb.jvarkit.util.iterator.MergingIteratorTest@6a41eaa2]" started-at="2023-12-07T16:10:01Z" name="test1" finished-at="2023-12-07T16:10:01Z" duration-ms="1" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- test1 -->
-        <test-method signature="test2()[pri:0, instance:com.github.lindenb.jvarkit.util.iterator.MergingIteratorTest@37918c79]" started-at="2023-11-04T14:04:44Z" name="test2" finished-at="2023-11-04T14:04:44Z" duration-ms="0" status="PASS">
+        <test-method signature="test2()[pri:0, instance:com.github.lindenb.jvarkit.util.iterator.MergingIteratorTest@6a41eaa2]" started-at="2023-12-07T16:10:01Z" name="test2" finished-at="2023-12-07T16:10:01Z" duration-ms="1" status="PASS">
           <exception class="java.lang.IllegalStateException">
             <message>
               <![CDATA[Data are not ordered... got 2 after 4 comparator(curr,previous) returns: -1]]>
@@ -210,46 +210,291 @@ at com.github.lindenb.jvarkit.tools.tests.MiniTestNG.main(MiniTestNG.java:86)
           <reporter-output>
           </reporter-output>
         </test-method> <!-- test2 -->
-        <test-method signature="test3()[pri:0, instance:com.github.lindenb.jvarkit.util.iterator.MergingIteratorTest@37918c79]" started-at="2023-11-04T14:04:44Z" name="test3" finished-at="2023-11-04T14:04:44Z" duration-ms="1" status="PASS">
+        <test-method signature="test3()[pri:0, instance:com.github.lindenb.jvarkit.util.iterator.MergingIteratorTest@6a41eaa2]" started-at="2023-12-07T16:10:01Z" name="test3" finished-at="2023-12-07T16:10:01Z" duration-ms="0" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- test3 -->
       </class> <!-- com.github.lindenb.jvarkit.util.iterator.MergingIteratorTest -->
       <class name="com.github.lindenb.jvarkit.lang.StringUtilsTest">
-        <test-method signature="test()[pri:0, instance:com.github.lindenb.jvarkit.lang.StringUtilsTest@1e730495]" started-at="2023-11-04T14:04:42Z" name="test" finished-at="2023-11-04T14:04:42Z" duration-ms="5" status="PASS">
+        <test-method signature="test()[pri:0, instance:com.github.lindenb.jvarkit.lang.StringUtilsTest@5e3a8624]" started-at="2023-12-07T16:09:58Z" name="test" finished-at="2023-12-07T16:09:58Z" duration-ms="1" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- test -->
       </class> <!-- com.github.lindenb.jvarkit.lang.StringUtilsTest -->
       <class name="com.github.lindenb.jvarkit.lang.AbstractCharSequenceTest">
-        <test-method signature="testCharSeq()[pri:0, instance:com.github.lindenb.jvarkit.lang.AbstractCharSequenceTest@5bfa9431]" started-at="2023-11-04T14:04:42Z" name="testCharSeq" finished-at="2023-11-04T14:04:42Z" duration-ms="0" status="PASS">
+        <test-method signature="testCharSeq()[pri:0, instance:com.github.lindenb.jvarkit.lang.AbstractCharSequenceTest@6093dd95]" started-at="2023-12-07T16:09:58Z" name="testCharSeq" finished-at="2023-12-07T16:09:58Z" duration-ms="3" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- testCharSeq -->
       </class> <!-- com.github.lindenb.jvarkit.lang.AbstractCharSequenceTest -->
-      <class name="com.github.lindenb.jvarkit.util.vcf.AFExtractorFactoryTest">
-        <test-method signature="test01(java.lang.String, int, int)[pri:0, instance:com.github.lindenb.jvarkit.util.vcf.AFExtractorFactoryTest@4fe767f3]" started-at="2023-11-04T14:04:44Z" name="test01" data-provider="data01" finished-at="2023-11-04T14:04:44Z" duration-ms="0" status="PASS">
+      <class name="com.github.lindenb.jvarkit.tools.sam4weblogo.SAM4WebLogoTest">
+        <test-method signature="testClip(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.tools.sam4weblogo.SAM4WebLogoTest@5c3bd550]" started-at="2023-12-07T16:09:58Z" name="testClip" data-provider="src1" finished-at="2023-12-07T16:09:59Z" duration-ms="18" status="PASS">
           <params>
             <param index="0">
               <value>
-                <![CDATA[AC/AN]]>
-              </value>
-            </param>
-            <param index="1">
-              <value>
-                <![CDATA[1]]>
-              </value>
-            </param>
-            <param index="2">
-              <value>
-                <![CDATA[1]]>
+                <![CDATA[./src/test/resources/FAB23716.nanopore.bam]]>
               </value>
             </param>
           </params>
           <reporter-output>
           </reporter-output>
-        </test-method> <!-- test01 -->
-        <test-method signature="test01(java.lang.String, int, int)[pri:0, instance:com.github.lindenb.jvarkit.util.vcf.AFExtractorFactoryTest@4fe767f3]" started-at="2023-11-04T14:04:44Z" name="test01" data-provider="data01" finished-at="2023-11-04T14:04:44Z" duration-ms="1" status="PASS">
+        </test-method> <!-- testClip -->
+        <test-method signature="testClip(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.tools.sam4weblogo.SAM4WebLogoTest@5c3bd550]" started-at="2023-12-07T16:09:59Z" name="testClip" data-provider="src1" finished-at="2023-12-07T16:09:59Z" duration-ms="2" status="PASS">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[./src/test/resources/HG02260.transloc.chr9.14.bam]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testClip -->
+        <test-method signature="testClip(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.tools.sam4weblogo.SAM4WebLogoTest@5c3bd550]" started-at="2023-12-07T16:09:59Z" name="testClip" data-provider="src1" finished-at="2023-12-07T16:09:59Z" duration-ms="150" status="PASS">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[./src/test/resources/S1.bam]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testClip -->
+        <test-method signature="testClip(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.tools.sam4weblogo.SAM4WebLogoTest@5c3bd550]" started-at="2023-12-07T16:09:59Z" name="testClip" data-provider="src1" finished-at="2023-12-07T16:09:59Z" duration-ms="67" status="PASS">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[./src/test/resources/S2.bam]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testClip -->
+        <test-method signature="testClip(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.tools.sam4weblogo.SAM4WebLogoTest@5c3bd550]" started-at="2023-12-07T16:09:59Z" name="testClip" data-provider="src1" finished-at="2023-12-07T16:09:59Z" duration-ms="61" status="PASS">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[./src/test/resources/S3.bam]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testClip -->
+        <test-method signature="testClip(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.tools.sam4weblogo.SAM4WebLogoTest@5c3bd550]" started-at="2023-12-07T16:09:59Z" name="testClip" data-provider="src1" finished-at="2023-12-07T16:09:59Z" duration-ms="57" status="PASS">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[./src/test/resources/S4.bam]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testClip -->
+        <test-method signature="testClip(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.tools.sam4weblogo.SAM4WebLogoTest@5c3bd550]" started-at="2023-12-07T16:09:59Z" name="testClip" data-provider="src1" finished-at="2023-12-07T16:09:59Z" duration-ms="53" status="PASS">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[./src/test/resources/S5.bam]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testClip -->
+        <test-method signature="testClip(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.tools.sam4weblogo.SAM4WebLogoTest@5c3bd550]" started-at="2023-12-07T16:09:59Z" name="testClip" data-provider="src1" finished-at="2023-12-07T16:09:59Z" duration-ms="17" status="PASS">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[./src/test/resources/toy.bam]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testClip -->
+        <test-method signature="testFastq(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.tools.sam4weblogo.SAM4WebLogoTest@5c3bd550]" started-at="2023-12-07T16:09:59Z" name="testFastq" data-provider="src1" finished-at="2023-12-07T16:09:59Z" duration-ms="12" status="PASS">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[./src/test/resources/FAB23716.nanopore.bam]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testFastq -->
+        <test-method signature="testFastq(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.tools.sam4weblogo.SAM4WebLogoTest@5c3bd550]" started-at="2023-12-07T16:09:59Z" name="testFastq" data-provider="src1" finished-at="2023-12-07T16:09:59Z" duration-ms="2" status="PASS">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[./src/test/resources/HG02260.transloc.chr9.14.bam]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testFastq -->
+        <test-method signature="testFastq(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.tools.sam4weblogo.SAM4WebLogoTest@5c3bd550]" started-at="2023-12-07T16:09:59Z" name="testFastq" data-provider="src1" finished-at="2023-12-07T16:09:59Z" duration-ms="64" status="PASS">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[./src/test/resources/S1.bam]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testFastq -->
+        <test-method signature="testFastq(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.tools.sam4weblogo.SAM4WebLogoTest@5c3bd550]" started-at="2023-12-07T16:09:59Z" name="testFastq" data-provider="src1" finished-at="2023-12-07T16:09:59Z" duration-ms="48" status="PASS">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[./src/test/resources/S2.bam]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testFastq -->
+        <test-method signature="testFastq(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.tools.sam4weblogo.SAM4WebLogoTest@5c3bd550]" started-at="2023-12-07T16:09:59Z" name="testFastq" data-provider="src1" finished-at="2023-12-07T16:09:59Z" duration-ms="45" status="PASS">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[./src/test/resources/S3.bam]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testFastq -->
+        <test-method signature="testFastq(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.tools.sam4weblogo.SAM4WebLogoTest@5c3bd550]" started-at="2023-12-07T16:09:59Z" name="testFastq" data-provider="src1" finished-at="2023-12-07T16:09:59Z" duration-ms="33" status="PASS">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[./src/test/resources/S4.bam]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testFastq -->
+        <test-method signature="testFastq(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.tools.sam4weblogo.SAM4WebLogoTest@5c3bd550]" started-at="2023-12-07T16:09:59Z" name="testFastq" data-provider="src1" finished-at="2023-12-07T16:09:59Z" duration-ms="25" status="PASS">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[./src/test/resources/S5.bam]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testFastq -->
+        <test-method signature="testFastq(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.tools.sam4weblogo.SAM4WebLogoTest@5c3bd550]" started-at="2023-12-07T16:09:59Z" name="testFastq" data-provider="src1" finished-at="2023-12-07T16:09:59Z" duration-ms="8" status="PASS">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[./src/test/resources/toy.bam]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testFastq -->
+        <test-method signature="testNoClip(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.tools.sam4weblogo.SAM4WebLogoTest@5c3bd550]" started-at="2023-12-07T16:09:59Z" name="testNoClip" data-provider="src1" finished-at="2023-12-07T16:09:59Z" duration-ms="7" status="PASS">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[./src/test/resources/FAB23716.nanopore.bam]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testNoClip -->
+        <test-method signature="testNoClip(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.tools.sam4weblogo.SAM4WebLogoTest@5c3bd550]" started-at="2023-12-07T16:09:59Z" name="testNoClip" data-provider="src1" finished-at="2023-12-07T16:09:59Z" duration-ms="1" status="PASS">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[./src/test/resources/HG02260.transloc.chr9.14.bam]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testNoClip -->
+        <test-method signature="testNoClip(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.tools.sam4weblogo.SAM4WebLogoTest@5c3bd550]" started-at="2023-12-07T16:09:59Z" name="testNoClip" data-provider="src1" finished-at="2023-12-07T16:09:59Z" duration-ms="39" status="PASS">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[./src/test/resources/S1.bam]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testNoClip -->
+        <test-method signature="testNoClip(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.tools.sam4weblogo.SAM4WebLogoTest@5c3bd550]" started-at="2023-12-07T16:09:59Z" name="testNoClip" data-provider="src1" finished-at="2023-12-07T16:09:59Z" duration-ms="31" status="PASS">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[./src/test/resources/S2.bam]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testNoClip -->
+        <test-method signature="testNoClip(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.tools.sam4weblogo.SAM4WebLogoTest@5c3bd550]" started-at="2023-12-07T16:09:59Z" name="testNoClip" data-provider="src1" finished-at="2023-12-07T16:09:59Z" duration-ms="31" status="PASS">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[./src/test/resources/S3.bam]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testNoClip -->
+        <test-method signature="testNoClip(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.tools.sam4weblogo.SAM4WebLogoTest@5c3bd550]" started-at="2023-12-07T16:09:59Z" name="testNoClip" data-provider="src1" finished-at="2023-12-07T16:09:59Z" duration-ms="32" status="PASS">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[./src/test/resources/S4.bam]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testNoClip -->
+        <test-method signature="testNoClip(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.tools.sam4weblogo.SAM4WebLogoTest@5c3bd550]" started-at="2023-12-07T16:09:59Z" name="testNoClip" data-provider="src1" finished-at="2023-12-07T16:09:59Z" duration-ms="26" status="PASS">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[./src/test/resources/S5.bam]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testNoClip -->
+        <test-method signature="testNoClip(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.tools.sam4weblogo.SAM4WebLogoTest@5c3bd550]" started-at="2023-12-07T16:09:59Z" name="testNoClip" data-provider="src1" finished-at="2023-12-07T16:09:59Z" duration-ms="8" status="PASS">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[./src/test/resources/toy.bam]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testNoClip -->
+      </class> <!-- com.github.lindenb.jvarkit.tools.sam4weblogo.SAM4WebLogoTest -->
+      <class name="com.github.lindenb.jvarkit.util.vcf.AFExtractorFactoryTest">
+        <test-method signature="test01(java.lang.String, int, int)[pri:0, instance:com.github.lindenb.jvarkit.util.vcf.AFExtractorFactoryTest@6a4f787b]" started-at="2023-12-07T16:09:59Z" name="test01" data-provider="data01" finished-at="2023-12-07T16:09:59Z" duration-ms="0" status="PASS">
           <params>
             <param index="0">
               <value>
@@ -270,28 +515,28 @@ at com.github.lindenb.jvarkit.tools.tests.MiniTestNG.main(MiniTestNG.java:86)
           <reporter-output>
           </reporter-output>
         </test-method> <!-- test01 -->
-        <test-method signature="test01(java.lang.String, int, int)[pri:0, instance:com.github.lindenb.jvarkit.util.vcf.AFExtractorFactoryTest@4fe767f3]" started-at="2023-11-04T14:04:44Z" name="test01" data-provider="data01" finished-at="2023-11-04T14:04:44Z" duration-ms="0" status="PASS">
+        <test-method signature="test01(java.lang.String, int, int)[pri:0, instance:com.github.lindenb.jvarkit.util.vcf.AFExtractorFactoryTest@6a4f787b]" started-at="2023-12-07T16:09:59Z" name="test01" data-provider="data01" finished-at="2023-12-07T16:09:59Z" duration-ms="0" status="PASS">
           <params>
             <param index="0">
               <value>
-                <![CDATA[;,,,;]]>
+                <![CDATA[AC/AN]]>
               </value>
             </param>
             <param index="1">
               <value>
-                <![CDATA[0]]>
+                <![CDATA[1]]>
               </value>
             </param>
             <param index="2">
               <value>
-                <![CDATA[0]]>
+                <![CDATA[1]]>
               </value>
             </param>
           </params>
           <reporter-output>
           </reporter-output>
         </test-method> <!-- test01 -->
-        <test-method signature="test01(java.lang.String, int, int)[pri:0, instance:com.github.lindenb.jvarkit.util.vcf.AFExtractorFactoryTest@4fe767f3]" started-at="2023-11-04T14:04:44Z" name="test01" data-provider="data01" finished-at="2023-11-04T14:04:44Z" duration-ms="0" status="PASS">
+        <test-method signature="test01(java.lang.String, int, int)[pri:0, instance:com.github.lindenb.jvarkit.util.vcf.AFExtractorFactoryTest@6a4f787b]" started-at="2023-12-07T16:09:59Z" name="test01" data-provider="data01" finished-at="2023-12-07T16:09:59Z" duration-ms="1" status="PASS">
           <params>
             <param index="0">
               <value>
@@ -312,28 +557,7 @@ at com.github.lindenb.jvarkit.tools.tests.MiniTestNG.main(MiniTestNG.java:86)
           <reporter-output>
           </reporter-output>
         </test-method> <!-- test01 -->
-        <test-method signature="test01(java.lang.String, int, int)[pri:0, instance:com.github.lindenb.jvarkit.util.vcf.AFExtractorFactoryTest@4fe767f3]" started-at="2023-11-04T14:04:44Z" name="test01" data-provider="data01" finished-at="2023-11-04T14:04:44Z" duration-ms="0" status="PASS">
-          <params>
-            <param index="0">
-              <value>
-                <![CDATA[x_*;,,AC/AN;;AF,,,,]]>
-              </value>
-            </param>
-            <param index="1">
-              <value>
-                <![CDATA[3]]>
-              </value>
-            </param>
-            <param index="2">
-              <value>
-                <![CDATA[2]]>
-              </value>
-            </param>
-          </params>
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- test01 -->
-        <test-method signature="testValid(java.lang.String, int, int)[pri:0, instance:com.github.lindenb.jvarkit.util.vcf.AFExtractorFactoryTest@4fe767f3]" started-at="2023-11-04T14:04:44Z" name="testValid" data-provider="data01" finished-at="2023-11-04T14:04:44Z" duration-ms="11" status="PASS">
+        <test-method signature="testValid(java.lang.String, int, int)[pri:0, instance:com.github.lindenb.jvarkit.util.vcf.AFExtractorFactoryTest@6a4f787b]" started-at="2023-12-07T16:09:59Z" name="testValid" data-provider="data01" finished-at="2023-12-07T16:09:59Z" duration-ms="8" status="PASS">
           <params>
             <param index="0">
               <value>
@@ -354,7 +578,49 @@ at com.github.lindenb.jvarkit.tools.tests.MiniTestNG.main(MiniTestNG.java:86)
           <reporter-output>
           </reporter-output>
         </test-method> <!-- testValid -->
-        <test-method signature="test01(java.lang.String, int, int)[pri:0, instance:com.github.lindenb.jvarkit.util.vcf.AFExtractorFactoryTest@4fe767f3]" started-at="2023-11-04T14:04:44Z" name="test01" data-provider="data01" finished-at="2023-11-04T14:04:44Z" duration-ms="0" status="PASS">
+        <test-method signature="test01(java.lang.String, int, int)[pri:0, instance:com.github.lindenb.jvarkit.util.vcf.AFExtractorFactoryTest@6a4f787b]" started-at="2023-12-07T16:09:59Z" name="test01" data-provider="data01" finished-at="2023-12-07T16:09:59Z" duration-ms="0" status="PASS">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[0]]>
+              </value>
+            </param>
+            <param index="2">
+              <value>
+                <![CDATA[0]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- test01 -->
+        <test-method signature="test01(java.lang.String, int, int)[pri:0, instance:com.github.lindenb.jvarkit.util.vcf.AFExtractorFactoryTest@6a4f787b]" started-at="2023-12-07T16:09:59Z" name="test01" data-provider="data01" finished-at="2023-12-07T16:09:59Z" duration-ms="0" status="PASS">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[x_*;,,AC/AN;;AF,,,,]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[3]]>
+              </value>
+            </param>
+            <param index="2">
+              <value>
+                <![CDATA[2]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- test01 -->
+        <test-method signature="test01(java.lang.String, int, int)[pri:0, instance:com.github.lindenb.jvarkit.util.vcf.AFExtractorFactoryTest@6a4f787b]" started-at="2023-12-07T16:09:59Z" name="test01" data-provider="data01" finished-at="2023-12-07T16:09:59Z" duration-ms="0" status="PASS">
           <params>
             <param index="0">
               <value>
@@ -375,11 +641,11 @@ at com.github.lindenb.jvarkit.tools.tests.MiniTestNG.main(MiniTestNG.java:86)
           <reporter-output>
           </reporter-output>
         </test-method> <!-- test01 -->
-        <test-method signature="test01(java.lang.String, int, int)[pri:0, instance:com.github.lindenb.jvarkit.util.vcf.AFExtractorFactoryTest@4fe767f3]" started-at="2023-11-04T14:04:44Z" name="test01" data-provider="data01" finished-at="2023-11-04T14:04:44Z" duration-ms="0" status="PASS">
+        <test-method signature="test01(java.lang.String, int, int)[pri:0, instance:com.github.lindenb.jvarkit.util.vcf.AFExtractorFactoryTest@6a4f787b]" started-at="2023-12-07T16:09:59Z" name="test01" data-provider="data01" finished-at="2023-12-07T16:09:59Z" duration-ms="0" status="PASS">
           <params>
             <param index="0">
               <value>
-                <![CDATA[]]>
+                <![CDATA[;,,,;]]>
               </value>
             </param>
             <param index="1">
@@ -396,7 +662,7 @@ at com.github.lindenb.jvarkit.tools.tests.MiniTestNG.main(MiniTestNG.java:86)
           <reporter-output>
           </reporter-output>
         </test-method> <!-- test01 -->
-        <test-method signature="testValid(java.lang.String, int, int)[pri:0, instance:com.github.lindenb.jvarkit.util.vcf.AFExtractorFactoryTest@4fe767f3]" started-at="2023-11-04T14:04:44Z" name="testValid" data-provider="data01" finished-at="2023-11-04T14:04:44Z" duration-ms="7" status="PASS">
+        <test-method signature="testValid(java.lang.String, int, int)[pri:0, instance:com.github.lindenb.jvarkit.util.vcf.AFExtractorFactoryTest@6a4f787b]" started-at="2023-12-07T16:09:59Z" name="testValid" data-provider="data01" finished-at="2023-12-07T16:09:59Z" duration-ms="6" status="PASS">
           <params>
             <param index="0">
               <value>
@@ -417,7 +683,7 @@ at com.github.lindenb.jvarkit.tools.tests.MiniTestNG.main(MiniTestNG.java:86)
           <reporter-output>
           </reporter-output>
         </test-method> <!-- testValid -->
-        <test-method signature="testValid(java.lang.String, int, int)[pri:0, instance:com.github.lindenb.jvarkit.util.vcf.AFExtractorFactoryTest@4fe767f3]" started-at="2023-11-04T14:04:44Z" name="testValid" data-provider="data01" finished-at="2023-11-04T14:04:44Z" duration-ms="4" status="PASS">
+        <test-method signature="testValid(java.lang.String, int, int)[pri:0, instance:com.github.lindenb.jvarkit.util.vcf.AFExtractorFactoryTest@6a4f787b]" started-at="2023-12-07T16:09:59Z" name="testValid" data-provider="data01" finished-at="2023-12-07T16:09:59Z" duration-ms="3" status="PASS">
           <params>
             <param index="0">
               <value>
@@ -438,7 +704,7 @@ at com.github.lindenb.jvarkit.tools.tests.MiniTestNG.main(MiniTestNG.java:86)
           <reporter-output>
           </reporter-output>
         </test-method> <!-- testValid -->
-        <test-method signature="testValid(java.lang.String, int, int)[pri:0, instance:com.github.lindenb.jvarkit.util.vcf.AFExtractorFactoryTest@4fe767f3]" started-at="2023-11-04T14:04:44Z" name="testValid" data-provider="data01" finished-at="2023-11-04T14:04:44Z" duration-ms="5" status="PASS">
+        <test-method signature="testValid(java.lang.String, int, int)[pri:0, instance:com.github.lindenb.jvarkit.util.vcf.AFExtractorFactoryTest@6a4f787b]" started-at="2023-12-07T16:09:59Z" name="testValid" data-provider="data01" finished-at="2023-12-07T16:09:59Z" duration-ms="6" status="PASS">
           <params>
             <param index="0">
               <value>
@@ -459,7 +725,7 @@ at com.github.lindenb.jvarkit.tools.tests.MiniTestNG.main(MiniTestNG.java:86)
           <reporter-output>
           </reporter-output>
         </test-method> <!-- testValid -->
-        <test-method signature="testValid(java.lang.String, int, int)[pri:0, instance:com.github.lindenb.jvarkit.util.vcf.AFExtractorFactoryTest@4fe767f3]" started-at="2023-11-04T14:04:44Z" name="testValid" data-provider="data01" finished-at="2023-11-04T14:04:44Z" duration-ms="2" status="PASS">
+        <test-method signature="testValid(java.lang.String, int, int)[pri:0, instance:com.github.lindenb.jvarkit.util.vcf.AFExtractorFactoryTest@6a4f787b]" started-at="2023-12-07T16:09:59Z" name="testValid" data-provider="data01" finished-at="2023-12-07T16:09:59Z" duration-ms="2" status="PASS">
           <params>
             <param index="0">
               <value>
@@ -480,7 +746,7 @@ at com.github.lindenb.jvarkit.tools.tests.MiniTestNG.main(MiniTestNG.java:86)
           <reporter-output>
           </reporter-output>
         </test-method> <!-- testValid -->
-        <test-method signature="testValid(java.lang.String, int, int)[pri:0, instance:com.github.lindenb.jvarkit.util.vcf.AFExtractorFactoryTest@4fe767f3]" started-at="2023-11-04T14:04:44Z" name="testValid" data-provider="data01" finished-at="2023-11-04T14:04:44Z" duration-ms="3" status="PASS">
+        <test-method signature="testValid(java.lang.String, int, int)[pri:0, instance:com.github.lindenb.jvarkit.util.vcf.AFExtractorFactoryTest@6a4f787b]" started-at="2023-12-07T16:09:59Z" name="testValid" data-provider="data01" finished-at="2023-12-07T16:09:59Z" duration-ms="2" status="PASS">
           <params>
             <param index="0">
               <value>
@@ -501,7 +767,7 @@ at com.github.lindenb.jvarkit.tools.tests.MiniTestNG.main(MiniTestNG.java:86)
           <reporter-output>
           </reporter-output>
         </test-method> <!-- testValid -->
-        <test-method signature="testValid(java.lang.String, int, int)[pri:0, instance:com.github.lindenb.jvarkit.util.vcf.AFExtractorFactoryTest@4fe767f3]" started-at="2023-11-04T14:04:44Z" name="testValid" data-provider="data01" finished-at="2023-11-04T14:04:44Z" duration-ms="4" status="PASS">
+        <test-method signature="testValid(java.lang.String, int, int)[pri:0, instance:com.github.lindenb.jvarkit.util.vcf.AFExtractorFactoryTest@6a4f787b]" started-at="2023-12-07T16:09:59Z" name="testValid" data-provider="data01" finished-at="2023-12-07T16:09:59Z" duration-ms="2" status="PASS">
           <params>
             <param index="0">
               <value>
@@ -523,288 +789,22 @@ at com.github.lindenb.jvarkit.tools.tests.MiniTestNG.main(MiniTestNG.java:86)
           </reporter-output>
         </test-method> <!-- testValid -->
       </class> <!-- com.github.lindenb.jvarkit.util.vcf.AFExtractorFactoryTest -->
-      <class name="com.github.lindenb.jvarkit.tools.sam4weblogo.SAM4WebLogoTest">
-        <test-method signature="testClip(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.tools.sam4weblogo.SAM4WebLogoTest@60704c]" started-at="2023-11-04T14:04:42Z" name="testClip" data-provider="src1" finished-at="2023-11-04T14:04:42Z" duration-ms="19" status="PASS">
-          <params>
-            <param index="0">
-              <value>
-                <![CDATA[./src/test/resources/FAB23716.nanopore.bam]]>
-              </value>
-            </param>
-          </params>
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- testClip -->
-        <test-method signature="testClip(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.tools.sam4weblogo.SAM4WebLogoTest@60704c]" started-at="2023-11-04T14:04:42Z" name="testClip" data-provider="src1" finished-at="2023-11-04T14:04:42Z" duration-ms="2" status="PASS">
-          <params>
-            <param index="0">
-              <value>
-                <![CDATA[./src/test/resources/HG02260.transloc.chr9.14.bam]]>
-              </value>
-            </param>
-          </params>
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- testClip -->
-        <test-method signature="testClip(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.tools.sam4weblogo.SAM4WebLogoTest@60704c]" started-at="2023-11-04T14:04:42Z" name="testClip" data-provider="src1" finished-at="2023-11-04T14:04:43Z" duration-ms="135" status="PASS">
-          <params>
-            <param index="0">
-              <value>
-                <![CDATA[./src/test/resources/S1.bam]]>
-              </value>
-            </param>
-          </params>
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- testClip -->
-        <test-method signature="testClip(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.tools.sam4weblogo.SAM4WebLogoTest@60704c]" started-at="2023-11-04T14:04:43Z" name="testClip" data-provider="src1" finished-at="2023-11-04T14:04:43Z" duration-ms="66" status="PASS">
-          <params>
-            <param index="0">
-              <value>
-                <![CDATA[./src/test/resources/S2.bam]]>
-              </value>
-            </param>
-          </params>
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- testClip -->
-        <test-method signature="testClip(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.tools.sam4weblogo.SAM4WebLogoTest@60704c]" started-at="2023-11-04T14:04:43Z" name="testClip" data-provider="src1" finished-at="2023-11-04T14:04:43Z" duration-ms="74" status="PASS">
-          <params>
-            <param index="0">
-              <value>
-                <![CDATA[./src/test/resources/S3.bam]]>
-              </value>
-            </param>
-          </params>
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- testClip -->
-        <test-method signature="testClip(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.tools.sam4weblogo.SAM4WebLogoTest@60704c]" started-at="2023-11-04T14:04:43Z" name="testClip" data-provider="src1" finished-at="2023-11-04T14:04:43Z" duration-ms="93" status="PASS">
-          <params>
-            <param index="0">
-              <value>
-                <![CDATA[./src/test/resources/S4.bam]]>
-              </value>
-            </param>
-          </params>
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- testClip -->
-        <test-method signature="testClip(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.tools.sam4weblogo.SAM4WebLogoTest@60704c]" started-at="2023-11-04T14:04:43Z" name="testClip" data-provider="src1" finished-at="2023-11-04T14:04:43Z" duration-ms="53" status="PASS">
-          <params>
-            <param index="0">
-              <value>
-                <![CDATA[./src/test/resources/S5.bam]]>
-              </value>
-            </param>
-          </params>
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- testClip -->
-        <test-method signature="testClip(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.tools.sam4weblogo.SAM4WebLogoTest@60704c]" started-at="2023-11-04T14:04:43Z" name="testClip" data-provider="src1" finished-at="2023-11-04T14:04:43Z" duration-ms="17" status="PASS">
-          <params>
-            <param index="0">
-              <value>
-                <![CDATA[./src/test/resources/toy.bam]]>
-              </value>
-            </param>
-          </params>
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- testClip -->
-        <test-method signature="testFastq(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.tools.sam4weblogo.SAM4WebLogoTest@60704c]" started-at="2023-11-04T14:04:43Z" name="testFastq" data-provider="src1" finished-at="2023-11-04T14:04:43Z" duration-ms="9" status="PASS">
-          <params>
-            <param index="0">
-              <value>
-                <![CDATA[./src/test/resources/FAB23716.nanopore.bam]]>
-              </value>
-            </param>
-          </params>
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- testFastq -->
-        <test-method signature="testFastq(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.tools.sam4weblogo.SAM4WebLogoTest@60704c]" started-at="2023-11-04T14:04:43Z" name="testFastq" data-provider="src1" finished-at="2023-11-04T14:04:43Z" duration-ms="1" status="PASS">
-          <params>
-            <param index="0">
-              <value>
-                <![CDATA[./src/test/resources/HG02260.transloc.chr9.14.bam]]>
-              </value>
-            </param>
-          </params>
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- testFastq -->
-        <test-method signature="testFastq(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.tools.sam4weblogo.SAM4WebLogoTest@60704c]" started-at="2023-11-04T14:04:43Z" name="testFastq" data-provider="src1" finished-at="2023-11-04T14:04:43Z" duration-ms="76" status="PASS">
-          <params>
-            <param index="0">
-              <value>
-                <![CDATA[./src/test/resources/S1.bam]]>
-              </value>
-            </param>
-          </params>
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- testFastq -->
-        <test-method signature="testFastq(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.tools.sam4weblogo.SAM4WebLogoTest@60704c]" started-at="2023-11-04T14:04:43Z" name="testFastq" data-provider="src1" finished-at="2023-11-04T14:04:43Z" duration-ms="84" status="PASS">
-          <params>
-            <param index="0">
-              <value>
-                <![CDATA[./src/test/resources/S2.bam]]>
-              </value>
-            </param>
-          </params>
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- testFastq -->
-        <test-method signature="testFastq(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.tools.sam4weblogo.SAM4WebLogoTest@60704c]" started-at="2023-11-04T14:04:43Z" name="testFastq" data-provider="src1" finished-at="2023-11-04T14:04:43Z" duration-ms="79" status="PASS">
-          <params>
-            <param index="0">
-              <value>
-                <![CDATA[./src/test/resources/S3.bam]]>
-              </value>
-            </param>
-          </params>
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- testFastq -->
-        <test-method signature="testFastq(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.tools.sam4weblogo.SAM4WebLogoTest@60704c]" started-at="2023-11-04T14:04:43Z" name="testFastq" data-provider="src1" finished-at="2023-11-04T14:04:43Z" duration-ms="65" status="PASS">
-          <params>
-            <param index="0">
-              <value>
-                <![CDATA[./src/test/resources/S4.bam]]>
-              </value>
-            </param>
-          </params>
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- testFastq -->
-        <test-method signature="testFastq(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.tools.sam4weblogo.SAM4WebLogoTest@60704c]" started-at="2023-11-04T14:04:43Z" name="testFastq" data-provider="src1" finished-at="2023-11-04T14:04:43Z" duration-ms="56" status="PASS">
-          <params>
-            <param index="0">
-              <value>
-                <![CDATA[./src/test/resources/S5.bam]]>
-              </value>
-            </param>
-          </params>
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- testFastq -->
-        <test-method signature="testFastq(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.tools.sam4weblogo.SAM4WebLogoTest@60704c]" started-at="2023-11-04T14:04:43Z" name="testFastq" data-provider="src1" finished-at="2023-11-04T14:04:43Z" duration-ms="16" status="PASS">
-          <params>
-            <param index="0">
-              <value>
-                <![CDATA[./src/test/resources/toy.bam]]>
-              </value>
-            </param>
-          </params>
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- testFastq -->
-        <test-method signature="testNoClip(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.tools.sam4weblogo.SAM4WebLogoTest@60704c]" started-at="2023-11-04T14:04:43Z" name="testNoClip" data-provider="src1" finished-at="2023-11-04T14:04:43Z" duration-ms="13" status="PASS">
-          <params>
-            <param index="0">
-              <value>
-                <![CDATA[./src/test/resources/FAB23716.nanopore.bam]]>
-              </value>
-            </param>
-          </params>
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- testNoClip -->
-        <test-method signature="testNoClip(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.tools.sam4weblogo.SAM4WebLogoTest@60704c]" started-at="2023-11-04T14:04:43Z" name="testNoClip" data-provider="src1" finished-at="2023-11-04T14:04:43Z" duration-ms="1" status="PASS">
-          <params>
-            <param index="0">
-              <value>
-                <![CDATA[./src/test/resources/HG02260.transloc.chr9.14.bam]]>
-              </value>
-            </param>
-          </params>
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- testNoClip -->
-        <test-method signature="testNoClip(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.tools.sam4weblogo.SAM4WebLogoTest@60704c]" started-at="2023-11-04T14:04:43Z" name="testNoClip" data-provider="src1" finished-at="2023-11-04T14:04:43Z" duration-ms="70" status="PASS">
-          <params>
-            <param index="0">
-              <value>
-                <![CDATA[./src/test/resources/S1.bam]]>
-              </value>
-            </param>
-          </params>
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- testNoClip -->
-        <test-method signature="testNoClip(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.tools.sam4weblogo.SAM4WebLogoTest@60704c]" started-at="2023-11-04T14:04:43Z" name="testNoClip" data-provider="src1" finished-at="2023-11-04T14:04:43Z" duration-ms="47" status="PASS">
-          <params>
-            <param index="0">
-              <value>
-                <![CDATA[./src/test/resources/S2.bam]]>
-              </value>
-            </param>
-          </params>
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- testNoClip -->
-        <test-method signature="testNoClip(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.tools.sam4weblogo.SAM4WebLogoTest@60704c]" started-at="2023-11-04T14:04:43Z" name="testNoClip" data-provider="src1" finished-at="2023-11-04T14:04:43Z" duration-ms="48" status="PASS">
-          <params>
-            <param index="0">
-              <value>
-                <![CDATA[./src/test/resources/S3.bam]]>
-              </value>
-            </param>
-          </params>
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- testNoClip -->
-        <test-method signature="testNoClip(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.tools.sam4weblogo.SAM4WebLogoTest@60704c]" started-at="2023-11-04T14:04:43Z" name="testNoClip" data-provider="src1" finished-at="2023-11-04T14:04:43Z" duration-ms="54" status="PASS">
-          <params>
-            <param index="0">
-              <value>
-                <![CDATA[./src/test/resources/S4.bam]]>
-              </value>
-            </param>
-          </params>
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- testNoClip -->
-        <test-method signature="testNoClip(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.tools.sam4weblogo.SAM4WebLogoTest@60704c]" started-at="2023-11-04T14:04:43Z" name="testNoClip" data-provider="src1" finished-at="2023-11-04T14:04:44Z" duration-ms="42" status="PASS">
-          <params>
-            <param index="0">
-              <value>
-                <![CDATA[./src/test/resources/S5.bam]]>
-              </value>
-            </param>
-          </params>
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- testNoClip -->
-        <test-method signature="testNoClip(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.tools.sam4weblogo.SAM4WebLogoTest@60704c]" started-at="2023-11-04T14:04:44Z" name="testNoClip" data-provider="src1" finished-at="2023-11-04T14:04:44Z" duration-ms="9" status="PASS">
-          <params>
-            <param index="0">
-              <value>
-                <![CDATA[./src/test/resources/toy.bam]]>
-              </value>
-            </param>
-          </params>
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- testNoClip -->
-      </class> <!-- com.github.lindenb.jvarkit.tools.sam4weblogo.SAM4WebLogoTest -->
       <class name="com.github.lindenb.jvarkit.lang.DelegateCharSequenceTest">
-        <test-method signature="testCharSeq()[pri:0, instance:com.github.lindenb.jvarkit.lang.DelegateCharSequenceTest@75f32542]" started-at="2023-11-04T14:04:44Z" name="testCharSeq" finished-at="2023-11-04T14:04:44Z" duration-ms="1" status="PASS">
+        <test-method signature="testCharSeq()[pri:0, instance:com.github.lindenb.jvarkit.lang.DelegateCharSequenceTest@7cd62f43]" started-at="2023-12-07T16:10:01Z" name="testCharSeq" finished-at="2023-12-07T16:10:01Z" duration-ms="0" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- testCharSeq -->
       </class> <!-- com.github.lindenb.jvarkit.lang.DelegateCharSequenceTest -->
       <class name="com.github.lindenb.jvarkit.util.log.ProgressFactoryTest">
-        <test-method signature="test01()[pri:0, instance:com.github.lindenb.jvarkit.util.log.ProgressFactoryTest@223f3642]" started-at="2023-11-04T14:04:44Z" name="test01" finished-at="2023-11-04T14:04:44Z" duration-ms="14" status="PASS">
+        <test-method signature="test01()[pri:0, instance:com.github.lindenb.jvarkit.util.log.ProgressFactoryTest@4883b407]" started-at="2023-12-07T16:09:58Z" name="test01" finished-at="2023-12-07T16:09:58Z" duration-ms="16" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- test01 -->
-        <test-method signature="test02()[pri:0, instance:com.github.lindenb.jvarkit.util.log.ProgressFactoryTest@223f3642]" started-at="2023-11-04T14:04:44Z" name="test02" finished-at="2023-11-04T14:04:44Z" duration-ms="4" status="PASS">
+        <test-method signature="test02()[pri:0, instance:com.github.lindenb.jvarkit.util.log.ProgressFactoryTest@4883b407]" started-at="2023-12-07T16:09:58Z" name="test02" finished-at="2023-12-07T16:09:58Z" duration-ms="4" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- test02 -->
-        <test-method signature="testBam01(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.util.log.ProgressFactoryTest@223f3642]" started-at="2023-11-04T14:04:44Z" name="testBam01" data-provider="src1" finished-at="2023-11-04T14:04:44Z" duration-ms="11" status="PASS">
+        <test-method signature="testBam01(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.util.log.ProgressFactoryTest@4883b407]" started-at="2023-12-07T16:09:58Z" name="testBam01" data-provider="src1" finished-at="2023-12-07T16:09:58Z" duration-ms="37" status="PASS">
           <params>
             <param index="0">
               <value>
@@ -815,7 +815,7 @@ at com.github.lindenb.jvarkit.tools.tests.MiniTestNG.main(MiniTestNG.java:86)
           <reporter-output>
           </reporter-output>
         </test-method> <!-- testBam01 -->
-        <test-method signature="testBam01(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.util.log.ProgressFactoryTest@223f3642]" started-at="2023-11-04T14:04:44Z" name="testBam01" data-provider="src1" finished-at="2023-11-04T14:04:44Z" duration-ms="6" status="PASS">
+        <test-method signature="testBam01(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.util.log.ProgressFactoryTest@4883b407]" started-at="2023-12-07T16:09:58Z" name="testBam01" data-provider="src1" finished-at="2023-12-07T16:09:58Z" duration-ms="13" status="PASS">
           <params>
             <param index="0">
               <value>
@@ -826,7 +826,7 @@ at com.github.lindenb.jvarkit.tools.tests.MiniTestNG.main(MiniTestNG.java:86)
           <reporter-output>
           </reporter-output>
         </test-method> <!-- testBam01 -->
-        <test-method signature="testBam01(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.util.log.ProgressFactoryTest@223f3642]" started-at="2023-11-04T14:04:44Z" name="testBam01" data-provider="src1" finished-at="2023-11-04T14:04:44Z" duration-ms="9" status="PASS">
+        <test-method signature="testBam01(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.util.log.ProgressFactoryTest@4883b407]" started-at="2023-12-07T16:09:58Z" name="testBam01" data-provider="src1" finished-at="2023-12-07T16:09:58Z" duration-ms="7" status="PASS">
           <params>
             <param index="0">
               <value>
@@ -837,7 +837,7 @@ at com.github.lindenb.jvarkit.tools.tests.MiniTestNG.main(MiniTestNG.java:86)
           <reporter-output>
           </reporter-output>
         </test-method> <!-- testBam01 -->
-        <test-method signature="testBam01(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.util.log.ProgressFactoryTest@223f3642]" started-at="2023-11-04T14:04:44Z" name="testBam01" data-provider="src1" finished-at="2023-11-04T14:04:44Z" duration-ms="7" status="PASS">
+        <test-method signature="testBam01(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.util.log.ProgressFactoryTest@4883b407]" started-at="2023-12-07T16:09:58Z" name="testBam01" data-provider="src1" finished-at="2023-12-07T16:09:58Z" duration-ms="6" status="PASS">
           <params>
             <param index="0">
               <value>
@@ -848,7 +848,7 @@ at com.github.lindenb.jvarkit.tools.tests.MiniTestNG.main(MiniTestNG.java:86)
           <reporter-output>
           </reporter-output>
         </test-method> <!-- testBam01 -->
-        <test-method signature="testBam01(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.util.log.ProgressFactoryTest@223f3642]" started-at="2023-11-04T14:04:44Z" name="testBam01" data-provider="src1" finished-at="2023-11-04T14:04:44Z" duration-ms="5" status="PASS">
+        <test-method signature="testBam01(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.util.log.ProgressFactoryTest@4883b407]" started-at="2023-12-07T16:09:58Z" name="testBam01" data-provider="src1" finished-at="2023-12-07T16:09:58Z" duration-ms="5" status="PASS">
           <params>
             <param index="0">
               <value>
@@ -859,7 +859,7 @@ at com.github.lindenb.jvarkit.tools.tests.MiniTestNG.main(MiniTestNG.java:86)
           <reporter-output>
           </reporter-output>
         </test-method> <!-- testBam01 -->
-        <test-method signature="testBam01(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.util.log.ProgressFactoryTest@223f3642]" started-at="2023-11-04T14:04:44Z" name="testBam01" data-provider="src1" finished-at="2023-11-04T14:04:44Z" duration-ms="4" status="PASS">
+        <test-method signature="testBam01(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.util.log.ProgressFactoryTest@4883b407]" started-at="2023-12-07T16:09:58Z" name="testBam01" data-provider="src1" finished-at="2023-12-07T16:09:58Z" duration-ms="5" status="PASS">
           <params>
             <param index="0">
               <value>
@@ -870,7 +870,7 @@ at com.github.lindenb.jvarkit.tools.tests.MiniTestNG.main(MiniTestNG.java:86)
           <reporter-output>
           </reporter-output>
         </test-method> <!-- testBam01 -->
-        <test-method signature="testBam01(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.util.log.ProgressFactoryTest@223f3642]" started-at="2023-11-04T14:04:44Z" name="testBam01" data-provider="src1" finished-at="2023-11-04T14:04:44Z" duration-ms="4" status="PASS">
+        <test-method signature="testBam01(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.util.log.ProgressFactoryTest@4883b407]" started-at="2023-12-07T16:09:58Z" name="testBam01" data-provider="src1" finished-at="2023-12-07T16:09:58Z" duration-ms="4" status="PASS">
           <params>
             <param index="0">
               <value>
@@ -881,7 +881,7 @@ at com.github.lindenb.jvarkit.tools.tests.MiniTestNG.main(MiniTestNG.java:86)
           <reporter-output>
           </reporter-output>
         </test-method> <!-- testBam01 -->
-        <test-method signature="testBam01(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.util.log.ProgressFactoryTest@223f3642]" started-at="2023-11-04T14:04:44Z" name="testBam01" data-provider="src1" finished-at="2023-11-04T14:04:44Z" duration-ms="1" status="PASS">
+        <test-method signature="testBam01(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.util.log.ProgressFactoryTest@4883b407]" started-at="2023-12-07T16:09:58Z" name="testBam01" data-provider="src1" finished-at="2023-12-07T16:09:58Z" duration-ms="1" status="PASS">
           <params>
             <param index="0">
               <value>
@@ -892,7 +892,7 @@ at com.github.lindenb.jvarkit.tools.tests.MiniTestNG.main(MiniTestNG.java:86)
           <reporter-output>
           </reporter-output>
         </test-method> <!-- testBam01 -->
-        <test-method signature="testBam01(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.util.log.ProgressFactoryTest@223f3642]" started-at="2023-11-04T14:04:44Z" name="testBam01" data-provider="src1" finished-at="2023-11-04T14:04:44Z" duration-ms="3" status="PASS">
+        <test-method signature="testBam01(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.util.log.ProgressFactoryTest@4883b407]" started-at="2023-12-07T16:09:58Z" name="testBam01" data-provider="src1" finished-at="2023-12-07T16:09:58Z" duration-ms="3" status="PASS">
           <params>
             <param index="0">
               <value>
@@ -905,41 +905,37 @@ at com.github.lindenb.jvarkit.tools.tests.MiniTestNG.main(MiniTestNG.java:86)
         </test-method> <!-- testBam01 -->
       </class> <!-- com.github.lindenb.jvarkit.util.log.ProgressFactoryTest -->
       <class name="com.github.lindenb.jvarkit.io.IOUtilsTest">
-        <test-method signature="testRemoteInputStream()[pri:0, instance:com.github.lindenb.jvarkit.io.IOUtilsTest@2fd6b6c7]" started-at="2023-11-04T14:04:42Z" name="testRemoteInputStream" finished-at="2023-11-04T14:04:42Z" duration-ms="301" status="PASS">
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- testRemoteInputStream -->
-        <test-method signature="testCompressed()[pri:0, instance:com.github.lindenb.jvarkit.io.IOUtilsTest@2fd6b6c7]" started-at="2023-11-04T14:04:42Z" name="testCompressed" finished-at="2023-11-04T14:04:42Z" duration-ms="0" status="PASS">
+        <test-method signature="testCompressed()[pri:0, instance:com.github.lindenb.jvarkit.io.IOUtilsTest@343f4d3d]" started-at="2023-12-07T16:09:59Z" name="testCompressed" finished-at="2023-12-07T16:09:59Z" duration-ms="0" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- testCompressed -->
-        <test-method signature="testFileSuffix()[pri:0, instance:com.github.lindenb.jvarkit.io.IOUtilsTest@2fd6b6c7]" started-at="2023-11-04T14:04:42Z" name="testFileSuffix" finished-at="2023-11-04T14:04:42Z" duration-ms="0" status="PASS">
+        <test-method signature="testRemoteInputStream()[pri:0, instance:com.github.lindenb.jvarkit.io.IOUtilsTest@343f4d3d]" started-at="2023-12-07T16:09:59Z" name="testRemoteInputStream" finished-at="2023-12-07T16:10:00Z" duration-ms="885" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testRemoteInputStream -->
+        <test-method signature="testFileSuffix()[pri:0, instance:com.github.lindenb.jvarkit.io.IOUtilsTest@343f4d3d]" started-at="2023-12-07T16:09:59Z" name="testFileSuffix" finished-at="2023-12-07T16:09:59Z" duration-ms="0" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- testFileSuffix -->
-        <test-method signature="testRemoteReader()[pri:0, instance:com.github.lindenb.jvarkit.io.IOUtilsTest@2fd6b6c7]" started-at="2023-11-04T14:04:42Z" name="testRemoteReader" finished-at="2023-11-04T14:04:42Z" duration-ms="67" status="PASS">
+        <test-method signature="testRemoteReader()[pri:0, instance:com.github.lindenb.jvarkit.io.IOUtilsTest@343f4d3d]" started-at="2023-12-07T16:10:00Z" name="testRemoteReader" finished-at="2023-12-07T16:10:01Z" duration-ms="956" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- testRemoteReader -->
-        <test-method signature="testWrite()[pri:0, instance:com.github.lindenb.jvarkit.io.IOUtilsTest@2fd6b6c7]" started-at="2023-11-04T14:04:42Z" name="testWrite" finished-at="2023-11-04T14:04:42Z" duration-ms="16" status="PASS">
+        <test-method signature="testWrite()[pri:0, instance:com.github.lindenb.jvarkit.io.IOUtilsTest@343f4d3d]" started-at="2023-12-07T16:10:01Z" name="testWrite" finished-at="2023-12-07T16:10:01Z" duration-ms="15" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- testWrite -->
       </class> <!-- com.github.lindenb.jvarkit.io.IOUtilsTest -->
       <class name="com.github.lindenb.jvarkit.util.iterator.EqualRangeIteratorTest">
-        <test-method signature="test2()[pri:0, instance:com.github.lindenb.jvarkit.util.iterator.EqualRangeIteratorTest@43ee72e6]" started-at="2023-11-04T14:04:44Z" name="test2" finished-at="2023-11-04T14:04:44Z" duration-ms="1" status="PASS">
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- test2 -->
-        <test-method signature="test1()[pri:0, instance:com.github.lindenb.jvarkit.util.iterator.EqualRangeIteratorTest@43ee72e6]" started-at="2023-11-04T14:04:44Z" name="test1" finished-at="2023-11-04T14:04:44Z" duration-ms="0" status="PASS">
+        <test-method signature="test1()[pri:0, instance:com.github.lindenb.jvarkit.util.iterator.EqualRangeIteratorTest@42d80b78]" started-at="2023-12-07T16:09:58Z" name="test1" finished-at="2023-12-07T16:09:58Z" duration-ms="0" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- test1 -->
-        <test-method signature="testNextTarget()[pri:0, instance:com.github.lindenb.jvarkit.util.iterator.EqualRangeIteratorTest@43ee72e6]" started-at="2023-11-04T14:04:44Z" name="testNextTarget" finished-at="2023-11-04T14:04:44Z" duration-ms="0" status="PASS">
+        <test-method signature="test2()[pri:0, instance:com.github.lindenb.jvarkit.util.iterator.EqualRangeIteratorTest@42d80b78]" started-at="2023-12-07T16:09:58Z" name="test2" finished-at="2023-12-07T16:09:58Z" duration-ms="1" status="PASS">
           <reporter-output>
           </reporter-output>
-        </test-method> <!-- testNextTarget -->
-        <test-method signature="test3()[pri:0, instance:com.github.lindenb.jvarkit.util.iterator.EqualRangeIteratorTest@43ee72e6]" started-at="2023-11-04T14:04:44Z" name="test3" finished-at="2023-11-04T14:04:44Z" duration-ms="0" status="PASS">
+        </test-method> <!-- test2 -->
+        <test-method signature="test3()[pri:0, instance:com.github.lindenb.jvarkit.util.iterator.EqualRangeIteratorTest@42d80b78]" started-at="2023-12-07T16:09:58Z" name="test3" finished-at="2023-12-07T16:09:58Z" duration-ms="0" status="PASS">
           <exception class="java.lang.IllegalStateException">
             <message>
               <![CDATA[got 10 after 100]]>
@@ -981,25 +977,13 @@ at com.github.lindenb.jvarkit.tools.tests.MiniTestNG.main(MiniTestNG.java:86)
           <reporter-output>
           </reporter-output>
         </test-method> <!-- test3 -->
-      </class> <!-- com.github.lindenb.jvarkit.util.iterator.EqualRangeIteratorTest -->
-      <class name="com.github.lindenb.jvarkit.lang.SmartComparatorTest">
-        <test-method signature="testEQ(java.lang.String, java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.lang.SmartComparatorTest@7692d9cc]" started-at="2023-11-04T14:04:44Z" name="testEQ" data-provider="t1" finished-at="2023-11-04T14:04:44Z" duration-ms="0" status="PASS">
-          <params>
-            <param index="0">
-              <value>
-                <![CDATA[00000000000001t]]>
-              </value>
-            </param>
-            <param index="1">
-              <value>
-                <![CDATA[1T]]>
-              </value>
-            </param>
-          </params>
+        <test-method signature="testNextTarget()[pri:0, instance:com.github.lindenb.jvarkit.util.iterator.EqualRangeIteratorTest@42d80b78]" started-at="2023-12-07T16:09:58Z" name="testNextTarget" finished-at="2023-12-07T16:09:58Z" duration-ms="0" status="PASS">
           <reporter-output>
           </reporter-output>
-        </test-method> <!-- testEQ -->
-        <test-method signature="testEQ(java.lang.String, java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.lang.SmartComparatorTest@7692d9cc]" started-at="2023-11-04T14:04:44Z" name="testEQ" data-provider="t1" finished-at="2023-11-04T14:04:44Z" duration-ms="0" status="PASS">
+        </test-method> <!-- testNextTarget -->
+      </class> <!-- com.github.lindenb.jvarkit.util.iterator.EqualRangeIteratorTest -->
+      <class name="com.github.lindenb.jvarkit.lang.SmartComparatorTest">
+        <test-method signature="testEQ(java.lang.String, java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.lang.SmartComparatorTest@7d9d1a19]" started-at="2023-12-07T16:09:58Z" name="testEQ" data-provider="t1" finished-at="2023-12-07T16:09:58Z" duration-ms="1" status="PASS">
           <params>
             <param index="0">
               <value>
@@ -1015,87 +999,7 @@ at com.github.lindenb.jvarkit.tools.tests.MiniTestNG.main(MiniTestNG.java:86)
           <reporter-output>
           </reporter-output>
         </test-method> <!-- testEQ -->
-        <test-method signature="testGE(java.lang.String, java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.lang.SmartComparatorTest@7692d9cc]" started-at="2023-11-04T14:04:44Z" name="testGE" data-provider="t0" finished-at="2023-11-04T14:04:44Z" duration-ms="1" status="PASS">
-          <params>
-            <param index="0">
-              <value>
-                <![CDATA[T001]]>
-              </value>
-            </param>
-            <param index="1">
-              <value>
-                <![CDATA[t02]]>
-              </value>
-            </param>
-          </params>
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- testGE -->
-        <test-method signature="testGE(java.lang.String, java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.lang.SmartComparatorTest@7692d9cc]" started-at="2023-11-04T14:04:44Z" name="testGE" data-provider="t0" finished-at="2023-11-04T14:04:44Z" duration-ms="0" status="PASS">
-          <params>
-            <param index="0">
-              <value>
-                <![CDATA[ABC]]>
-              </value>
-            </param>
-            <param index="1">
-              <value>
-                <![CDATA[bcd]]>
-              </value>
-            </param>
-          </params>
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- testGE -->
-        <test-method signature="testLT(java.lang.String, java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.lang.SmartComparatorTest@7692d9cc]" started-at="2023-11-04T14:04:44Z" name="testLT" data-provider="t0" finished-at="2023-11-04T14:04:44Z" duration-ms="0" status="PASS">
-          <params>
-            <param index="0">
-              <value>
-                <![CDATA[T001]]>
-              </value>
-            </param>
-            <param index="1">
-              <value>
-                <![CDATA[t02]]>
-              </value>
-            </param>
-          </params>
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- testLT -->
-        <test-method signature="testLT(java.lang.String, java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.lang.SmartComparatorTest@7692d9cc]" started-at="2023-11-04T14:04:44Z" name="testLT" data-provider="t0" finished-at="2023-11-04T14:04:44Z" duration-ms="0" status="PASS">
-          <params>
-            <param index="0">
-              <value>
-                <![CDATA[1]]>
-              </value>
-            </param>
-            <param index="1">
-              <value>
-                <![CDATA[00009999999999999999999999999999999999999999999999999999999999]]>
-              </value>
-            </param>
-          </params>
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- testLT -->
-        <test-method signature="testGE(java.lang.String, java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.lang.SmartComparatorTest@7692d9cc]" started-at="2023-11-04T14:04:44Z" name="testGE" data-provider="t0" finished-at="2023-11-04T14:04:44Z" duration-ms="0" status="PASS">
-          <params>
-            <param index="0">
-              <value>
-                <![CDATA[1t]]>
-              </value>
-            </param>
-            <param index="1">
-              <value>
-                <![CDATA[00002T]]>
-              </value>
-            </param>
-          </params>
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- testGE -->
-        <test-method signature="testLT(java.lang.String, java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.lang.SmartComparatorTest@7692d9cc]" started-at="2023-11-04T14:04:44Z" name="testLT" data-provider="t0" finished-at="2023-11-04T14:04:44Z" duration-ms="0" status="PASS">
+        <test-method signature="testLT(java.lang.String, java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.lang.SmartComparatorTest@7d9d1a19]" started-at="2023-12-07T16:09:58Z" name="testLT" data-provider="t0" finished-at="2023-12-07T16:09:58Z" duration-ms="0" status="PASS">
           <params>
             <param index="0">
               <value>
@@ -1111,23 +1015,55 @@ at com.github.lindenb.jvarkit.tools.tests.MiniTestNG.main(MiniTestNG.java:86)
           <reporter-output>
           </reporter-output>
         </test-method> <!-- testLT -->
-        <test-method signature="testLT(java.lang.String, java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.lang.SmartComparatorTest@7692d9cc]" started-at="2023-11-04T14:04:44Z" name="testLT" data-provider="t0" finished-at="2023-11-04T14:04:44Z" duration-ms="0" status="PASS">
+        <test-method signature="testGE(java.lang.String, java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.lang.SmartComparatorTest@7d9d1a19]" started-at="2023-12-07T16:09:58Z" name="testGE" data-provider="t0" finished-at="2023-12-07T16:09:58Z" duration-ms="0" status="PASS">
           <params>
             <param index="0">
               <value>
-                <![CDATA[1t]]>
+                <![CDATA[ABC]]>
               </value>
             </param>
             <param index="1">
               <value>
-                <![CDATA[00002T]]>
+                <![CDATA[bcd]]>
               </value>
             </param>
           </params>
           <reporter-output>
           </reporter-output>
-        </test-method> <!-- testLT -->
-        <test-method signature="testGE(java.lang.String, java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.lang.SmartComparatorTest@7692d9cc]" started-at="2023-11-04T14:04:44Z" name="testGE" data-provider="t0" finished-at="2023-11-04T14:04:44Z" duration-ms="0" status="PASS">
+        </test-method> <!-- testGE -->
+        <test-method signature="testGE(java.lang.String, java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.lang.SmartComparatorTest@7d9d1a19]" started-at="2023-12-07T16:09:58Z" name="testGE" data-provider="t0" finished-at="2023-12-07T16:09:58Z" duration-ms="0" status="PASS">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[T001]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[t02]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testGE -->
+        <test-method signature="testEQ(java.lang.String, java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.lang.SmartComparatorTest@7d9d1a19]" started-at="2023-12-07T16:09:58Z" name="testEQ" data-provider="t1" finished-at="2023-12-07T16:09:58Z" duration-ms="0" status="PASS">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[00000000000001t]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[1T]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testEQ -->
+        <test-method signature="testGE(java.lang.String, java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.lang.SmartComparatorTest@7d9d1a19]" started-at="2023-12-07T16:09:58Z" name="testGE" data-provider="t0" finished-at="2023-12-07T16:09:58Z" duration-ms="0" status="PASS">
           <params>
             <param index="0">
               <value>
@@ -1143,21 +1079,85 @@ at com.github.lindenb.jvarkit.tools.tests.MiniTestNG.main(MiniTestNG.java:86)
           <reporter-output>
           </reporter-output>
         </test-method> <!-- testGE -->
+        <test-method signature="testGE(java.lang.String, java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.lang.SmartComparatorTest@7d9d1a19]" started-at="2023-12-07T16:09:58Z" name="testGE" data-provider="t0" finished-at="2023-12-07T16:09:58Z" duration-ms="0" status="PASS">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[1t]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[00002T]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testGE -->
+        <test-method signature="testLT(java.lang.String, java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.lang.SmartComparatorTest@7d9d1a19]" started-at="2023-12-07T16:09:58Z" name="testLT" data-provider="t0" finished-at="2023-12-07T16:09:58Z" duration-ms="0" status="PASS">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[1t]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[00002T]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testLT -->
+        <test-method signature="testLT(java.lang.String, java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.lang.SmartComparatorTest@7d9d1a19]" started-at="2023-12-07T16:09:58Z" name="testLT" data-provider="t0" finished-at="2023-12-07T16:09:58Z" duration-ms="0" status="PASS">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[T001]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[t02]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testLT -->
+        <test-method signature="testLT(java.lang.String, java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.lang.SmartComparatorTest@7d9d1a19]" started-at="2023-12-07T16:09:58Z" name="testLT" data-provider="t0" finished-at="2023-12-07T16:09:58Z" duration-ms="0" status="PASS">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[1]]>
+              </value>
+            </param>
+            <param index="1">
+              <value>
+                <![CDATA[00009999999999999999999999999999999999999999999999999999999999]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- testLT -->
       </class> <!-- com.github.lindenb.jvarkit.lang.SmartComparatorTest -->
       <class name="com.github.lindenb.jvarkit.util.bio.fasta.ContigNameConverterTest">
-        <test-method signature="testFromOneDictionary()[pri:0, instance:com.github.lindenb.jvarkit.util.bio.fasta.ContigNameConverterTest@38c5cc4c]" started-at="2023-11-04T14:04:44Z" name="testFromOneDictionary" finished-at="2023-11-04T14:04:44Z" duration-ms="2" status="PASS">
+        <test-method signature="testFromOneDictionary()[pri:0, instance:com.github.lindenb.jvarkit.util.bio.fasta.ContigNameConverterTest@57baeedf]" started-at="2023-12-07T16:09:59Z" name="testFromOneDictionary" finished-at="2023-12-07T16:09:59Z" duration-ms="1" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- testFromOneDictionary -->
       </class> <!-- com.github.lindenb.jvarkit.util.bio.fasta.ContigNameConverterTest -->
       <class name="com.github.lindenb.jvarkit.util.bio.bed.BedLineCodecTest">
-        <test-method signature="test()[pri:0, instance:com.github.lindenb.jvarkit.util.bio.bed.BedLineCodecTest@23529fee]" started-at="2023-11-04T14:04:44Z" name="test" finished-at="2023-11-04T14:04:44Z" duration-ms="1" status="PASS">
+        <test-method signature="test()[pri:0, instance:com.github.lindenb.jvarkit.util.bio.bed.BedLineCodecTest@3bfdc050]" started-at="2023-12-07T16:09:58Z" name="test" finished-at="2023-12-07T16:09:58Z" duration-ms="2" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- test -->
       </class> <!-- com.github.lindenb.jvarkit.util.bio.bed.BedLineCodecTest -->
       <class name="com.github.lindenb.jvarkit.util.vcf.VCFUtilsTest">
-        <test-method signature="test01(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.util.vcf.VCFUtilsTest@184cf7cf]" started-at="2023-11-04T14:04:42Z" name="test01" data-provider="src01" finished-at="2023-11-04T14:04:42Z" duration-ms="9" status="PASS">
+        <test-method signature="test01(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.util.vcf.VCFUtilsTest@1794d431]" started-at="2023-12-07T16:09:59Z" name="test01" data-provider="src01" finished-at="2023-12-07T16:09:59Z" duration-ms="2" status="PASS">
           <params>
             <param index="0">
               <value>
@@ -1170,20 +1170,7 @@ at com.github.lindenb.jvarkit.tools.tests.MiniTestNG.main(MiniTestNG.java:86)
           <reporter-output>
           </reporter-output>
         </test-method> <!-- test01 -->
-        <test-method signature="test02(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.util.vcf.VCFUtilsTest@184cf7cf]" started-at="2023-11-04T14:04:42Z" name="test02" data-provider="src01" finished-at="2023-11-04T14:04:42Z" duration-ms="1" status="PASS">
-          <params>
-            <param index="0">
-              <value>
-                <![CDATA[##fileformat=VCFv4.2
-#CHROMPOSIDREFALTQUALFILTERINFOFORMATS1S2
-]]>
-              </value>
-            </param>
-          </params>
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- test02 -->
-        <test-method signature="test03(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.util.vcf.VCFUtilsTest@184cf7cf]" started-at="2023-11-04T14:04:42Z" name="test03" data-provider="src01" finished-at="2023-11-04T14:04:42Z" duration-ms="2" status="PASS">
+        <test-method signature="test03(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.util.vcf.VCFUtilsTest@1794d431]" started-at="2023-12-07T16:09:59Z" name="test03" data-provider="src01" finished-at="2023-12-07T16:09:59Z" duration-ms="0" status="PASS">
           <params>
             <param index="0">
               <value>
@@ -1196,7 +1183,20 @@ at com.github.lindenb.jvarkit.tools.tests.MiniTestNG.main(MiniTestNG.java:86)
           <reporter-output>
           </reporter-output>
         </test-method> <!-- test03 -->
-        <test-method signature="testIsAVcf()[pri:0, instance:com.github.lindenb.jvarkit.util.vcf.VCFUtilsTest@184cf7cf]" started-at="2023-11-04T14:04:42Z" name="testIsAVcf" finished-at="2023-11-04T14:04:42Z" duration-ms="1" status="PASS">
+        <test-method signature="test02(java.lang.String)[pri:0, instance:com.github.lindenb.jvarkit.util.vcf.VCFUtilsTest@1794d431]" started-at="2023-12-07T16:09:59Z" name="test02" data-provider="src01" finished-at="2023-12-07T16:09:59Z" duration-ms="0" status="PASS">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[##fileformat=VCFv4.2
+#CHROMPOSIDREFALTQUALFILTERINFOFORMATS1S2
+]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- test02 -->
+        <test-method signature="testIsAVcf()[pri:0, instance:com.github.lindenb.jvarkit.util.vcf.VCFUtilsTest@1794d431]" started-at="2023-12-07T16:09:59Z" name="testIsAVcf" finished-at="2023-12-07T16:09:59Z" duration-ms="0" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- testIsAVcf -->

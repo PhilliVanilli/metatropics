@@ -33,6 +33,7 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
     run_name = project_dir.parts[-1]
     pod5_dir = Path(project_dir, "pod5")
     fastq_dir = Path(project_dir, "fastq")
+    pass_dir = Path(fastq_dir, "pass")
     demultiplexed_dir = Path(project_dir, "demultiplexed")
     all_sample_dir = Path(project_dir, "samples")
     sample_names_file = Path(project_dir, "sample_names.csv")
@@ -84,11 +85,14 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
         print(f"\n________________\n\nRunning: demultiplexing________________\n")
         with open(log_file, "a") as handle:
             handle.write(f"\nRunning: demultiplexing")
-        if not list(fastq_dir.glob("*.fastq*")):
-            fastq_dir = Path(fastq_dir, "pass")
+        if not list(pass_dir.glob("*.fastq*")):
+            fastq_dir= Path(project_dir, "fastq_pass")
             if not list(fastq_dir.glob("*.fastq*")):
                 sys.exit(f"No fastq files found in {str(fastq_dir)} or {str(fastq_dir.parent)}")
-        run = guppy_demultiplex(fastq_dir, guppy_path, demultiplexed_dir)
+            run = guppy_demultiplex(fastq_dir, guppy_path, demultiplexed_dir)
+        else:
+            fastq_dir = Path(fastq_dir, "pass")
+            run = guppy_demultiplex(fastq_dir, guppy_path, demultiplexed_dir)
         if run and not rerun_step_only:
             run_step = 2
         elif run and rerun_step_only:
