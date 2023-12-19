@@ -306,15 +306,12 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
                 handle.write(
                     f"\n\n------->Running majority consensus pipeline for {sample_no} st/nd sample {sample_name} in new window\n")
 
-
-
-
             # start majority consensus pipeline in new window
             majority_cmd = f"python ~/metatropics/msa_consensus.py -in {sample_fastq} -lf {log_file_msa_sample} " \
                            f"-rs {reference_seqs_file} " \
                            f"-t {msa_threads} -d {min_depth} {use_gaps}"
             print(majority_cmd)
-            try_except_continue_on_fail(f"gnome-terminal -- /bin/sh -c 'conda run -n meta {majority_cmd}'")
+            try_except_continue_on_fail(f"gnome-terminal -- /bin/sh -c 'conda run -n meta_dev {majority_cmd}'")
             used_threads += msa_threads
 
         # concat all log files

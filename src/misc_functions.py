@@ -33,7 +33,7 @@ def create_coverage_mask(depth_file_path, threshold):
         low_depth_intervals.append((start, len(depth_values)))
     with open ('coverage_mask.txt','w') as fh:
         for interval in low_depth_intervals:
-            fh.write(f"{refname}\t{interval[0]}\t{interval[1]}\n")   
+            fh.write(f"{refname}\t{interval[0]-1}\t{interval[1]-1}\n")
 
 def file_len(fname):
     with open(fname) as f:
@@ -309,7 +309,7 @@ def plot_primer_depth(primer_pairs, primer_depth, percent_primers_depth, sample_
     f = plt.gcf()
     f.set_size_inches(w, h)
 
-    plt.savefig(outfile, ext="png", dpi=300, facecolor="white", bbox_inches="tight")
+    plt.savefig(outfile, dpi=300, facecolor="white", bbox_inches="tight")
     plt.close()
 
 
@@ -328,7 +328,7 @@ def plot_depth(depth_list, sample_name, outfile):
     f = plt.gcf()
     f.set_size_inches(w, h)
 
-    plt.savefig(outfile, ext="png", dpi=300, facecolor="white", bbox_inches="tight")
+    plt.savefig(outfile, dpi=300, facecolor="white", bbox_inches="tight")
     plt.close()
 
 

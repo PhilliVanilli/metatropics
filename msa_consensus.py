@@ -6,12 +6,12 @@ import csv
 from statistics import mean
 from src.misc_functions import file_len
 from src.misc_functions import try_except_continue_on_fail
-from src.misc_functions import try_except_exit_on_fail
 from src.misc_functions import consensus_maker
 from src.misc_functions import fasta_to_dct
 from src.misc_functions import plot_depth
+from src.misc_functions import create_coverage_mask
 
-__author__ = 'Colin Anthony'
+__author__ = 'Philippe Selhorst & Colin Anthony'
 
 
 class Formatter(argparse.ArgumentDefaultsHelpFormatter, argparse.RawTextHelpFormatter):
@@ -40,8 +40,8 @@ def main(infile, log_file, chosen_ref_file, threads,
     raw_sample_name = sample_name.replace('.no_host', '')
     raw_sample_fastq = pathlib.Path(project_dir, 'raw_samples', f'{raw_sample_name}.fastq')
     sample_viruses_file = pathlib.Path(seq_folder, raw_sample_name + "_viruses.fasta")
-    sam_outfile = pathlib.Path(sample_dir, sample_name + ".no_host.ref.sam")
-    bam_outfile = pathlib.Path(sample_dir, sample_name + ".no_host_ref.sorted.bam")
+    sam_outfile = pathlib.Path(sample_dir, sample_name + ".ref.sam")
+    bam_outfile = pathlib.Path(sample_dir, sample_name + ".ref.sorted.bam")
 
     # run minimap2 on multi_ref file
     print(f"\nRunning: minimap2 read mapping")
@@ -57,7 +57,7 @@ def main(infile, log_file, chosen_ref_file, threads,
 
     # convert sam to sorted and indexed bam
     print(f"\nCreating sorted & indexed bam file")
-    samtools_cmd = f"samtools view {sam_outfile} -bS -F 2048 | samtools sort - -o {bam_outfile} | samtools index -"
+    samtools_cmd = f"samtools view {sam_outfile} -bS -F 2048 | samtools sort - -o {bam_outfile} 2>&1 | tee -a {log_file}\nsamtools index {bam_outfile} 2>&1 | tee -a {log_file}"
     print("\n", samtools_cmd, "\n")
     with open(log_file, "a") as handle:
         handle.write(f"\nRunning: creating sorted & indexed bam file\n")
@@ -74,9 +74,11 @@ def main(infile, log_file, chosen_ref_file, threads,
         with open(sample_viruses_file,'a') as handle:
             handle.write(f">{ref_name}\n{ref_seq}\n")
             handle.close()
-    depth_outfile1 = pathlib.Path(sample_dir, f"{raw_sample_name}.depth.csv")
+    depth_outfile1 = pathlib.Path(sample_dir, sample_name + ".depth.csv")
+    basecount_file = pathlib.Path(sample_dir, sample_name + ".basecount.csv")
     with open(depth_outfile1, 'a') as fh:
         fh.write(f"sample_name,ref_name,mean_depth,total_reads,virus_reads,percentage\n")
+
 
     # iterate mapping over the references
     for k, v in reference_d.items():
@@ -89,20 +91,31 @@ def main(infile, log_file, chosen_ref_file, threads,
         virus_dir = pathlib.Path(sample_dir, ref_name)
         virus_dir.mkdir(mode=0o777, parents=True, exist_ok=True)
         os.chdir(virus_dir)
-        depth_file = pathlib.Path(virus_dir, raw_sample_name + ".depth.tsv")
-        reads_file = pathlib.Path(virus_dir, raw_sample_name + ".reads.txt")
-        basecount_file = pathlib.Path(sample_dir, raw_sample_name + ".basecount.csv")
-        msa_fasta = pathlib.Path(virus_dir, raw_sample_name + ".msa_from_bam_file.fasta")
-        msa_cons = pathlib.Path(virus_dir, raw_sample_name + ".msa_consensus.fasta")
-        ref_aligned_outfile = pathlib.Path(virus_dir, sample_name + f".{ref_name}.bam")
+        single_ref_file = pathlib.Path(virus_dir, ref_name + ".fasta")
+        with open(single_ref_file, 'w') as fh:
+            fh.write(f">{ref_name}\n{ref_seq}\n")
+        depth_file = pathlib.Path(virus_dir, sample_name + f".{ref_name}.depth.tsv")
+        reads_file = pathlib.Path(virus_dir, sample_name + f".{ref_name}.reads.txt")
+        msa_fasta = pathlib.Path(virus_dir, sample_name + f".{ref_name}.msa_from_bam_file.fasta")
+        msa_cons = pathlib.Path(virus_dir, sample_name + f".{ref_name}.msa_consensus.fasta")
+        ref_aligned_outfile = pathlib.Path(virus_dir, sample_name + f".{ref_name}.sorted.bam")
+        hdf_outfile = pathlib.Path(virus_dir, sample_name + f".{ref_name}.hdf")
+        vcf_outfile = pathlib.Path(virus_dir, sample_name + f".{ref_name}.vcf")
+        gz_outfile = pathlib.Path(virus_dir, sample_name + f".{ref_name}.vcf.gz")
+        vcf_passfile = pathlib.Path(virus_dir, sample_name + f".{ref_name}.pass.vcf")
+        gz_passfile = pathlib.Path(virus_dir, sample_name + f".{ref_name}.pass.vcf.gz")
+        vcf_failfile = pathlib.Path(virus_dir, sample_name + f".{ref_name}.fail.vcf")
+        precon_file = pathlib.Path(virus_dir, sample_name + f".{ref_name}.preconsensus.fasta")
+        con_file = pathlib.Path(virus_dir, sample_name + f".{ref_name}.consensus.fasta")
 
         # extract ref specific alignment from multiref bam file
+        with open(log_file, "a") as handle:
+            handle.write(f"\n--------{ref_name}--------\n")
         print(f"\nRunning: extracting {ref_name} alignment")
-        extract_cmd = f"samtools view -b {bam_outfile} {k} -o - | samtools sort -o {ref_aligned_outfile} - | samtools index - " \
-                      f"2>&1 | tee -a {log_file}"
+        extract_cmd = f"samtools view -b {bam_outfile} {ref_name} -o - | samtools sort -o {ref_aligned_outfile} 2>&1 | tee -a {log_file}\nsamtools index {ref_aligned_outfile} 2>&1 | tee -a {log_file}"
         print("\n", extract_cmd, "\n")
         with open(log_file, "a") as handle:
-            handle.write(f"\nExtracting {ref_name} alignment\n")
+            handle.write(f"\nRunning: extracting {ref_name} alignment\n")
             handle.write(f"{extract_cmd}\n")
         run = try_except_continue_on_fail(extract_cmd)
         if not run:
@@ -170,7 +183,7 @@ def main(infile, log_file, chosen_ref_file, threads,
 
         #get total number of reads and calculate % virus
         total_reads = file_len(raw_sample_fastq)/4
-        sam_view_cmd = f"samtools view -F 0x904 -c {ref_aligned_outfile} -o {reads_file}"
+        sam_view_cmd = f"samtools view -F 0x904 -c {ref_aligned_outfile} -o {reads_file} 2>&1 | tee -a {log_file}"
         print("\n", sam_view_cmd, "\n")
         run = try_except_continue_on_fail(sam_view_cmd)
         if not run:
@@ -244,11 +257,10 @@ def main(infile, log_file, chosen_ref_file, threads,
         else:
             cons, depth_profile = consensus_maker(fasta_msa_d, positional_depth, min_depth, use_gaps)
             with open(msa_cons, 'w') as handle:
-                handle.write(f">{sample_name}_msa\n{cons}\n")
+                handle.write(f">{sample_name}_{ref_name}_msa\n{cons}\n")
 
             # write consensus to the sample_viruses file
             with open(sample_viruses_file, 'a') as fh:
-
                 fh.write(f">{sample_name}_{ref_name}_msa\n{cons.replace('-', '')}\n")
                 fh.close()
 
@@ -258,10 +270,36 @@ def main(infile, log_file, chosen_ref_file, threads,
             plot_depth(depth_list, sample_name, depth_outfile)
 
         # generate artic consensus sequence
-        medaka consensus --model r1041_e82_400bps_hac_g615 --threads 16 --chunk_len 800 --chunk_ovlp 400 PMP0012530.sorted.bam PMP0012530.hdf
-        medaka variant /home/user/artic-ncov2019/primer_schemes/SARS2_400/V1/SARS2_400.reference.fasta PMP0012530.hdf PMP0012530.vcf
-        bgzip -f PMP0012530.vcf tabix -f -p vcf PMP0012530.vcf.gz
-        longshot -P 0 -F -A --no_haps --bam PMP0012530.sorted.bam --ref /home/user/artic-ncov2019/primer_schemes/SARS2_400/V1/SARS2_400.reference.fasta --out PMP0012530.vcf --potential_variants PMP0012530.vcf.gz
+        create_coverage_mask(depth_file, 20)
+        artic_cmd=[]
+        artic_cmd.append(f"medaka consensus --model r1041_e82_400bps_hac_g615 --threads 16 --chunk_len 800 --chunk_ovlp 400 {ref_aligned_outfile} {hdf_outfile} 2>&1 | tee -a {log_file}")
+        artic_cmd.append(f"medaka variant {single_ref_file} {hdf_outfile} {vcf_outfile} 2>&1 | tee -a {log_file}")
+        artic_cmd.append(f"bgzip -f {vcf_outfile} 2>&1 | tee -a {log_file}")
+        artic_cmd.append(f"tabix -f -p vcf {gz_outfile} 2>&1 | tee -a {log_file}")
+        artic_cmd.append(f"longshot -P 0 -F -A --no_haps --bam {ref_aligned_outfile} --ref {single_ref_file} --out {vcf_outfile} --potential_variants {gz_outfile} 2>&1 | tee -a {log_file}")
+        artic_cmd.append(f"python ~/metatropics/vcf_filter.py --medaka {vcf_outfile} {vcf_passfile} {vcf_failfile} 2>&1 | tee -a {log_file}")
+        artic_cmd.append(f"bgzip -f {vcf_passfile}  2>&1 | tee -a {log_file}\ntabix -f -p vcf {gz_passfile} 2>&1 | tee -a {log_file}")
+        artic_cmd.append(f"python ~/metatropics/mask.py {single_ref_file} coverage_mask.txt {vcf_failfile} {precon_file} 2>&1 | tee -a {log_file}")
+        artic_cmd.append(f"bcftools consensus -f {precon_file} {gz_passfile} -o {con_file} 2>&1 | tee -a {log_file}")
+
+        print("\n", artic_cmd, "\n")
+        with open(log_file, "a") as handle:
+            handle.write(f"\nRunning: artic consensus generation\n")
+        for cmd in artic_cmd:
+            with open(log_file, "a") as handle:
+                handle.write(f"\n{cmd}\n")
+            run = try_except_continue_on_fail(cmd)
+            if not run:
+                return False
+
+        #rename artic consensus header
+        with open(con_file, "r") as handle:
+            data = handle.readlines()
+            data[0] = f">{sample_name}_{ref_name}_art\n"
+        with open(con_file, "w") as handle:
+            handle.writelines(data)
+
+
     # # delete single ref files
     # for file in pathlib.Path(sample_dir).glob("*fasta*"):
     #     os.remove(file)
