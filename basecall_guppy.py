@@ -11,7 +11,7 @@ __author__ = 'Philippe Selhorst'
 class Formatter(argparse.ArgumentDefaultsHelpFormatter, argparse.RawTextHelpFormatter):
     pass
 
-def main(inpath, guppy_path, outpath, bascall_mode, real_time, script_folder):
+def main(inpath, guppy_path, outpath, basecallmode, real_time, script_folder):
     # force absolute file paths
     inpath = pathlib.Path(inpath).absolute()
     outpath = pathlib.Path(outpath).absolute()
@@ -20,8 +20,6 @@ def main(inpath, guppy_path, outpath, bascall_mode, real_time, script_folder):
     guppy_path = pathlib.Path(guppy_path).absolute()
     guppy_basecaller = pathlib.Path(guppy_path, "guppy_basecaller")
     cuda_device = "CUDA:0"
-    config_option = ["dna_r10.4.1_e8.2_400bps_5khz_hac.cfg", "dna_r9.4.1_450bps_hac.cfg"]
-    config = config_option[bascall_mode]
     gpu_settings = f"-x 'auto' "
     if real_time:
         projectpath = inpath.parent
@@ -62,7 +60,7 @@ def main(inpath, guppy_path, outpath, bascall_mode, real_time, script_folder):
                     file = os.path.join(inpath, filename)
                     shutil.move(file, basecalling_folder)
 
-            guppy_basecall_cmd = f"{str(guppy_basecaller)} -i {basecalling_folder} -r -s {outpath} -c {config} " \
+            guppy_basecall_cmd = f"{str(guppy_basecaller)} -i {basecalling_folder} -r -s {outpath} -c {basecall_mode} " \
                                  f"--records_per_fastq 4000 --min_qscore 7 {resume}" \
                                  f"{gpu_settings}"
 
@@ -84,7 +82,7 @@ def main(inpath, guppy_path, outpath, bascall_mode, real_time, script_folder):
         return True
 
     else:
-        guppy_basecall_cmd = f"{str(guppy_basecaller)} -i {inpath} -r -s {outpath} -c {config} " \
+        guppy_basecall_cmd = f"{str(guppy_basecaller)} -i {inpath} -r -s {outpath} -c {basecall_mode} " \
                              f"--compress_fastq --records_per_fastq 4000 --min_qscore 7 " \
                              f"{gpu_settings}"
         print(guppy_basecall_cmd)
@@ -109,9 +107,9 @@ if __name__ == "__main__":
                         help='The path to script_folder')
     parser.add_argument('-o', '--outpath', type=str, default=None, required=True,
                         help='The path for the outfile')
-    parser.add_argument('-b', '--bascall_mode', type=int, choices=[0, 1], default=0, required=False,
-                        help='0 = Fast mode\n'
-                             '1 = high accuracy mode')
+    parser.add_argument("-b", "--basecall_mode", default="dna_r10.4.1_e8.2_400bps_5khz_hac.cfg",
+                        choices=["dna_r10.4.1_e8.2_400bps_5khz_hac.cfg", "dna_r9.4.1_450bps_hac.cfg"], type=str,
+                        help="Specify the basecall model given to guppy", required=False)
     parser.add_argument("-rt", "--real_time", default=False, action="store_true",
                         help="start basecalling pod5 files in batches during sequencing", required=False)
 
@@ -120,8 +118,8 @@ if __name__ == "__main__":
     inpath = args.inpath
     guppy_path = args.guppy_path
     outpath = args.outpath
-    bascall_mode = args.bascall_mode
+    basecall_mode = args.basecall_mode
     real_time = args.real_time
     script_folder = args.scriptfolder
 
-    main(inpath, guppy_path, outpath, bascall_mode, real_time, script_folder)
+    main(inpath, guppy_path, outpath, basecall_mode, real_time, script_folder)

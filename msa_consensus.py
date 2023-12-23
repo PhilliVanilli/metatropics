@@ -40,6 +40,8 @@ def main(infile, log_file, chosen_ref_file, threads,
     raw_sample_name = sample_name.replace('.no_host', '')
     raw_sample_fastq = pathlib.Path(project_dir, 'raw_samples', f'{raw_sample_name}.fastq')
     sample_viruses_file = pathlib.Path(seq_folder, raw_sample_name + "_viruses.fasta")
+    if os.path.isfile(sample_viruses_file):
+        os.unlink(sample_viruses_file)
     sam_outfile = pathlib.Path(sample_dir, sample_name + ".ref.sam")
     bam_outfile = pathlib.Path(sample_dir, sample_name + ".ref.sorted.bam")
 
@@ -67,6 +69,7 @@ def main(infile, log_file, chosen_ref_file, threads,
         return False
 
     # initialize the fasta files with viruses per sample
+
     reference_d = fasta_to_dct(chosen_ref_file)
     for k,v in reference_d.items():
         ref_name = k[0:-7]
@@ -243,7 +246,8 @@ def main(infile, log_file, chosen_ref_file, threads,
 
         # convert fasta alignment to msa consensus sequence
         fasta_msa_d = fasta_to_dct(msa_fasta)
-
+        sample_name_short = sample_name.split('.')[0]
+        ref_name_short = ref_name.split('_')[0]
         if len(fasta_msa_d) == 0:
             print(f"\nNo MSA made from Bam file\nNo reads may have been mapped\n\n")
             with open(log_file, 'a') as handle:
@@ -257,22 +261,27 @@ def main(infile, log_file, chosen_ref_file, threads,
         else:
             cons, depth_profile = consensus_maker(fasta_msa_d, positional_depth, min_depth, use_gaps)
             with open(msa_cons, 'w') as handle:
-                handle.write(f">{sample_name}_{ref_name}_msa\n{cons}\n")
+                handle.write(f">{sample_name_short}_{ref_name_short}_msa\n{cons}\n")
 
             # write consensus to the sample_viruses file
-            with open(sample_viruses_file, 'a') as fh:
-                fh.write(f">{sample_name}_{ref_name}_msa\n{cons.replace('-', '')}\n")
-                fh.close()
+            # with open(sample_viruses_file, 'a') as fh:
+            #     fh.write(f">{sample_name}_{ref_name}_msa\n{cons.replace('-', '')}\n")
+            #     fh.close()
 
             # plot depth for sample
             depth_list = depth_profile["non_gap"]
+            y = pow(10, int(len(str(total_basecount))))
+            print(y)
+            norm_depth_list = [x/total_basecount*y for x in depth_list]
+            print(depth_list)
+            print(norm_depth_list)
             depth_outfile = pathlib.Path(plot_folder, sample_name + '_' + ref_name + "_sequencing_depth.png")
-            plot_depth(depth_list, sample_name, depth_outfile)
+            plot_depth(depth_list, sample_name_short, depth_outfile, ref_name_short)
 
         # generate artic consensus sequence
         create_coverage_mask(depth_file, 20)
         artic_cmd=[]
-        artic_cmd.append(f"medaka consensus --model r1041_e82_400bps_hac_g615 --threads 16 --chunk_len 800 --chunk_ovlp 400 {ref_aligned_outfile} {hdf_outfile} 2>&1 | tee -a {log_file}")
+        artic_cmd.append(f"medaka consensus --model r1041_e82_400bps_hac_g615 --threads 2 --chunk_len 800 --chunk_ovlp 400 {ref_aligned_outfile} {hdf_outfile} 2>&1 | tee -a {log_file}")
         artic_cmd.append(f"medaka variant {single_ref_file} {hdf_outfile} {vcf_outfile} 2>&1 | tee -a {log_file}")
         artic_cmd.append(f"bgzip -f {vcf_outfile} 2>&1 | tee -a {log_file}")
         artic_cmd.append(f"tabix -f -p vcf {gz_outfile} 2>&1 | tee -a {log_file}")
@@ -292,12 +301,14 @@ def main(infile, log_file, chosen_ref_file, threads,
             if not run:
                 return False
 
-        #rename artic consensus header
+        #rename artic consensus header and write to sample viruses file
         with open(con_file, "r") as handle:
             data = handle.readlines()
-            data[0] = f">{sample_name}_{ref_name}_art\n"
+            data[0] = f">{sample_name_short}_{ref_name_short}_art\n"
         with open(con_file, "w") as handle:
             handle.writelines(data)
+        with open(sample_viruses_file, 'a') as fh:
+            fh.writelines(data)
 
 
     # # delete single ref files

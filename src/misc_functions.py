@@ -152,7 +152,7 @@ def filter_length_trim_seq(fastq, outfile, max_len, min_len, left_trim, right_tr
     :param right_trim: (int) number of nt to trim from right
     :return: (bool) True if outfile is not empty else False
     """
-    left_trim_forrmat = left_trim + 1
+    # left_trim_forrmat = left_trim + 1
     right_trim_format = -right_trim
     not_empty = False
     with open(outfile, 'w') as handle:
@@ -163,7 +163,7 @@ def filter_length_trim_seq(fastq, outfile, max_len, min_len, left_trim, right_tr
                     continue
                 else:
                     not_empty = True
-                    trimmed_record = record[left_trim_forrmat:right_trim_format]
+                    trimmed_record = record[left_trim:right_trim_format]
                     SeqIO.write([trimmed_record], handle, "fastq")
         except ValueError as e:
             print("Failed on fastq file:", fastq, "\n", e, "\n", "Continuing with next fastq file")
@@ -313,12 +313,12 @@ def plot_primer_depth(primer_pairs, primer_depth, percent_primers_depth, sample_
     plt.close()
 
 
-def plot_depth(depth_list, sample_name, outfile):
+def plot_depth(depth_list, sample_name, outfile, ref):
 
     x_vals = [x for x in range(len(depth_list))]
     fig, ax = plt.subplots()
-    ax.set_ylabel('Sequencing depth')
-    ax.set_xlabel('Sequence position')
+    ax.set_ylabel('Norm. sequencing depth')
+    ax.set_xlabel(ref)
     ax.set_title(sample_name)
 
     plt.plot(x_vals, depth_list)
