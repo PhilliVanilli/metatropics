@@ -19,7 +19,7 @@ class Formatter(argparse.ArgumentDefaultsHelpFormatter, argparse.RawTextHelpForm
 
 
 def main(infile, log_file, chosen_ref_file, threads,
-         min_depth, use_gaps):
+         min_depth, use_gaps, basecall_mode):
 
     # force absolute file paths
     sample_fastq = pathlib.Path(infile).absolute()
@@ -278,10 +278,16 @@ def main(infile, log_file, chosen_ref_file, threads,
             depth_outfile = pathlib.Path(plot_folder, sample_name + '_' + ref_name + "_sequencing_depth.png")
             plot_depth(depth_list, sample_name_short, depth_outfile, ref_name_short)
 
+        medaka_model=''
+        if basecall_mode=="dna_r10.4.1_e8.2_400bps_5khz_hac.cfg":
+            medaka_model = "r1041_e82_400bps_hac_g615"
+        if basecall_mode == "dna_r9.4.1_450bps_hac.cfg":
+            medaka_model="r941_min_hac_g507"
+
         # generate artic consensus sequence
-        create_coverage_mask(depth_file, 20)
+        create_coverage_mask(depth_file, min_depth)
         artic_cmd=[]
-        artic_cmd.append(f"medaka consensus --model r1041_e82_400bps_hac_g615 --threads 2 --chunk_len 800 --chunk_ovlp 400 {ref_aligned_outfile} {hdf_outfile} 2>&1 | tee -a {log_file}")
+        artic_cmd.append(f"medaka consensus --model {medaka_model} --threads 2 --chunk_len 800 --chunk_ovlp 400 {ref_aligned_outfile} {hdf_outfile} 2>&1 | tee -a {log_file}")
         artic_cmd.append(f"medaka variant {single_ref_file} {hdf_outfile} {vcf_outfile} 2>&1 | tee -a {log_file}")
         artic_cmd.append(f"bgzip -f {vcf_outfile} 2>&1 | tee -a {log_file}")
         artic_cmd.append(f"tabix -f -p vcf {gz_outfile} 2>&1 | tee -a {log_file}")
@@ -289,7 +295,7 @@ def main(infile, log_file, chosen_ref_file, threads,
         artic_cmd.append(f"python ~/metatropics/vcf_filter.py --medaka {vcf_outfile} {vcf_passfile} {vcf_failfile} 2>&1 | tee -a {log_file}")
         artic_cmd.append(f"bgzip -f {vcf_passfile}  2>&1 | tee -a {log_file}\ntabix -f -p vcf {gz_passfile} 2>&1 | tee -a {log_file}")
         artic_cmd.append(f"python ~/metatropics/mask.py {single_ref_file} coverage_mask.txt {vcf_failfile} {precon_file} 2>&1 | tee -a {log_file}")
-        artic_cmd.append(f"bcftools consensus -f {precon_file} {gz_passfile} -o {con_file} 2>&1 | tee -a {log_file}")
+        artic_cmd.append(f"bcftools consensus -f {precon_file} {gz_passfile} -m coverage_mask.txt -o {con_file} 2>&1 | tee -a {log_file}")
 
         print("\n", artic_cmd, "\n")
         with open(log_file, "a") as handle:
@@ -340,6 +346,8 @@ if __name__ == "__main__":
                                                                          "the MSA to consensus", required=False)
     parser.add_argument("-ug", "--use_gaps", default=False, action="store_true",
                         help="use gap characters when making the consensus sequences", required=False)
+    parser.add_argument("-b", "--basecall_mode", default="dna_r10.4.1_e8.2_400bps_5khz_hac.cfg", choices=["dna_r10.4.1_e8.2_400bps_5khz_hac.cfg", "dna_r9.4.1_450bps_hac.cfg"], type=str,
+                        help="Specify the basecall model given to guppy", required=False)
 
     args = parser.parse_args()
     infile = args.infile
@@ -348,6 +356,7 @@ if __name__ == "__main__":
     threads = args.threads
     min_depth = args.min_depth
     use_gaps = args.use_gaps
+    basecall_mode = args.basecall_mode
 
     main(infile, log_file, chosen_ref_file,
-         threads, min_depth, use_gaps)
+         threads, min_depth, use_gaps,basecall_mode)

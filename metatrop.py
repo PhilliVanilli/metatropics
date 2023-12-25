@@ -39,6 +39,7 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
     all_sample_dir = Path(project_dir, "samples")
     raw_sample_dir = Path(project_dir, "raw_samples")
     sample_names_file = Path(project_dir, "sample_names.csv")
+    seq_folder = Path(project_dir, "seq_files")
     for file in Path(project_dir).glob("*percentages.csv"):
         os.remove(file)
     percentages_file = Path(project_dir, "virus_percentages.csv")
@@ -332,7 +333,7 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
             # start majority consensus pipeline in new window
             majority_cmd = f"python ~/metatropics/msa_consensus.py -in {sample_fastq} -lf {log_file_msa_sample} " \
                            f"-rs {reference_seqs_file} " \
-                           f"-t {msa_threads} -d {min_depth} {use_gaps}"
+                           f"-t {msa_threads} -d {min_depth} {use_gaps} -b {basecall_mode}"
             print(majority_cmd)
             try_except_continue_on_fail(f"gnome-terminal -- /bin/sh -c 'conda run -n meta_dev {majority_cmd}'")
             used_threads += msa_threads
@@ -402,6 +403,20 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
                 writer.writerow(percentage)
             opencsv.close()
 
+        print("Aligning consensus sequences\n")
+
+        for seqfile in Path(seq_folder).glob("*.fasta"):
+            seqfile_name = Path(seqfile).stem
+            tmp_file = Path(seq_folder, seqfile_name + "_temp_aligned.fasta")
+            mafft_cmd = f"mafft --thread -1 --auto {str(seqfile)} > {str(tmp_file)}"
+            print(mafft_cmd)
+            run = try_except_continue_on_fail(mafft_cmd)
+            if not run:
+                print(f"could not align {seqfile}")
+                sys.exit("exiting")
+            else:
+                seqfile.unlink()
+                os.rename(str(tmp_file), str(seqfile))
 
     # print end time
     now = datetime.datetime.now()
@@ -477,7 +492,7 @@ if __name__ == "__main__":
     parser.add_argument("-ho", "--host", default=argparse.SUPPRESS, type=str, choices=["homo_sapiens","mastomys_natalensis"], required=True,
                         help="name of host species to remove")
     parser.add_argument("-bc", "--barcodes", default=None, type=str, choices=["CUST","SQK-NBD114-24"], required=False,
-                        help="Specify barcodes used for demultiplexing")
+                        help="Specify barcodes used for demultiplexing, if not specified, 27bp are trimmed from both ends of each read after demultiplexing")
 
     args = parser.parse_args()
 
