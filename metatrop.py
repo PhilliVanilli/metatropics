@@ -24,7 +24,7 @@ class Formatter(argparse.ArgumentDefaultsHelpFormatter, argparse.RawTextHelpForm
 
 def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth, run_step,
          rerun_step_only, basecall_mode, cpu_threads,use_gaps,
-         guppy_dir, real_time, host, barcodes):
+         guppy_dir, real_time, host, barcodes, one_end):
 
     # set the dir paths
     script_dir = Path(__file__).absolute().parent
@@ -96,9 +96,9 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
             fastq_dir = Path(project_dir, "fastq_pass")
             if not list(fastq_dir.glob("*.fastq*")):
                 sys.exit(f"No fastq files found in {str(fastq_dir)} or {str(pass_dir)}")
-            run = guppy_demultiplex(fastq_dir, guppy_path, demultiplexed_dir, barcodes)
+            run = guppy_demultiplex(fastq_dir, guppy_path, demultiplexed_dir, barcodes, one_end)
         else:
-            run = guppy_demultiplex(pass_dir, guppy_path, demultiplexed_dir, barcodes)
+            run = guppy_demultiplex(pass_dir, guppy_path, demultiplexed_dir, barcodes, one_end)
 
         if run and not rerun_step_only:
             run_step = 2
@@ -374,21 +374,24 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
             writer = csv.writer(fh)
             writer.writerow(viruslist)
 
-        for csvfile in Path(all_sample_dir).glob("*/*basecount.csv"):
+        for csvfile in sorted(Path(all_sample_dir).glob("*/*basecount.csv")):
             opencsv = open(csvfile, 'r')
             csvfile_stem = csvfile.stem
             counts = [csvfile_stem, 'count']
             percentage = [csvfile_stem, 'percentage']
+            avg_length = [csvfile_stem, 'avg_length']
             for line in csv.reader(opencsv):
-                counts.append(line[3])
-                percentage.append(line[4])
+                counts.append(line[4])
+                percentage.append(line[5])
+                avg_length.append(line[2])
             with open(percentages_file, 'a') as fh:
                 writer = csv.writer(fh)
                 writer.writerow(counts)
                 writer.writerow(percentage)
+                writer.writerow(avg_length)
             opencsv.close()
 
-        for csvfile in Path(all_sample_dir).glob("*/*depth.csv"):
+        for csvfile in sorted(Path(all_sample_dir).glob("*/*depth.csv")):
             opencsv = open(csvfile, 'r')
             csvfile_stem = csvfile.stem
             counts = [csvfile_stem, 'count']
@@ -491,8 +494,10 @@ if __name__ == "__main__":
                         help="start basecalling pod5 files in batches during sequencing", required=False)
     parser.add_argument("-ho", "--host", default=argparse.SUPPRESS, type=str, choices=["homo_sapiens","mastomys_natalensis"], required=True,
                         help="name of host species to remove")
-    parser.add_argument("-bc", "--barcodes", default=None, type=str, choices=["CUST","SQK-NBD114-24"], required=False,
-                        help="Specify barcodes used for demultiplexing, if not specified, 27bp are trimmed from both ends of each read after demultiplexing")
+    parser.add_argument("-bc", "--barcodes", type=str, choices=["CUST","SQK-NBD114-24"], required=True,
+                        help="Specify barcodes used for demultiplexing, if NBC, 27bp are trimmed from both ends of each read after demultiplexing")
+    parser.add_argument("-oe", "--one_end", default=False, action="store_true", required=False,
+                        help="use reads if they have barcode on only one end, this increases the amount of data yet increases probability of misclassification")
 
     args = parser.parse_args()
 
@@ -512,7 +517,8 @@ if __name__ == "__main__":
     real_time = args.real_time
     host = args.host
     barcodes = args.barcodes
+    one_end = args.one_end
 
     main(project_dir, reference, reference_start, reference_end, min_len, max_len, min_depth, run_step,
-         run_step_only, basecall_mode, cpu_threads, use_gaps, guppy_path, real_time, host, barcodes)
+         run_step_only, basecall_mode, cpu_threads, use_gaps, guppy_path, real_time, host, barcodes, one_end)
 

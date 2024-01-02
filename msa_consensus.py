@@ -124,46 +124,7 @@ def main(infile, log_file, chosen_ref_file, threads,
         if not run:
             return False
 
-        # # run read mapping using bwa
-        # make_index_cmd = f"bwa index {single_ref_file}"
-        # with open(log_file, "a") as handle:
-        #     handle.write(f"\n{make_index_cmd}\n")
-        #
-        # try_except_exit_on_fail(make_index_cmd)
-        #
-        # print(f"\nrunning: bwa read mapping\n")
-        # bwa_cmd = f"bwa mem -t {threads} -x ont2d {single_ref_file} {sample_fastq} -o {sam_file} " \
-        #           f"2>&1 | tee -a {log_file}"
-        # print("\n", bwa_cmd, "\n")
-        # with open(log_file, "a") as handle:
-        #     handle.write(f"\nrunning: bwa read mapping\n")
-        #     handle.write(f"{bwa_cmd}\n")
-        # run = try_except_continue_on_fail(bwa_cmd)
-        # if not run:
-        #     return False
-
-
-        # # convert sam to bam
-        # print(f"\nRunning: sam to bam conversion of mapped file")
-        # sam_bam_cmd = f"samtools view -bS {sam_file} -F 2048 -o {bam_file} 2>&1 | tee -a {log_file}"
-        # print("\n", sam_bam_cmd,"\n")
-        # with open(log_file, "a") as handle:
-        #     handle.write(f"\nRunning: sam to bam conversion of mapped file\n")
-        #     handle.write(f"{sam_bam_cmd}\n")
-        # run = try_except_continue_on_fail(sam_bam_cmd)
-        # if not run:
-        #     return False
-
-        # sort bam file & calculate depth
-        print(f"Running: calculating depth")
-        # sort_sam_cmd = f"samtools sort -T {sample_name} {bam_file} -o {sorted_bam_file} " \
-        #                f"2>&1 | tee -a {log_file}"
-        # print("\n", sort_sam_cmd, "\n")
-        # with open(log_file, "a") as handle:
-        #     handle.write(f"\nRunning: sorting bam file\n{sort_sam_cmd}\n")
-        # run = try_except_continue_on_fail(sort_sam_cmd)
-        # if not run:
-        #     return False
+        # calculate depth
         depth_sam_cmd = f"samtools depth -a {ref_aligned_outfile} > {depth_file} " \
                        f"2>&1 | tee -a {log_file}"
         print("\n", depth_sam_cmd, "\n")
@@ -183,7 +144,6 @@ def main(infile, log_file, chosen_ref_file, threads,
 
         mean_depth = mean(positional_depth_list)
 
-
         #get total number of reads and calculate % virus
         total_reads = file_len(raw_sample_fastq)/4
         sam_view_cmd = f"samtools view -F 0x904 -c {ref_aligned_outfile} -o {reads_file} 2>&1 | tee -a {log_file}"
@@ -202,21 +162,23 @@ def main(infile, log_file, chosen_ref_file, threads,
         with open(depth_outfile1, 'a') as fh:
             fh.write(f"{sample_name},{ref_name},{mean_depth},{total_reads},{virus_reads},{percentage}\n")
 
-        # get total number of bases and calculate % virus
+        # get total number of bases and calculate % virus and average length
         awk_cmd = f'awk "NR % 4 == 0" ORS="" {raw_sample_fastq}|wc -m'
         print("\n", awk_cmd, "\n")
         total_basecount = int(subprocess.check_output(awk_cmd, shell=True))
 
         sam_stats_cmd = f'samtools stats -in {ref_aligned_outfile} | grep "bases mapped (cigar):"| cut -f 3'
-        print("\n", sam_stats_cmd, "\n")
+        sam_stats_cmd_2 = f'samtools stats -in {ref_aligned_outfile} | grep "average length:"| cut -f 3'
+        print("\n", sam_stats_cmd, "\n", sam_stats_cmd_2, "\n")
+        avg_length = int(subprocess.check_output(sam_stats_cmd_2, shell=True))
         basecount = int(subprocess.check_output(sam_stats_cmd, shell=True))
         base_percentage = basecount/total_basecount*100
         with open(basecount_file,'a') as fh:
-            fh.write(f"{sample_name},{ref_name},{total_basecount},{basecount},{base_percentage}\n")
+            fh.write(f"{sample_name},{ref_name},{avg_length},{total_basecount},{basecount},{base_percentage}\n")
 
         with open(log_file, "a") as handle:
-            handle.write(f"\nRunning: calculating % virus bases\n{sam_view_cmd}\n")
-            handle.write(f"\nTotal bases = {total_basecount}\n Virus bases = {basecount} \n % virus bases = {base_percentage}\n")
+            handle.write(f"\nRunning: calculating % virus bases and average length\n{sam_view_cmd}\n")
+            handle.write(f"\nTotal bases = {total_basecount}\n Virus bases = {basecount}\n  % virus bases = {base_percentage}\n   average length = {avg_length}\n")
 
         # # index bam file
         # print(f"\nRunning: indexing bam file")

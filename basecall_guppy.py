@@ -11,7 +11,7 @@ __author__ = 'Philippe Selhorst'
 class Formatter(argparse.ArgumentDefaultsHelpFormatter, argparse.RawTextHelpFormatter):
     pass
 
-def main(inpath, guppy_path, outpath, basecallmode, real_time, script_folder):
+def main(inpath, guppy_path, outpath, basecall_mode, real_time, script_folder):
     # force absolute file paths
     inpath = pathlib.Path(inpath).absolute()
     outpath = pathlib.Path(outpath).absolute()
