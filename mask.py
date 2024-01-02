@@ -27,7 +27,9 @@ def go(args):
         cons[k] = list(seqs[k].seq)
 
     bedfile = read_3col_bed(args.maskfile)
+
     for _, region in bedfile.iterrows():
+
         for n in range(region['start'], region['end']):
             cons[region['chrom']][n] = 'N'
 

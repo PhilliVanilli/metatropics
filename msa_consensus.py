@@ -157,7 +157,7 @@ def main(infile, log_file, chosen_ref_file, threads,
 
         with open(log_file, "a") as handle:
             handle.write(f"\nRunning: calculating % virus reads\n{sam_view_cmd}\n")
-            handle.write(f"\nTotal reads = {total_reads}\n Virus reads = {virus_reads} \n % virus reads = {percentage}\n")
+            handle.write(f"\nTotal reads = {total_reads}\n Virus reads = {virus_reads}\n  % virus reads = {percentage}\n")
 
         with open(depth_outfile1, 'a') as fh:
             fh.write(f"{sample_name},{ref_name},{mean_depth},{total_reads},{virus_reads},{percentage}\n")
@@ -233,10 +233,10 @@ def main(infile, log_file, chosen_ref_file, threads,
             # plot depth for sample
             depth_list = depth_profile["non_gap"]
             y = pow(10, int(len(str(total_basecount))))
-            print(y)
+            # print(y)
             norm_depth_list = [x/total_basecount*y for x in depth_list]
-            print(depth_list)
-            print(norm_depth_list)
+            # print(depth_list)
+            # print(norm_depth_list)
             depth_outfile = pathlib.Path(plot_folder, sample_name + '_' + ref_name + "_sequencing_depth.png")
             plot_depth(depth_list, sample_name_short, depth_outfile, ref_name_short)
 

@@ -367,7 +367,7 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
         viruslist=['sample_name', '']
         virusdct= fasta_to_dct(reference_seqs_file)
         for virusname, sequence in virusdct.items():
-            viruslist.append(virusname)
+            viruslist.append(virusname[0:-7])
 
         with open(percentages_file, 'a') as fh:
             fh.write("\n")
@@ -376,8 +376,8 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
 
         for csvfile in sorted(Path(all_sample_dir).glob("*/*basecount.csv")):
             opencsv = open(csvfile, 'r')
-            csvfile_stem = csvfile.stem
-            counts = [csvfile_stem, 'count']
+            csvfile_stem = csvfile.stem.split(".")[0]
+            counts = [csvfile_stem, 'base_count']
             percentage = [csvfile_stem, 'percentage']
             avg_length = [csvfile_stem, 'avg_length']
             for line in csv.reader(opencsv):
@@ -391,10 +391,14 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
                 writer.writerow(avg_length)
             opencsv.close()
 
+        with open(percentages_file, 'a') as fh:
+            writer = csv.writer(fh)
+            writer.writerow("\n")
+
         for csvfile in sorted(Path(all_sample_dir).glob("*/*depth.csv")):
             opencsv = open(csvfile, 'r')
-            csvfile_stem = csvfile.stem
-            counts = [csvfile_stem, 'count']
+            csvfile_stem = csvfile.stem.split(".")[0]
+            counts = [csvfile_stem, 'read_count']
             percentage = [csvfile_stem, 'percentage']
             for line in csv.reader(opencsv):
                 if line[0] !="sample_name":
