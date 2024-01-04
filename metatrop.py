@@ -43,8 +43,7 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
     for file in Path(project_dir).glob("*percentages.csv"):
         os.remove(file)
     percentages_file = Path(project_dir, "virus_percentages.csv")
-    if not sample_names_file:
-        sys.exit("Could not find sample_names.csv in project dir")
+
     seq_summary_file = ""
     for file in project_dir.glob('sequencing_summary*.txt'):
         if not file:
@@ -74,6 +73,8 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
 
     # basecalling
     if run_step == 0:
+        if not sample_names_file:
+            sys.exit("Could not find sample_names.csv in project dir")
         print(f"\n________________\n\nRunning: basecalling\n________________\n")
         with open(log_file, "a") as handle:
             handle.write(f"\nRunning: basecalling\n")
@@ -88,6 +89,8 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
             sys.exit("Basecalling failed")
 
     if run_step == 1:
+        if not sample_names_file:
+            sys.exit("Could not find sample_names.csv in project dir")
         print(f"\n________________\n\nRunning: demultiplexing________________\n")
         with open(log_file, "a") as handle:
             handle.write(f"\nRunning: demultiplexing")
@@ -109,6 +112,8 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
 
     # length filtering and primer trimming allowing for multiple fastqs from multiple exp per barcode
     if run_step == 2:
+        if not sample_names_file:
+            sys.exit("Could not find sample_names.csv in project dir")
         print("\n________________\n\nRunning: concatenate, length filtering, primer trim, rename, combine barcodes, and nanoplot\n________________\n")
         with open(log_file, "a") as handle:
             handle.write(f"\nRunning: concatenate, length filtering, primer trim, rename, combine barcodes, and nanoplot\n")
@@ -216,12 +221,18 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
         pre_existing_files = list(raw_sample_dir.glob("*.fastq"))
         if not pre_existing_files:
             sys.exit("No files found in raw sample folder\n")
+
         host_dir = Path(script_dir, "host_genomes", host)
         host_name = list(host_dir.glob("*.fasta"))[0]
         print(f'Host genome to remove is {host_name}')
+        with open(percentages_file, 'a') as fh:
+            fh.write(f"sample_name,total_reads,percentage_host\n")
         for file in pre_existing_files:
             total_reads = file_len(file) / 4
             sample_name = file.stem
+            sample_dir = Path(all_sample_dir, sample_name)
+            if not sample_dir.exists():
+                Path(sample_dir).mkdir(mode=0o777, parents=True, exist_ok=True)
             unmapped_outfile = Path(all_sample_dir, sample_name, f"{sample_name}.no_host.fastq")
             minimap_cmd = f"minimap2 --secondary=no -a -Y -t 15 -x map-ont {host_name} {file} | samtools view -f4 - | samtools fastq - > {unmapped_outfile}"
             print(minimap_cmd)
@@ -378,7 +389,7 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
             opencsv = open(csvfile, 'r')
             csvfile_stem = csvfile.stem.split(".")[0]
             counts = [csvfile_stem, 'base_count']
-            percentage = [csvfile_stem, 'percentage']
+            percentage = [csvfile_stem, 'base_percent']
             avg_length = [csvfile_stem, 'avg_length']
             for line in csv.reader(opencsv):
                 counts.append(line[4])
@@ -399,7 +410,7 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
             opencsv = open(csvfile, 'r')
             csvfile_stem = csvfile.stem.split(".")[0]
             counts = [csvfile_stem, 'read_count']
-            percentage = [csvfile_stem, 'percentage']
+            percentage = [csvfile_stem, 'read_percent']
             for line in csv.reader(opencsv):
                 if line[0] !="sample_name":
                     counts.append(line[4])
