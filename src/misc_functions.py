@@ -31,7 +31,7 @@ def create_coverage_mask(depth_file_path, threshold):
     # Check if a low-depth interval extends to the end of the list
     if start is not None:
         low_depth_intervals.append((start, len(depth_values)))
-    with open ('coverage_mask.txt','w') as fh:
+    with open('coverage_mask.txt','w') as fh:
         for interval in low_depth_intervals:
             fh.write(f"{refname}\t{interval[0]}\t{interval[1]}\n")
 

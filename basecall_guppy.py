@@ -32,7 +32,11 @@ def main(inpath, guppy_path, outpath, basecall_mode, real_time, script_folder):
         resume = ""
         passfolder = pathlib.Path(projectpath, "fastq/pass")
         passfolder.mkdir(mode=0o777, parents=True, exist_ok=True)
-        rampart_cmd = f"rampart --protocol {script_folder}"
+        rampart_protocol_dir = pathlib.Path(script_folder, f"rampart/protocols")
+        rampart_protocol_subdirs = [subdir for subdir in os.listdir(rampart_protocol_dir) if os.path.isdir(os.path.join(rampart_protocol_dir,subdir))]
+        subdirname=rampart_protocol_subdirs[0]
+        protocolpath= pathlib.Path(rampart_protocol_dir,subdirname)
+        rampart_cmd = f"rampart --protocol {protocolpath}"
         print(rampart_cmd)
         try_except_continue_on_fail(f"gnome-terminal -- /bin/sh -c 'export NODE_OPTIONS=--max-old-space-size=16384; {rampart_cmd}; exec bash'")
         try_except_continue_on_fail(f"gnome-terminal -- google-chrome http://localhost:3000/")
