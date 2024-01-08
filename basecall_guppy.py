@@ -11,7 +11,7 @@ __author__ = 'Philippe Selhorst'
 class Formatter(argparse.ArgumentDefaultsHelpFormatter, argparse.RawTextHelpFormatter):
     pass
 
-def main(inpath, guppy_path, outpath, basecall_mode, real_time, script_folder):
+def main(inpath, guppy_path, outpath, basecall_mode, real_time, script_folder,barcodes):
     # force absolute file paths
     inpath = pathlib.Path(inpath).absolute()
     outpath = pathlib.Path(outpath).absolute()
@@ -22,8 +22,19 @@ def main(inpath, guppy_path, outpath, basecall_mode, real_time, script_folder):
     cuda_device = "CUDA:0"
     gpu_settings = f"-x 'auto' "
     if real_time:
+        home = pathlib.Path.home()
+        yaml_path = home / "miniconda3/envs/meta_dev/lib/node_modules/artic-rampart/default_protocol/pipelines/demux_map/config.yaml"
+        with open(yaml_path, 'r') as file:
+            filedata = file.read()
+        if barcodes == 'CUST':
+            filedata = filedata.replace('barcode_set: "native"', 'barcode_set: "pcr"')
+        else:
+            filedata = filedata.replace('barcode_set: "pcr"', 'barcode_set: "native"')
+        with open(yaml_path, 'w') as file:
+            file.write(filedata)
+
         projectpath = inpath.parent
-        json_converter(projectpath)
+        json_converter(projectpath, barcodes)
         basecalling_folder = pathlib.Path(projectpath, "basecalling")
         basecalling_folder.mkdir(mode=0o777, parents=True, exist_ok=True)
         temp_folder = pathlib.Path(projectpath, "temp")
@@ -116,7 +127,8 @@ if __name__ == "__main__":
                         help="Specify the basecall model given to guppy", required=False)
     parser.add_argument("-rt", "--real_time", default=False, action="store_true",
                         help="start basecalling pod5 files in batches during sequencing", required=False)
-
+    parser.add_argument("-bc", "--barcodes", type=str, choices=["CUST", "SQK-NBD114-24"], required=True,
+                        help="Specify barcodes used for porechop demultiplexing")
 
     args = parser.parse_args()
     inpath = args.inpath
@@ -125,5 +137,6 @@ if __name__ == "__main__":
     basecall_mode = args.basecall_mode
     real_time = args.real_time
     script_folder = args.scriptfolder
+    barcodes = args.barcodes
 
-    main(inpath, guppy_path, outpath, basecall_mode, real_time, script_folder)
+    main(inpath, guppy_path, outpath, basecall_mode, real_time, script_folder,barcodes)
