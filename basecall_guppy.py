@@ -76,7 +76,7 @@ def main(inpath, guppy_path, outpath, basecall_mode, real_time, script_folder,ba
                     shutil.move(file, basecalling_folder)
 
             guppy_basecall_cmd = f"{str(guppy_basecaller)} -i {basecalling_folder} -r -s {outpath} -c {basecall_mode} " \
-                                 f"--records_per_fastq 4000 --min_qscore 7 {resume}" \
+                                 f"--records_per_fastq 4000 --min_qscore 9 {resume}" \
                                  f"{gpu_settings}"
 
             run = try_except_continue_on_fail(guppy_basecall_cmd)
@@ -98,7 +98,7 @@ def main(inpath, guppy_path, outpath, basecall_mode, real_time, script_folder,ba
 
     else:
         guppy_basecall_cmd = f"{str(guppy_basecaller)} -i {inpath} -r -s {outpath} -c {basecall_mode} " \
-                             f"--compress_fastq --records_per_fastq 4000 --min_qscore 7 " \
+                             f"--compress_fastq --records_per_fastq 4000 --min_qscore 9 " \
                              f"{gpu_settings}"
         print(guppy_basecall_cmd)
         run = try_except_continue_on_fail(guppy_basecall_cmd)

@@ -160,10 +160,9 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
                 filtered_file = filter_length_trim_seq(file, new_name, max_len, min_len, 27, 27)
                 if not filtered_file:
                     print(f"No sequences in file after length filtering and primer trimming for {file}\n")
-        percentage_unclassified = unclassified_reads/classified_reads*100
+        percentage_unclassified = unclassified_reads/(classified_reads+unclassified_reads)*100
         with open(percentages_file, 'a') as fh:
             fh.write(f"percentage_unclassified,{percentage_unclassified}\n")
-            fh.write(f"sample_name,total_reads,percentage_host\n")
 
         # do rename
         sample_names_df = pd.read_csv(sample_names_file, sep=None, keep_default_na=False, na_values=['NA'],
@@ -421,20 +420,20 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
                 writer.writerow(percentage)
             opencsv.close()
 
-        print("Aligning consensus sequences\n")
+        # print("Aligning consensus sequences\n")
 
-        for seqfile in Path(seq_folder).glob("*.fasta"):
-            seqfile_name = Path(seqfile).stem
-            tmp_file = Path(seq_folder, seqfile_name + "_temp_aligned.fasta")
-            mafft_cmd = f"mafft --thread -1 --auto {str(seqfile)} > {str(tmp_file)}"
-            print(mafft_cmd)
-            run = try_except_continue_on_fail(mafft_cmd)
-            if not run:
-                print(f"could not align {seqfile}")
-                sys.exit("exiting")
-            else:
-                seqfile.unlink()
-                os.rename(str(tmp_file), str(seqfile))
+        # for seqfile in Path(seq_folder).glob("*.fasta"):
+        #     seqfile_name = Path(seqfile).stem
+        #     tmp_file = Path(seq_folder, seqfile_name + "_temp_aligned.fasta")
+        #     mafft_cmd = f"mafft --thread -1 --auto {str(seqfile)} > {str(tmp_file)}"
+        #     print(mafft_cmd)
+        #     run = try_except_continue_on_fail(mafft_cmd)
+        #     if not run:
+        #         print(f"could not align {seqfile}")
+        #         sys.exit("exiting")
+        #     else:
+        #         seqfile.unlink()
+        #         os.rename(str(tmp_file), str(seqfile))
 
     # print end time
     now = datetime.datetime.now()
