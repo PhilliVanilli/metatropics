@@ -221,33 +221,44 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
         if not pre_existing_files:
             sys.exit("No files found in raw sample folder\n")
 
-        host_dir = Path(script_dir, "host_genomes", host)
-        host_name = list(host_dir.glob("*.fasta"))[0]
-        print(f'Host genome to remove is {host_name}')
-        with open(percentages_file, 'a') as fh:
-            fh.write(f"sample_name,total_reads,percentage_host\n")
-        for file in pre_existing_files:
-            total_reads = file_len(file) / 4
-            sample_name = file.stem
-            sample_dir = Path(all_sample_dir, sample_name)
-            if not sample_dir.exists():
-                Path(sample_dir).mkdir(mode=0o777, parents=True, exist_ok=True)
-            unmapped_outfile = Path(all_sample_dir, sample_name, f"{sample_name}.no_host.fastq")
-            minimap_cmd = f"minimap2 --secondary=no -a -Y -t 15 -x map-ont {host_name} {file} | samtools view -f4 - | samtools fastq - > {unmapped_outfile}"
-            print(minimap_cmd)
-            with open(log_file, "a") as handle:
-                handle.write(f"\n{minimap_cmd}\n")
-            run = try_except_continue_on_fail(minimap_cmd)
-            if not run:
-                print("Host removal failed")
+        if host != '':
+            host_dir = Path(script_dir, "host_genomes", host)
+            host_name = list(host_dir.glob("*.fasta"))[0]
+            print(f'Host genome to remove is {host_name}')
+            with open(percentages_file, 'a') as fh:
+                fh.write(f"sample_name,total_reads,percentage_host\n")
+            for file in pre_existing_files:
+                total_reads = file_len(file) / 4
+                sample_name = file.stem
+                sample_dir = Path(all_sample_dir, sample_name)
+                if not sample_dir.exists():
+                    Path(sample_dir).mkdir(mode=0o777, parents=True, exist_ok=True)
+                unmapped_outfile = Path(all_sample_dir, sample_name, f"{sample_name}.no_host.fastq")
+                minimap_cmd = f"minimap2 --secondary=no -a -Y -t 15 -x map-ont {host_name} {file} | samtools view -f4 - | samtools fastq - > {unmapped_outfile}"
+                print(minimap_cmd)
                 with open(log_file, "a") as handle:
-                    handle.write("\nHost removal failed\n")
-                continue
-            else:
-                unmapped_reads = file_len(unmapped_outfile)/4
-                percentage_host = (1-(int(unmapped_reads)/int(total_reads)))*100
-                with open(percentages_file, 'a') as fh:
-                    fh.write(f"{sample_name},{total_reads},{percentage_host}\n")
+                    handle.write(f"\n{minimap_cmd}\n")
+                run = try_except_continue_on_fail(minimap_cmd)
+                if not run:
+                    print("Host removal failed")
+                    with open(log_file, "a") as handle:
+                        handle.write("\nHost removal failed\n")
+                    continue
+                else:
+                    unmapped_reads = file_len(unmapped_outfile)/4
+                    percentage_host = (1-(int(unmapped_reads)/int(total_reads)))*100
+                    with open(percentages_file, 'a') as fh:
+                        fh.write(f"{sample_name},{total_reads},{percentage_host}\n")
+        else:
+            print(f'No host genome to remove, copying files to sample dirs')
+
+            for file in pre_existing_files:
+                sample_name = file.stem
+                sample_dir = Path(all_sample_dir, sample_name)
+                if not sample_dir.exists():
+                    Path(sample_dir).mkdir(mode=0o777, parents=True, exist_ok=True)
+                unmapped_outfile = Path(all_sample_dir, sample_name, f"{sample_name}.no_host.fastq")
+                shutil.copyfile(file, unmapped_outfile)
 
         if not rerun_step_only:
             run_step = 4
@@ -506,7 +517,7 @@ if __name__ == "__main__":
                         help="The path to the guppy executables eg: '.../ont-guppy/bin/'", required=True)
     parser.add_argument("-rt", "--real_time", default=False, action="store_true",
                         help="start basecalling pod5 files in batches during sequencing", required=False)
-    parser.add_argument("-ho", "--host", default=argparse.SUPPRESS, type=str, choices=["homo_sapiens","mastomys_natalensis"], required=True,
+    parser.add_argument("-ho", "--host", default='', type=str, choices=["homo_sapiens","mastomys_natalensis"], required=False,
                         help="name of host species to remove")
     parser.add_argument("-bc", "--barcodes", type=str, choices=["CUST","SQK-NBD114-24"], required=True,
                         help="Specify barcodes used for demultiplexing, if NBC, 27bp are trimmed from both ends of each read after demultiplexing")

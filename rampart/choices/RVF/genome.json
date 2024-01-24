@@ -1,6 +1,6 @@
 {
 	"label": "Rift Valley Fever virus (RVFV)",
-	"length": 11512,
+	"length": 11511,
 	"genes": {
 		"S_NSs": {
 			"start": 1,
@@ -17,7 +17,6 @@
 			"end": 5232,
 			"strand": 1
 		},
-
 		"L_polymerase": {
 			"start": 5233,
 			"end": 11511,
