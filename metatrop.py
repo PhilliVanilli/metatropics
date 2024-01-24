@@ -356,7 +356,7 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
                            f"-rs {reference_seqs_file} " \
                            f"-t {msa_threads} -d {min_depth} {use_gaps} -b {basecall_mode}"
             print(majority_cmd)
-            try_except_continue_on_fail(f"gnome-terminal -- /bin/sh -c 'conda run -n meta_dev {majority_cmd}'")
+            try_except_continue_on_fail(f"gnome-terminal -- /bin/sh -c 'conda run -n meta {majority_cmd}'")
             used_threads += msa_threads
 
         # concat all log files
