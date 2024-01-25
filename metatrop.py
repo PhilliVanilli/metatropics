@@ -43,6 +43,7 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
     for file in Path(project_dir).glob("*percentages.csv"):
         os.remove(file)
     percentages_file = Path(project_dir, "virus_percentages.csv")
+    demulti_host_file = Path(project_dir, "demulti_host.csv")
 
     seq_summary_file = ""
     for file in project_dir.glob('sequencing_summary*.txt'):
@@ -161,7 +162,7 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
                 if not filtered_file:
                     print(f"No sequences in file after length filtering and primer trimming for {file}\n")
         percentage_unclassified = unclassified_reads/(classified_reads+unclassified_reads)*100
-        with open(percentages_file, 'a') as fh:
+        with open(demulti_host_file, 'a') as fh:
             fh.write(f"percentage_unclassified,{percentage_unclassified}\n")
 
         # do rename
@@ -225,7 +226,7 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
             host_dir = Path(script_dir, "host_genomes", host)
             host_name = list(host_dir.glob("*.fasta"))[0]
             print(f'Host genome to remove is {host_name}')
-            with open(percentages_file, 'a') as fh:
+            with open(demulti_host_file, 'a') as fh:
                 fh.write(f"sample_name,total_reads,percentage_host\n")
             for file in pre_existing_files:
                 total_reads = file_len(file) / 4
@@ -247,7 +248,7 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
                 else:
                     unmapped_reads = file_len(unmapped_outfile)/4
                     percentage_host = (1-(int(unmapped_reads)/int(total_reads)))*100
-                    with open(percentages_file, 'a') as fh:
+                    with open(demulti_host_file, 'a') as fh:
                         fh.write(f"{sample_name},{total_reads},{percentage_host}\n")
         else:
             print(f'No host genome to remove, copying files to sample dirs')
