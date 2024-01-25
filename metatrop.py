@@ -101,9 +101,9 @@ def main(project_dir, min_len, max_len, min_depth, run_step,
             fastq_dir = Path(project_dir, "fastq_pass")
             if not list(fastq_dir.glob("*.fastq*")):
                 sys.exit(f"No fastq files found in {str(fastq_dir)} or {str(pass_dir)}")
-            run = guppy_demultiplex(fastq_dir, guppy_path, demultiplexed_dir, barcodes, one_end)
+            run = guppy_demultiplex(fastq_dir, guppy_dir, demultiplexed_dir, barcodes, one_end)
         else:
-            run = guppy_demultiplex(pass_dir, guppy_path, demultiplexed_dir, barcodes, one_end)
+            run = guppy_demultiplex(pass_dir, guppy_dir, demultiplexed_dir, barcodes, one_end)
 
         if run and not rerun_step_only:
             run_step = 2
