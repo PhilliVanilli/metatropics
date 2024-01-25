@@ -22,7 +22,7 @@ __author__ = 'Philippe Selhorst'
 class Formatter(argparse.ArgumentDefaultsHelpFormatter, argparse.RawTextHelpFormatter):
     pass
 
-def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth, run_step,
+def main(project_dir, min_len, max_len, min_depth, run_step,
          rerun_step_only, basecall_mode, cpu_threads,use_gaps,
          guppy_dir, real_time, host, barcodes, one_end):
 
@@ -472,37 +472,24 @@ def main(project_dir, reference, ref_start, ref_end, min_len, max_len, min_depth
     try_except_exit_on_fail(zipcmd)
 
 
-
     with open(log_file_final, "a") as handle:
         handle.write(f"\n{tarcmd}\n\n")
 
 
-
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Process raw nanopore reads to fasta consensus sequences",
+    parser = argparse.ArgumentParser(description="Process raw nanopore reads to fasta consensus sequences v2.0",
                                      formatter_class=Formatter)
-
     parser.add_argument("-in", "--project_dir", default=argparse.SUPPRESS, type=str,
                         help="The path to the directory containing the 'pod5' and 'fastq' dirs ", required=True)
-    parser.add_argument("-r", "--reference", type=str, help="The reference genome and primer scheme to use",
-                        choices=["ChikAsian_V1_400", "ChikECSA_V1_800", "ZikaAsian_V1_400", "SARS2_V1_800", "SARS2_V1_400", "DENV1_V1_400", "DENV2_V1_400"], required=False)
-    parser.add_argument("-rs", "--reference_start", default=1, type=int,
-                        help="The start coordinate of the reference sequence for read mapping", required=False)
-    parser.add_argument("-re", "--reference_end", default=False, type=int,
-                        help="The end coordinate of the reference sequence for read mapping. Default = full length",
-                        required=False)
     parser.add_argument("-mi", "--min_len", type=int, default=150,
-                        help="The minimum read length allowed:\n = 300 for 400bp amplicon design"
-                                                             "\n = 700 for 800bp amplicon design", required=False)
+                        help="The minimum read length allowed", required=False)
     parser.add_argument("-ma", "--max_len", type=int, default=1000000,
-                        help="The maximum read length allowed:\n = 500 for 400bp amplicon design"
-                             "                                \n = 900 for 800bp amplicon design", required=False)
-    parser.add_argument("-d", "--min_depth", type=int, default=100, help="The minimum coverage to call a position in "
-                                                                         "the MSA to consensus", required=False)
+                        help="The maximum read length allowed", required=False)
+    parser.add_argument("-d", "--min_depth", type=int, default=100, help="The minimum coverage to call a position in the MSA to consensus", required=False)
     parser.add_argument("--run_step", default=0, type=int, required=False,
                         help="Run the pipeline starting at this step:\n"
                              "--run_step 0 = basecall reads with Guppy\n"
-                             "--run_step 1 = demultiplex with Guppy\n"
+                             "--run_step 1 = demultiplex reads with Guppy\n"
                              "--run_step 2 = concatenate, filtering, trimming, rename, combine barcodes, nanoplot\n"
                              "--run_step 3 = remove host reads from sample files\n"
                              "--run_step 4 = run reference-based viral genome assembly on each sample\n")
@@ -518,7 +505,7 @@ if __name__ == "__main__":
                         help="The path to the guppy executables eg: '.../ont-guppy/bin/'", required=True)
     parser.add_argument("-rt", "--real_time", default=False, action="store_true",
                         help="start basecalling pod5 files in batches during sequencing", required=False)
-    parser.add_argument("-ho", "--host", default='', type=str, choices=["homo_sapiens","mastomys_natalensis"], required=False,
+    parser.add_argument("-ho", "--host", default='', type=str, choices=["homo_sapiens","mastomys_natalensis", "mus_musculus"], required=False,
                         help="name of host species to remove")
     parser.add_argument("-bc", "--barcodes", type=str, choices=["CUST","SQK-NBD114-24"], required=True,
                         help="Specify barcodes used for demultiplexing, if NBC, 27bp are trimmed from both ends of each read after demultiplexing")
@@ -528,9 +515,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     project_dir = args.project_dir
-    reference = args.reference
-    reference_start = args.reference_start
-    reference_end = args.reference_end
     min_len = args.min_len
     max_len = args.max_len
     min_depth = args.min_depth
@@ -545,6 +529,6 @@ if __name__ == "__main__":
     barcodes = args.barcodes
     one_end = args.one_end
 
-    main(project_dir, reference, reference_start, reference_end, min_len, max_len, min_depth, run_step,
+    main(project_dir, min_len, max_len, min_depth, run_step,
          run_step_only, basecall_mode, cpu_threads, use_gaps, guppy_path, real_time, host, barcodes, one_end)
 
