@@ -14,6 +14,6 @@ cd jvarkit
 
 change threads and demultiple parameters in code depending on gpu/cpu of the machine
 
-copy host_genomes and guppy 
+copy host_genomes and amended guppy 6.5.7
 
 
