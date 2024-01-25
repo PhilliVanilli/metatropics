@@ -36,7 +36,7 @@ def main(project_dir, min_len, max_len, min_depth, run_step,
     fastq_dir = Path(project_dir, "fastq")
     pass_dir = Path(fastq_dir, "pass")
     demultiplexed_dir = Path(project_dir, "demultiplexed")
-    guppy_dir = Path(project_dir, "ont-guppy_6.5.7_linux64")
+    guppy_dir = Path(project_dir, "ont-guppy_6.5.7_linux64_amended")
     all_sample_dir = Path(project_dir, "samples")
     raw_sample_dir = Path(project_dir, "raw_samples")
     sample_names_file = Path(project_dir, "sample_names.csv")
