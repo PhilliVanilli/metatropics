@@ -504,7 +504,7 @@ if __name__ == "__main__":
                         help="use gap characters when making the consensus sequences", required=False)
     parser.add_argument("-rt", "--real_time", default=False, action="store_true",
                         help="start basecalling pod5 files in batches during sequencing", required=False)
-    parser.add_argument("-ho", "--host", default='', type=str, choices=["homo_sapiens","mastomys_natalensis", "mus_musculus"], required=False,
+    parser.add_argument("-ho", "--host", default='', type=str, choices=["homo_sapiens","mastomys_natalensis", "mus_musculus", "bos_taurus"], required=False,
                         help="name of host species to remove")
     parser.add_argument("-bc", "--barcodes", type=str, choices=["CUST","SQK-NBD114-24"], required=True,
                         help="Specify barcodes used for demultiplexing, if NBC, 27bp are trimmed from both ends of each read after demultiplexing")
