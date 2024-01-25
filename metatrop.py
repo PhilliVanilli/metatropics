@@ -522,7 +522,6 @@ if __name__ == "__main__":
     basecall_mode = args.basecall_mode
     cpu_threads = args.cpu_threads
     use_gaps = args.use_gaps
-    guppy_path = args.guppy_path
     real_time = args.real_time
     host = args.host
     barcodes = args.barcodes
