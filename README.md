@@ -1,13 +1,19 @@
 # metatropics
-a python pipeline for nanopore metagenomics
+a python pipeline for nanopore metagenomics v2.0
 
-if issue with nanoplot, kick out of yml file and install seperately with conda install
-if issue with samtools, install seperately
-if issue with "libtinfo.so.6: no version information available message using conda environment"
-the install ncurses from conda-forge instead of default
-conda install -c conda-forge ncurses 
+git clone --recursive https://github.com/PhilliVanilli/metatropics.git
 
-removed version numbers from yml file and renamed to meta_env_Ub22.yml
+cd metatropics
 
-install jvarkit in activated env with ./gradlew sam4weblogo
+conda env create -f meta_dev.yml
+
+conda activate meta
+
+cd jvarkit 
+./gradlew sam4weblogo
+
+change threads and demultiple parameters in code depending on gpu/cpu of the machine
+
+copy host_genomes and guppy 
+
 
