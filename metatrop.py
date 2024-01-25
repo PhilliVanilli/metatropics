@@ -23,10 +23,10 @@ class Formatter(argparse.ArgumentDefaultsHelpFormatter, argparse.RawTextHelpForm
     pass
 
 def main(project_dir, min_len, max_len, min_depth, run_step,
-         rerun_step_only, basecall_mode, cpu_threads,use_gaps,
-         guppy_dir, real_time, host, barcodes, one_end):
+         rerun_step_only, basecall_mode, cpu_threads,use_gaps, real_time, host, barcodes, one_end):
 
     # set the dir paths
+
     script_dir = Path(__file__).absolute().parent
     project_dir = Path(project_dir).absolute()
     reference_seqs_file = Path(script_dir, "references.fasta")
@@ -36,6 +36,7 @@ def main(project_dir, min_len, max_len, min_depth, run_step,
     fastq_dir = Path(project_dir, "fastq")
     pass_dir = Path(fastq_dir, "pass")
     demultiplexed_dir = Path(project_dir, "demultiplexed")
+    guppy_dir = Path(project_dir, "ont-guppy_6.5.7_linux64")
     all_sample_dir = Path(project_dir, "samples")
     raw_sample_dir = Path(project_dir, "raw_samples")
     sample_names_file = Path(project_dir, "sample_names.csv")
@@ -501,8 +502,6 @@ if __name__ == "__main__":
                         help="The number of cpu threads to use", required=False)
     parser.add_argument("-ug", "--use_gaps", default='', action="store_const", const='-ug',
                         help="use gap characters when making the consensus sequences", required=False)
-    parser.add_argument("-p", "--guppy_path", default=argparse.SUPPRESS, type=str,
-                        help="The path to the guppy executables eg: '.../ont-guppy/bin/'", required=True)
     parser.add_argument("-rt", "--real_time", default=False, action="store_true",
                         help="start basecalling pod5 files in batches during sequencing", required=False)
     parser.add_argument("-ho", "--host", default='', type=str, choices=["homo_sapiens","mastomys_natalensis", "mus_musculus"], required=False,
@@ -530,5 +529,5 @@ if __name__ == "__main__":
     one_end = args.one_end
 
     main(project_dir, min_len, max_len, min_depth, run_step,
-         run_step_only, basecall_mode, cpu_threads, use_gaps, guppy_path, real_time, host, barcodes, one_end)
+         run_step_only, basecall_mode, cpu_threads, use_gaps, real_time, host, barcodes, one_end)
 
