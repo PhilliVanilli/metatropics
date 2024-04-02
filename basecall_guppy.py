@@ -23,12 +23,12 @@ def main(inpath, guppy_path, outpath, basecall_mode, real_time, script_folder,ba
     gpu_settings = f"-x 'auto' "
     if real_time:
         home = pathlib.Path.home()
-        yaml_path = home / "miniconda3/envs/meta_dev/lib/node_modules/artic-rampart/default_protocol/pipelines/demux_map/config.yaml"
+        yaml_path = home / "miniconda3/envs/meta/lib/node_modules/artic-rampart/default_protocol/pipelines/demux_map/config.yaml"
         with open(yaml_path, 'r') as file:
             filedata = file.read()
-        if barcodes == 'CUST':
+        if barcodes == 'CUST' or barcodes == 'SQK-RPB114-24' :
             filedata = filedata.replace('barcode_set: "native"', 'barcode_set: "pcr"')
-        else:
+        if barcodes == 'SQK-NBD114-24':
             filedata = filedata.replace('barcode_set: "pcr"', 'barcode_set: "native"')
         with open(yaml_path, 'w') as file:
             file.write(filedata)

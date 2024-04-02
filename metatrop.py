@@ -14,6 +14,7 @@ from src.misc_functions import try_except_continue_on_fail
 from src.misc_functions import try_except_exit_on_fail
 from src.misc_functions import cat_sample_names
 from src.misc_functions import filter_length_trim_seq
+from src.misc_functions import filter_length
 from src.misc_functions import fasta_to_dct
 from src.misc_functions import file_len
 
@@ -36,7 +37,7 @@ def main(project_dir, min_len, max_len, min_depth, run_step,
     fastq_dir = Path(project_dir, "fastq")
     pass_dir = Path(fastq_dir, "pass")
     demultiplexed_dir = Path(project_dir, "demultiplexed")
-    guppy_dir = Path(project_dir, "ont-guppy_6.5.7_linux64_amended")
+    guppy_dir = Path(script_dir, "ont-guppy_6.5.7_linux64_amended/ont-guppy/bin")
     all_sample_dir = Path(project_dir, "samples")
     raw_sample_dir = Path(project_dir, "raw_samples")
     sample_names_file = Path(project_dir, "sample_names.csv")
@@ -119,10 +120,7 @@ def main(project_dir, min_len, max_len, min_depth, run_step,
         print("\n________________\n\nRunning: concatenate, length filtering, primer trim, rename, combine barcodes, and nanoplot\n________________\n")
         with open(log_file, "a") as handle:
             handle.write(f"\nRunning: concatenate, length filtering, primer trim, rename, combine barcodes, and nanoplot\n")
-        if barcodes == "CUST":
-            trim = 0
-        else:
-            trim = 27
+
         pre_existing_files = list(demultiplexed_dir.glob("*.fastq"))
         if pre_existing_files:
             print("Found existing files in demultiplexed folder.\nThese files will be deleted\n")
@@ -139,17 +137,23 @@ def main(project_dir, min_len, max_len, min_depth, run_step,
                 print(f"No files in folder\nSkipping folder: {folder}\n")
                 continue
             if len(search) > 1:
-                print(f"Length filtering and trimming {folder}")
+                print(f"Length filtering and trimming multiple files in {folder}")
                 barcode_number = Path(search[0]).parent.parts[-1]
-                concat_outfile = f"cat_barcode_{barcode_number}.fastq"
+                concat_outfile_name = f'cat_{barcode_number}.fastq'
+                concat_outfile = Path(demultiplexed_dir, concat_outfile_name)
                 cat_cmd = f"cat "
                 for file in search:
                     cat_cmd += f"{str(file)} "
-                cat_cmd += f" > {concat_outfile}"
+                cat_cmd += f"> {concat_outfile}"
                 try_except_exit_on_fail(cat_cmd)
                 classified_reads += file_len(concat_outfile) / 4
                 new_name = Path(demultiplexed_dir, f"{run_name}_{barcode_number}.fastq")
-                filtered_file = filter_length_trim_seq(concat_outfile, new_name, max_len, min_len, trim, trim)
+                if barcodes == "CUST" or barcodes == "SQK-RPB114-24":
+                    print(min_len, max_len, 0)
+                    filtered_file = filter_length(concat_outfile, new_name, max_len, min_len)
+                else:
+                    print(min_len, max_len, 27)
+                    filtered_file = filter_length_trim_seq(concat_outfile, new_name, max_len, min_len, 27, 27)
                 os.unlink(str(concat_outfile))
                 if not filtered_file:
                     print(f"No sequences in file after length filtering and primer trimming for {concat_outfile}\n")
@@ -159,11 +163,16 @@ def main(project_dir, min_len, max_len, min_depth, run_step,
                 barcode_number = file.parent.parts[-1]
                 new_name = Path(demultiplexed_dir, f"{run_name}_{barcode_number}.fastq")
                 classified_reads += file_len(file) / 4
-                filtered_file = filter_length_trim_seq(file, new_name, max_len, min_len, 27, 27)
+                if barcodes == "CUST" or barcodes == "SQK-RPB114-24":
+                    print(min_len, max_len, 0)
+                    filtered_file = filter_length(file, new_name, max_len, min_len)
+                else:
+                    print(min_len, max_len, 27)
+                    filtered_file = filter_length_trim_seq(file, new_name, max_len, min_len, 27, 27)
                 if not filtered_file:
                     print(f"No sequences in file after length filtering and primer trimming for {file}\n")
         percentage_unclassified = unclassified_reads/(classified_reads+unclassified_reads)*100
-        with open(demulti_host_file, 'a') as fh:
+        with open(demulti_host_file, 'w') as fh:
             fh.write(f"percentage_unclassified,{percentage_unclassified}\n")
 
         # do rename
@@ -226,7 +235,29 @@ def main(project_dir, min_len, max_len, min_depth, run_step,
         if host != '':
             host_dir = Path(script_dir, "host_genomes", host)
             host_name = list(host_dir.glob("*.fasta"))[0]
+            rib_ref = list(host_dir.glob("18S.fa"))[0]
+            print(rib_ref)
             print(f'Host genome to remove is {host_name}')
+
+            with open(demulti_host_file, 'a') as fh:
+                fh.write(f"sample_name,total_reads,percentage_18S\n")
+            for file in pre_existing_files:
+                total_reads = file_len(file) / 4
+                sample_name = file.stem
+                rib_ref_outfile = Path(raw_sample_dir, f"{sample_name}.18S.fastq")
+                minimap_cmd = f"minimap2 --secondary=no -a -Y -t 15 -x map-ont {rib_ref} {file} | samtools view -bF 2308 - | samtools fastq - > {rib_ref_outfile}"
+                print(minimap_cmd)
+                run = try_except_continue_on_fail(minimap_cmd)
+                if not run:
+                    print("18S check failed")
+                    with open(log_file, "a") as handle:
+                        handle.write("\n18S check failed\n")
+                    continue
+                rib_ref_reads = file_len(rib_ref_outfile)/4
+                percentage_rib_ref = (int(rib_ref_reads) / int(total_reads)) * 100
+                with open(demulti_host_file, 'a') as fh:
+                    fh.write(f"{sample_name},{total_reads},{percentage_rib_ref}\n")
+                rib_ref_outfile.unlink()
             with open(demulti_host_file, 'a') as fh:
                 fh.write(f"sample_name,total_reads,percentage_host\n")
             for file in pre_existing_files:
@@ -306,8 +337,6 @@ def main(project_dir, min_len, max_len, min_depth, run_step,
         max_threads = cpu_threads
         used_threads = 0
         msa_threads = 2
-
-
 
         log_file_msa_temp = Path(project_dir, f"{time_stamp}_{run_name}_log_file_msa_temp.txt")
         log_file_msa = Path(project_dir, f"{time_stamp}_{run_name}_log_file_msa.txt")
@@ -498,7 +527,7 @@ if __name__ == "__main__":
                         help="Only run the step specified in 'run_step'", required=False)
     parser.add_argument("-b", "--basecall_mode", default="dna_r10.4.1_e8.2_400bps_5khz_hac.cfg", choices=["dna_r10.4.1_e8.2_400bps_5khz_hac.cfg", "dna_r9.4.1_450bps_hac.cfg"], type=str,
                         help="Specify the basecall model given to guppy", required=False)
-    parser.add_argument("-c", "--cpu_threads", type=int, default=14, choices=range(0, 17),
+    parser.add_argument("-c", "--cpu_threads", type=int, default=16, choices=range(0, 21),
                         help="The number of cpu threads to use", required=False)
     parser.add_argument("-ug", "--use_gaps", default='', action="store_const", const='-ug',
                         help="use gap characters when making the consensus sequences", required=False)
@@ -506,7 +535,7 @@ if __name__ == "__main__":
                         help="start basecalling pod5 files in batches during sequencing", required=False)
     parser.add_argument("-ho", "--host", default='', type=str, choices=["homo_sapiens","mastomys_natalensis", "mus_musculus", "bos_taurus"], required=False,
                         help="name of host species to remove")
-    parser.add_argument("-bc", "--barcodes", type=str, choices=["CUST","SQK-NBD114-24"], required=True,
+    parser.add_argument("-bc", "--barcodes", type=str, choices=["CUST","SQK-NBD114-24", "SQK-RPB114-24"], required=True,
                         help="Specify barcodes used for demultiplexing, if NBC, 27bp are trimmed from both ends of each read after demultiplexing")
     parser.add_argument("-oe", "--one_end", default=False, action="store_true", required=False,
                         help="use reads if they have barcode on only one end, this increases the amount of data yet increases probability of misclassification")

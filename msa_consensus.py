@@ -59,7 +59,7 @@ def main(infile, log_file, chosen_ref_file, threads,
 
     # convert sam to sorted and indexed bam
     print(f"\nCreating sorted & indexed bam file")
-    samtools_cmd = f"samtools view {sam_outfile} -bS -F 2048 | samtools sort - -o {bam_outfile} 2>&1 | tee -a {log_file}\nsamtools index {bam_outfile} 2>&1 | tee -a {log_file}"
+    samtools_cmd = f"samtools view {sam_outfile} -bS -F 2308 | samtools sort - -o {bam_outfile} 2>&1 | tee -a {log_file}\nsamtools index {bam_outfile} 2>&1 | tee -a {log_file}"
     print("\n", samtools_cmd, "\n")
     with open(log_file, "a") as handle:
         handle.write(f"\nRunning: creating sorted & indexed bam file\n")

@@ -26,7 +26,7 @@ def main(inpath, guppy_path, outpath, barcodes, one_end):
 
     guppy_demux_cmd = f"{str(guppy_demultiplexer)} -i {inpath} -s {outpath} " \
                       f"--enable_trim_barcodes -t 48 --num_barcoding_threads 16 " \
-                      f"--records_per_fastq 0 {gpu_settings} {ends} {barcode_args}"
+                      f"--records_per_fastq 0 {gpu_settings} {ends} {barcode_args} --min_score_barcode_front 62"
 
     run = try_except_continue_on_fail(guppy_demux_cmd)
 
