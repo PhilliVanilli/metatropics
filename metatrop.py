@@ -8,7 +8,7 @@ import pandas as pd
 import shutil
 import glob
 import csv
-from basecall_guppy import main as gupppy_basecall
+from basecall_guppy import main as guppy_basecall
 from demultiplex_guppy import main as guppy_demultiplex
 from src.misc_functions import try_except_continue_on_fail
 from src.misc_functions import try_except_exit_on_fail
@@ -37,7 +37,7 @@ def main(project_dir, min_len, max_len, min_depth, run_step,
     fastq_dir = Path(project_dir, "fastq")
     pass_dir = Path(fastq_dir, "pass")
     demultiplexed_dir = Path(project_dir, "demultiplexed")
-    guppy_dir = Path(script_dir, "ont-guppy_6.5.7_linux64_amended/ont-guppy/bin")
+    guppy_dir = Path(script_dir, "guppy-0.7.0-linux-x64/bin")
     all_sample_dir = Path(project_dir, "samples")
     raw_sample_dir = Path(project_dir, "raw_samples")
     sample_names_file = Path(project_dir, "sample_names.csv")
@@ -518,8 +518,8 @@ if __name__ == "__main__":
     parser.add_argument("-d", "--min_depth", type=int, default=100, help="The minimum coverage to call a position in the MSA to consensus", required=False)
     parser.add_argument("--run_step", default=0, type=int, required=False,
                         help="Run the pipeline starting at this step:\n"
-                             "--run_step 0 = basecall reads with Guppy\n"
-                             "--run_step 1 = demultiplex reads with Guppy\n"
+                             "--run_step 0 = basecall reads with guppy\n"
+                             "--run_step 1 = demultiplex reads with guppy\n"
                              "--run_step 2 = concatenate, filtering, trimming, rename, combine barcodes, nanoplot\n"
                              "--run_step 3 = remove host reads from sample files\n"
                              "--run_step 4 = run reference-based viral genome assembly on each sample\n")

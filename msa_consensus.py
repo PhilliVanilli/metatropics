@@ -209,7 +209,8 @@ def main(infile, log_file, chosen_ref_file, threads,
         # convert fasta alignment to msa consensus sequence
         fasta_msa_d = fasta_to_dct(msa_fasta)
         sample_name_short = sample_name.split('.')[0]
-        ref_name_short = ref_name.split('_')[0]
+        ref_name_short = '_'.join(ref_name.split('_')[:2])
+        print(ref_name_short)
         if len(fasta_msa_d) == 0:
             print(f"\nNo MSA made from Bam file\nNo reads may have been mapped\n\n")
             with open(log_file, 'a') as handle:
