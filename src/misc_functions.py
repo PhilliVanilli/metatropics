@@ -341,6 +341,14 @@ def rename_fasta(fasta_file_name_path, sample_name, cons_type):
             fh.write(f">{new_name}\n{seq}\n")
 
 
+def cat_sample_names_filtered(barcode):
+    if barcode != '':
+        file_name = f"{barcode}_filtered.fastq"
+    else:
+        file_name = " "
+
+    return file_name
+
 def cat_sample_names(barcode, run_name):
     if barcode != '':
         file_name = f"{run_name}_{barcode}.fastq"

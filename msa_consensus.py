@@ -37,6 +37,7 @@ def main(infile, log_file, chosen_ref_file, threads,
     seq_folder = pathlib.Path(project_dir, "seq_files")
     seq_folder.mkdir(mode=0o777, parents=True, exist_ok=True)
     plot_folder = pathlib.Path(project_dir, "seq_depth_plots")
+    plot_folder.mkdir(mode=0o777, parents=True, exist_ok=True)
     raw_sample_name = sample_name.replace('.no_host', '')
     raw_sample_fastq = pathlib.Path(project_dir, 'raw_samples', f'{raw_sample_name}.fastq')
     sample_viruses_file = pathlib.Path(seq_folder, raw_sample_name + "_viruses.fasta")
