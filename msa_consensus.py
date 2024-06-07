@@ -81,7 +81,7 @@ def main(infile, log_file, chosen_ref_file, threads,
     depth_outfile1 = pathlib.Path(sample_dir, sample_name + ".depth.csv")
     basecount_file = pathlib.Path(sample_dir, sample_name + ".basecount.csv")
     with open(depth_outfile1, 'a') as fh:
-        fh.write(f"sample_name,ref_name,mean_depth,total_reads,virus_reads,percentage\n")
+        fh.write(f"sample_name,ref_name,mean_depth,total_reads,virus_reads,percentage,breadth\n")
 
 
     # iterate mapping over the references
@@ -136,13 +136,19 @@ def main(infile, log_file, chosen_ref_file, threads,
             return False
         positional_depth = {}
         positional_depth_list = []
+        counter = 0
         with open(depth_file, 'r') as handle:
             for line in csv.reader(handle, dialect="excel-tab"):
                 positional_depth[str(line[1])] = int(line[2])
                 positional_depth_list.append(int(line[2]))
+                if int(line[2]) > 20:
+                    counter += 1
         if len(positional_depth_list) == 0:
             positional_depth_list.append(0)
 
+        breadth = counter / len(ref_seq) * 100
+        print(breadth)
+        print(len(ref_seq))
         mean_depth = mean(positional_depth_list)
 
         #get total number of reads and calculate % virus
@@ -161,7 +167,7 @@ def main(infile, log_file, chosen_ref_file, threads,
             handle.write(f"\nTotal reads = {total_reads}\n Virus reads = {virus_reads}\n  % virus reads = {percentage}\n")
 
         with open(depth_outfile1, 'a') as fh:
-            fh.write(f"{sample_name},{ref_name},{mean_depth},{total_reads},{virus_reads},{percentage}\n")
+            fh.write(f"{sample_name},{ref_name},{mean_depth},{total_reads},{virus_reads},{percentage},{breadth}\n")
 
         # get total number of bases and calculate % virus and average length
         awk_cmd = f'awk "NR % 4 == 0" ORS="" {raw_sample_fastq}|wc -m'

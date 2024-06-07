@@ -81,7 +81,7 @@ def main(project_dir, min_len, max_len, min_depth, run_step,
         print(f"\n________________\n\nRunning: basecalling\n________________\n")
         with open(log_file, "a") as handle:
             handle.write(f"\nRunning: basecalling\n")
-        run = gupppy_basecall(pod5_dir, guppy_dir, fastq_dir, basecall_mode, real_time, script_dir,barcodes)
+        run = guppy_basecall(pod5_dir, guppy_dir, fastq_dir, basecall_mode, real_time, script_dir,barcodes)
         faildir = Path(fastq_dir, "fail")
         shutil.rmtree(faildir)
         if run and not rerun_step_only:
