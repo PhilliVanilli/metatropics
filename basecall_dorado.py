@@ -1,8 +1,9 @@
 import argparse
 import pathlib
 import sys
-from src.misc_functions import try_except_continue_on_fail
+from src.misc_functions import adapt_to_porechop
 from src.json_converter_dorado import json_converter
+from src.misc_functions import try_except_continue_on_fail
 import os, time
 import shutil
 
@@ -66,13 +67,15 @@ def main(inpath, dorado_path, outpath, basecall_mode, real_time, script_folder,b
         w = 0
         count = 1
         while w == 0:
-            outpath_file = pathlib.Path(outpath, f"calls_{count}.fastq")
+            outpath_file = pathlib.Path(outpath, f"calls_{count}_drd.fastq")
+            rampart_file = pathlib.Path(outpath, f"calls_{count}_rmprt.fastq")
             pod5files = sorted(os.listdir(inpath), key=lambda y: os.path.getmtime(os.path.join(inpath, y)))
             firstlength = len(pod5files)
             if firstlength > 10:
                 x = 10
                 counter += x
             else:
+                # time.sleep(900)
                 time.sleep(30)
                 pod5files = sorted(os.listdir(inpath), key=lambda y: os.path.getmtime(os.path.join(inpath, y)))
                 secondlength = len(pod5files)
@@ -92,10 +95,13 @@ def main(inpath, dorado_path, outpath, basecall_mode, real_time, script_folder,b
                                   f"--emit-fastq --min-qscore 9 > {outpath_file}"
 
             run = try_except_continue_on_fail(dorado_basecall_cmd)
+
             if run:
                 print(f"Basecalled {counter} pod5 files")
             else:
                 print("Basecalling failed")
+
+            adapt_to_porechop(outpath_file,rampart_file)
 
             for filename in os.listdir(basecalling_folder):
                 file = os.path.join(basecalling_folder, filename)
@@ -106,9 +112,16 @@ def main(inpath, dorado_path, outpath, basecall_mode, real_time, script_folder,b
         os.rename(temp_folder, inpath)
         os.rmdir(basecalling_folder)
         os.chdir(outpath)
-        cat_cmd = "cat *.fastq > calls.fastq"
+
+        cat_cmd = "cat *_drd.fastq > calls.fastq"
         try_except_continue_on_fail(cat_cmd)
 
+        drd_files = list(outpath.glob("*drd.fastq"))
+        for file in drd_files:
+            file.unlink()
+        rmprt_files = list(outpath.glob("*rmprt.fastq"))
+        for file in rmprt_files:
+            file.unlink()
         return True
 
     else:
@@ -125,6 +138,7 @@ def main(inpath, dorado_path, outpath, basecall_mode, real_time, script_folder,b
             print("Basecalling failed")
 
         return run
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='',

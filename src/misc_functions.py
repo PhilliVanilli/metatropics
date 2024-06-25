@@ -356,3 +356,25 @@ def cat_sample_names(barcode, run_name):
         file_name = " "
 
     return file_name
+
+
+def adapt_to_porechop(input_file, outputfile):
+    with open(input_file, 'r') as infile:
+        lines = infile.readlines()
+
+    with open(outputfile, 'w') as outfile:
+        for i in range(0, len(lines), 4):
+            # Read the current block (one read)
+            name_line = lines[i].strip()
+            seq_line = lines[i + 1].strip()
+            plus_line = lines[i + 2].strip()
+            qual_line = lines[i + 3].strip()
+
+            # Modify the read name using the provided function
+            new_name_line = name_line.replace('st:Z:','start_time=')
+            new_name_line = new_name_line.replace('\t',' ')
+
+            # Write the modified block to the file
+            outfile.write(f"{new_name_line}\n{seq_line}\n{plus_line}\n{qual_line}\n")
+
+
