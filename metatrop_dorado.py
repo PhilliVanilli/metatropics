@@ -224,6 +224,9 @@ def main(project_dir, min_len, max_len, min_depth, run_step,
         if host != '':
             host_dir = Path(script_dir, "host_genomes", host)
             host_name = list(host_dir.glob("*.fasta"))[0]
+            with open(demulti_host_file, 'a') as fh:
+                fh.write(f"host,{host_name}\n")
+
             rib_ref = list(host_dir.glob("18S.fa"))[0]
             print(rib_ref)
             print(f'Host genome to remove is {host_name}')
