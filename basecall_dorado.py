@@ -91,7 +91,7 @@ def main(inpath, dorado_path, outpath, basecall_mode, real_time, script_folder,b
                     file = os.path.join(inpath, filename)
                     shutil.move(file, basecalling_folder)
 
-            dorado_basecall_cmd = f"{str(dorado_basecaller)} {basecall_mode} {basecalling_folder} -r " \
+            dorado_basecall_cmd = f"{str(dorado_basecaller)} {basecall_mode} {basecalling_folder} -x 'cuda:0' -r " \
                                   f"--emit-fastq --min-qscore 9 > {outpath_file}"
 
             run = try_except_continue_on_fail(dorado_basecall_cmd)
@@ -127,7 +127,7 @@ def main(inpath, dorado_path, outpath, basecall_mode, real_time, script_folder,b
     else:
         outpath_file = pathlib.Path(outpath, "calls.fastq")
 
-        dorado_basecall_cmd = f"{str(dorado_basecaller)} {basecall_mode} {inpath} -r " \
+        dorado_basecall_cmd = f"{str(dorado_basecaller)} {basecall_mode} {inpath} -x 'cuda:0' -r " \
                              f"--emit-fastq --min-qscore 9  > {outpath_file}"
         print(dorado_basecall_cmd)
         run = try_except_continue_on_fail(dorado_basecall_cmd)
