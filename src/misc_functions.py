@@ -317,7 +317,7 @@ def plot_depth(depth_list, sample_name, outfile, ref):
 
     x_vals = [x for x in range(len(depth_list))]
     fig, ax = plt.subplots()
-    ax.set_ylabel('Norm. sequencing depth')
+    ax.set_ylabel('bPM')
     ax.set_xlabel(ref)
     ax.set_title(sample_name)
 
