@@ -240,9 +240,9 @@ def main(infile, log_file, chosen_ref_file, threads,
 
             # plot depth for sample
             depth_list = depth_profile["non_gap"]
-            y = pow(10, int(len(str(total_basecount))))
+            # y = pow(10, int(len(str(total_basecount))))
             # print(y)
-            norm_depth_list = [x/total_basecount*y for x in depth_list]
+            norm_depth_list = [x/total_basecount*1000000 for x in depth_list]
             # print(depth_list)
             # print(norm_depth_list)
             depth_outfile = pathlib.Path(plot_folder, sample_name + '_' + ref_name + "_sequencing_depth.png")
