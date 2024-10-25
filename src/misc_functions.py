@@ -343,7 +343,7 @@ def rename_fasta(fasta_file_name_path, sample_name, cons_type):
 
 def cat_sample_names_filtered(barcode):
     if barcode != '':
-        file_name = f"{barcode}_filtered.fastq"
+        file_name = f"{barcode}_length_filtered.fastq"
     else:
         file_name = " "
 

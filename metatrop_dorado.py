@@ -23,7 +23,7 @@ __author__ = 'Philippe Selhorst'
 class Formatter(argparse.ArgumentDefaultsHelpFormatter, argparse.RawTextHelpFormatter):
     pass
 
-def main(project_dir, min_len, max_len, min_depth, run_step,
+def main(project_dir, min_len, max_len, low_complex, min_depth, run_step,
          rerun_step_only, basecall_mode, cpu_threads,use_gaps, real_time, host, barcodes, one_end):
 
     # set the dir paths
@@ -148,14 +148,24 @@ def main(project_dir, min_len, max_len, min_depth, run_step,
             print(f"Length filtering and primer trimming {file}")
             barcode_number = file.parts[-1].split('.')[0].split('_')[-1]
             print(barcode_number)
-            new_name = Path(demultiplexed_dir, f"{barcode_number}_filtered.fastq")
             classified_reads += file_len(file) / 4
+            length_filter_name = Path(demultiplexed_dir, f"{barcode_number}_length_filtered.fastq")
+            lowcom_filter_name = Path(demultiplexed_dir, f"{barcode_number}_lowcom_filtered.fastq")
+            if low_complex == '-lc':
+                lowcom_filter_basename = Path(demultiplexed_dir, f"{barcode_number}_lowcom_filtered")
+                prinseqdir = Path(script_dir, "prinseq-lite-0.20.4")
+                prinseqfile = Path(prinseqdir, "prinseq-lite.pl")
+                lc_filter_cmd = f"perl {prinseqfile} -fastq {file} -lc_threshold 7 -lc_method dust -out_format 3 -out_bad null -out_good {lowcom_filter_basename}"
+                try_except_exit_on_fail(lc_filter_cmd)
+            else:
+                lowcom_filter_name = file
+
             if barcodes == "CUST" or barcodes == "SQK-RPB114-24":
                 print(min_len, max_len, 0)
-                filtered_file = filter_length(file, new_name, max_len, min_len)
+                filtered_file = filter_length(lowcom_filter_name, length_filter_name, max_len, min_len)
             else:
                 print(min_len, max_len, 27)
-                filtered_file = filter_length_trim_seq(file, new_name, max_len, min_len, 27, 27)
+                filtered_file = filter_length_trim_seq(lowcom_filter_name, length_filter_name, max_len, min_len, 27, 27)
             if not filtered_file:
                 print(f"No sequences in file after length filtering and primer trimming for {file}\n")
         percentage_unclassified = unclassified_reads/(classified_reads+unclassified_reads)*100
@@ -507,6 +517,8 @@ if __name__ == "__main__":
                         help="The minimum read length allowed", required=False)
     parser.add_argument("-ma", "--max_len", type=int, default=1000000,
                         help="The maximum read length allowed", required=False)
+    parser.add_argument("-lc", "--low_complex", default='', action="store_const", const='-lc',
+                        help="use prinseq low complexity filter", required=False)
     parser.add_argument("-d", "--min_depth", type=int, default=100, help="The minimum coverage to call a position in the MSA to consensus", required=False)
     parser.add_argument("--run_step", default=0, type=int, required=False,
                         help="Run the pipeline starting at this step:\n"
@@ -537,6 +549,7 @@ if __name__ == "__main__":
     project_dir = args.project_dir
     min_len = args.min_len
     max_len = args.max_len
+    low_complex= args.low_complex
     min_depth = args.min_depth
     run_step = args.run_step
     run_step_only = args.run_step_only
@@ -548,6 +561,6 @@ if __name__ == "__main__":
     barcodes = args.barcodes
     one_end = args.one_end
 
-    main(project_dir, min_len, max_len, min_depth, run_step,
+    main(project_dir, min_len, max_len, low_complex, min_depth, run_step,
          run_step_only, basecall_mode, cpu_threads, use_gaps, real_time, host, barcodes, one_end)
 
