@@ -88,6 +88,18 @@ def fasta_to_dct(file_name):
 
     return dct
 
+def remove_gaps_in_fasta(fasta_file):
+    # Read the file and store modified lines
+    with open(fasta_file, 'r') as file:
+        lines = file.readlines()
+
+    with open(fasta_file, 'w') as file:
+        for line in lines:
+            if line.startswith(">"):
+                file.write(line)
+            else:
+                modified_sequence = line.replace("-", "").strip()
+                file.write(modified_sequence + "\n")
 
 def gather_fastqs(fastq_path, run_name, max_len, min_len):
 

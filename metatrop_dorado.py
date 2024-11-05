@@ -17,6 +17,7 @@ from src.misc_functions import filter_length_trim_seq
 from src.misc_functions import filter_length
 from src.misc_functions import fasta_to_dct
 from src.misc_functions import file_len
+from src.misc_functions import remove_gaps_in_fasta
 
 __author__ = 'Philippe Selhorst'
 
@@ -31,6 +32,7 @@ def main(project_dir, min_len, max_len, low_complex, min_depth, run_step,
     script_dir = Path(__file__).absolute().parent
     project_dir = Path(project_dir).absolute()
     reference_seqs_file = Path(script_dir, "references.fasta")
+    remove_gaps_in_fasta(reference_seqs_file)
     print(f"\nProject dir is {project_dir}")
     run_name = project_dir.parts[-1]
     pod5_dir = Path(project_dir, "pod5")

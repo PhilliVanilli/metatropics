@@ -98,7 +98,8 @@ def main(infile, log_file, chosen_ref_file, threads,
         single_ref_file = pathlib.Path(virus_dir, ref_name + ".fasta")
         with open(single_ref_file, 'w') as fh:
             fh.write(f">{ref_name}\n{ref_seq}\n")
-        depth_file = pathlib.Path(virus_dir, sample_name + f".{ref_name}.depth.tsv")
+        # depth_file = pathlib.Path(virus_dir, sample_name + f".{ref_name}.depth.tsv")
+        deldepth_file = pathlib.Path(virus_dir, sample_name + f".{ref_name}.deldepth.tsv")
         reads_file = pathlib.Path(virus_dir, sample_name + f".{ref_name}.reads.txt")
         msa_fasta = pathlib.Path(virus_dir, sample_name + f".{ref_name}.msa_from_bam_file.fasta")
         msa_cons = pathlib.Path(virus_dir, sample_name + f".{ref_name}.msa_consensus.fasta")
@@ -106,6 +107,7 @@ def main(infile, log_file, chosen_ref_file, threads,
         hdf_outfile = pathlib.Path(virus_dir, sample_name + f".{ref_name}.hdf")
         vcf_outfile = pathlib.Path(virus_dir, sample_name + f".{ref_name}.vcf")
         gz_outfile = pathlib.Path(virus_dir, sample_name + f".{ref_name}.vcf.gz")
+        annotate_out = pathlib.Path(virus_dir, sample_name + f".{ref_name}.anno.vcf")
         vcf_passfile = pathlib.Path(virus_dir, sample_name + f".{ref_name}.pass.vcf")
         gz_passfile = pathlib.Path(virus_dir, sample_name + f".{ref_name}.pass.vcf.gz")
         vcf_failfile = pathlib.Path(virus_dir, sample_name + f".{ref_name}.fail.vcf")
@@ -126,18 +128,24 @@ def main(infile, log_file, chosen_ref_file, threads,
             return False
 
         # calculate depth
-        depth_sam_cmd = f"samtools depth -a {ref_aligned_outfile} -r {ref_name}> {depth_file} " \
+        # depth_sam_cmd = f"samtools depth -a {ref_aligned_outfile} -r {ref_name}> {depth_file} " \
+        #                f"2>&1 | tee -a {log_file}"
+        depth_sam_cmd2 = f"samtools depth -a -J {ref_aligned_outfile} -r {ref_name}> {deldepth_file} " \
                        f"2>&1 | tee -a {log_file}"
-        print("\n", depth_sam_cmd, "\n")
+
+        print("\n", depth_sam_cmd2, "\n")
         with open(log_file, "a") as handle:
-            handle.write(f"\nRunning: calculating depth\n{depth_sam_cmd}\n")
-        run = try_except_continue_on_fail(depth_sam_cmd)
+            handle.write(f"\nRunning: calculating depth\n{depth_sam_cmd2}\n")
+        # run = try_except_continue_on_fail(depth_sam_cmd)
+        # if not run:
+        #     return False
+        run = try_except_continue_on_fail(depth_sam_cmd2)
         if not run:
             return False
         positional_depth = {}
         positional_depth_list = []
         counter = 0
-        with open(depth_file, 'r') as handle:
+        with open(deldepth_file, 'r') as handle:
             for line in csv.reader(handle, dialect="excel-tab"):
                 positional_depth[str(line[1])] = int(line[2])
                 positional_depth_list.append(int(line[2]))
@@ -255,17 +263,20 @@ def main(infile, log_file, chosen_ref_file, threads,
             medaka_model="r941_min_hac_g507"
 
         # generate artic consensus sequence
-        create_coverage_mask(depth_file, min_depth)
+        create_coverage_mask(deldepth_file, min_depth)
         artic_cmd=[]
-        artic_cmd.append(f"medaka consensus --model {medaka_model} --threads 2 --chunk_len 800 --chunk_ovlp 400 {ref_aligned_outfile} {hdf_outfile} 2>&1 | tee -a {log_file}")
+        # -chunk_len 800 - -chunk_ovlp 400
+        artic_cmd.append(f"medaka consensus --model {medaka_model} --threads 2 {ref_aligned_outfile} {hdf_outfile} 2>&1 | tee -a {log_file}")
         artic_cmd.append(f"medaka variant {single_ref_file} {hdf_outfile} {vcf_outfile} 2>&1 | tee -a {log_file}")
-        artic_cmd.append(f"bgzip -f {vcf_outfile} 2>&1 | tee -a {log_file}")
-        artic_cmd.append(f"tabix -f -p vcf {gz_outfile} 2>&1 | tee -a {log_file}")
-        artic_cmd.append(f"longshot -P 0 -F -A --no_haps --bam {ref_aligned_outfile} --ref {single_ref_file} --out {vcf_outfile} --potential_variants {gz_outfile} 2>&1 | tee -a {log_file}")
-        artic_cmd.append(f"python ~/metatropics/vcf_filter.py --medaka {vcf_outfile} {vcf_passfile} {vcf_failfile} 2>&1 | tee -a {log_file}")
+        # artic_cmd.append(f"bgzip -f {vcf_outfile} 2>&1 | tee -a {log_file}")
+        # artic_cmd.append(f"tabix -f -p vcf {gz_outfile} 2>&1 | tee -a {log_file}")
+        # artic_cmd.append(f"longshot -P 0 -F -A --no_haps --bam {ref_aligned_outfile} --ref {single_ref_file} --out {vcf_outfile} --potential_variants {gz_outfile} 2>&1 | tee -a {log_file}")
+        artic_cmd.append(f"medaka tools annotate {vcf_outfile} {single_ref_file} {ref_aligned_outfile} {annotate_out} 2>&1 | tee -a {log_file}")
+        artic_cmd.append(f"python ~/metatropics/vcf_filter.py --medaka {annotate_out} {vcf_passfile} {vcf_failfile} 2>&1 | tee -a {log_file}")
         artic_cmd.append(f"bgzip -f {vcf_passfile}  2>&1 | tee -a {log_file}\ntabix -f -p vcf {gz_passfile} 2>&1 | tee -a {log_file}")
         artic_cmd.append(f"python ~/metatropics/mask.py {single_ref_file} coverage_mask.txt {vcf_failfile} {precon_file} 2>&1 | tee -a {log_file}")
         artic_cmd.append(f"bcftools consensus -f {precon_file} {gz_passfile} -m coverage_mask.txt -o {con_file} 2>&1 | tee -a {log_file}")
+        #medaka consensus != medaka_consensus (zijn twee verschillende programmas)
 
         print("\n", artic_cmd, "\n")
         with open(log_file, "a") as handle:
