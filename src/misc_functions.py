@@ -45,6 +45,7 @@ def file_len(fname):
 def try_except_exit_on_fail(cmd):
     try:
         subprocess.call(cmd, shell=True)
+        return True
     except subprocess.CalledProcessError as e:
         print(e)
         sys.exit("exiting")

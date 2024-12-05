@@ -71,8 +71,8 @@ def main(inpath, dorado_path, outpath, basecall_mode, real_time, script_folder,b
             rampart_file = pathlib.Path(outpath, f"calls_{count}_rmprt.fastq")
             pod5files = sorted(os.listdir(inpath), key=lambda y: os.path.getmtime(os.path.join(inpath, y)))
             firstlength = len(pod5files)
-            if firstlength > 10:
-                x = 10
+            if firstlength > 1:
+                x = 1
                 counter += x
             else:
                 # time.sleep(900)

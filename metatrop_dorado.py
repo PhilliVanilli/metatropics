@@ -8,6 +8,7 @@ import pandas as pd
 import shutil
 import glob
 import csv
+
 from basecall_dorado import main as dorado_basecall
 from demultiplex_dorado import main as dorado_demultiplex
 from src.misc_functions import try_except_continue_on_fail
@@ -154,20 +155,24 @@ def main(project_dir, min_len, max_len, low_complex, min_depth, run_step,
             length_filter_name = Path(demultiplexed_dir, f"{barcode_number}_length_filtered.fastq")
             lowcom_filter_name = Path(demultiplexed_dir, f"{barcode_number}_lowcom_filtered.fastq")
             if low_complex == '-lc':
+                with open(log_file, "a") as handle:
+                    handle.write(f"\nRunning: low complexity filter\n")
                 lowcom_filter_basename = Path(demultiplexed_dir, f"{barcode_number}_lowcom_filtered")
                 prinseqdir = Path(script_dir, "prinseq-lite-0.20.4")
                 prinseqfile = Path(prinseqdir, "prinseq-lite.pl")
-                lc_filter_cmd = f"perl {prinseqfile} -fastq {file} -lc_threshold 7 -lc_method dust -out_format 3 -out_bad null -out_good {lowcom_filter_basename}"
-                try_except_exit_on_fail(lc_filter_cmd)
+                lc_filter_cmd = f"perl {prinseqfile} -fastq {file} -lc_threshold 7 -lc_method dust -out_format 3 -out_bad null -out_good {lowcom_filter_basename} 2>&1 | tee -a {log_file}"
+                print(lc_filter_cmd)
+                try_except_continue_on_fail(lc_filter_cmd)
+
             else:
                 lowcom_filter_name = file
 
             if barcodes == "CUST" or barcodes == "SQK-RPB114-24":
-                print(min_len, max_len, 0)
+                print(f"min_length = {min_len},max_length = {max_len}, trimmed 0bp")
                 filtered_file = filter_length(lowcom_filter_name, length_filter_name, max_len, min_len)
             else:
-                print(min_len, max_len, 27)
-                filtered_file = filter_length_trim_seq(lowcom_filter_name, length_filter_name, max_len, min_len, 27, 27)
+                print(f"min_length = {min_len},max_length = {max_len}, trimmed 18bp solA")
+                filtered_file = filter_length_trim_seq(lowcom_filter_name, length_filter_name, max_len, min_len, 18, 18)
             if not filtered_file:
                 print(f"No sequences in file after length filtering and primer trimming for {file}\n")
         percentage_unclassified = unclassified_reads/(classified_reads+unclassified_reads)*100
@@ -193,7 +198,7 @@ def main(project_dir, min_len, max_len, low_complex, min_depth, run_step,
             else:
                 barcode_2_file = Path(demultiplexed_dir, barcode_2)
             cat_outfile = Path(raw_sample_dir, f"{sample_name}.fastq")
-            cat_cmd = f"cat {str(barcode_1_file)} {str(barcode_2_file)} > {cat_outfile}"
+            cat_cmd = f"cat {str(barcode_1_file)} {str(barcode_2_file)} > {cat_outfile} 2>&1 | tee -a {log_file}"
             print(cat_cmd)
             with open(log_file, "a") as handle:
                 handle.write(f"\n{cat_cmd}\n")
@@ -249,7 +254,7 @@ def main(project_dir, min_len, max_len, low_complex, min_depth, run_step,
                 total_reads = file_len(file) / 4
                 sample_name = file.stem
                 rib_ref_outfile = Path(raw_sample_dir, f"{sample_name}.18S.fastq")
-                minimap_cmd = f"minimap2 --secondary=no -a -Y -t 15 -x map-ont {rib_ref} {file} | samtools view -bF 2308 - | samtools fastq - > {rib_ref_outfile}"
+                minimap_cmd = f"minimap2 --secondary=no -a -Y -t 15 -x map-ont {rib_ref} {file} | samtools view -bF 2308 - | samtools fastq - > {rib_ref_outfile} 2>&1 | tee -a {log_file}"
                 print(minimap_cmd)
                 run = try_except_continue_on_fail(minimap_cmd)
                 if not run:
@@ -271,7 +276,7 @@ def main(project_dir, min_len, max_len, low_complex, min_depth, run_step,
                 if not sample_dir.exists():
                     Path(sample_dir).mkdir(mode=0o777, parents=True, exist_ok=True)
                 unmapped_outfile = Path(all_sample_dir, sample_name, f"{sample_name}.no_host.fastq")
-                minimap_cmd = f"minimap2 --secondary=no -a -Y -t 15 -x map-ont {host_name} {file} | samtools view -f4 - | samtools fastq - > {unmapped_outfile}"
+                minimap_cmd = f"minimap2 --secondary=no -a -Y -t 15 -x map-ont {host_name} {file} | samtools view -f4 - | samtools fastq - > {unmapped_outfile} 2>&1 | tee -a {log_file}"
                 print(minimap_cmd)
                 with open(log_file, "a") as handle:
                     handle.write(f"\n{minimap_cmd}\n")
@@ -288,7 +293,8 @@ def main(project_dir, min_len, max_len, low_complex, min_depth, run_step,
                         fh.write(f"{sample_name},{total_reads},{percentage_host}\n")
         else:
             print(f'No host genome to remove, copying files to sample dirs')
-
+            with open(log_file, "a") as handle:
+                handle.write(f"\nNo host genome to remove, copying files to sample dirs\n")
             for file in pre_existing_files:
                 sample_name = file.stem
                 sample_dir = Path(all_sample_dir, sample_name)
@@ -314,7 +320,7 @@ def main(project_dir, min_len, max_len, low_complex, min_depth, run_step,
             os.remove(file)
 
         for file in Path(project_dir).glob("*.txt"):
-            if not "sequencing_summary" in str(file):
+            if "msa" in str(file):
                 os.remove(file)
 
         # delete pre existing virus folders
@@ -333,7 +339,7 @@ def main(project_dir, min_len, max_len, low_complex, min_depth, run_step,
 
         print("\n________________\n\nRunning: reference-based assembly\n________________\n")
         with open(log_file, "a") as handle:
-            handle.write(f"\nStarting reference-based assembly\n")
+            handle.write(f"\nRunning: reference-based assembly\n")
 
         # get number of samples and threads
         number_samples = (len(list(all_sample_dir.glob('*/*.no_host.fastq'))))
