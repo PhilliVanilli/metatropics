@@ -52,7 +52,7 @@ def main(project_dir, min_len, max_len, low_complex, min_depth, run_step,
 
     seq_summary_file = ""
     for file in project_dir.glob('sequencing_summary*.txt'):
-        if not file:
+        if not file.exists():
             sys.exit("Could not find sequencing_summary*.txt in project dir")
         else:
             seq_summary_file = file
@@ -77,7 +77,7 @@ def main(project_dir, min_len, max_len, low_complex, min_depth, run_step,
 
     # basecalling
     if run_step == 0:
-        if not sample_names_file:
+        if not sample_names_file.exists():
             sys.exit("Could not find sample_names.csv in project dir")
         print(f"\n________________\n\nRunning: basecalling\n________________\n")
         with open(log_file, "a") as handle:
@@ -93,7 +93,7 @@ def main(project_dir, min_len, max_len, low_complex, min_depth, run_step,
             sys.exit("Basecalling failed")
 
     if run_step == 1:
-        if not sample_names_file:
+        if not sample_names_file.exists():
             sys.exit("Could not find sample_names.csv in project dir")
         print(f"\n________________\n\nRunning: demultiplexing________________\n")
         with open(log_file, "a") as handle:
@@ -113,9 +113,9 @@ def main(project_dir, min_len, max_len, low_complex, min_depth, run_step,
 
     # length filtering and primer trimming allowing for multiple fastqs from multiple exp per barcode
     if run_step == 2:
-
-        if not sample_names_file:
+        if not sample_names_file.exists():
             sys.exit("Could not find sample_names.csv in project dir")
+
         print("\n________________\n\nRunning: concatenate, length filtering, primer trim, rename, combine barcodes, and nanoplot\n________________\n")
         with open(log_file, "a") as handle:
             handle.write(f"\nRunning: concatenate, length filtering, primer trim, rename, combine barcodes, and nanoplot\n")
@@ -125,6 +125,15 @@ def main(project_dir, min_len, max_len, low_complex, min_depth, run_step,
         unclassified_reads = 0
         unclassified_file  = Path(demultiplexed_dir, "unclassified.fastq")
         unclassified_reads += file_len(unclassified_file) / 4
+        pre_existing_files = list(demultiplexed_dir.glob("*_lowcom_*"))
+        if pre_existing_files:
+            answer = input("Previous filtered files exists, overwrite (y/n)?")
+            if answer == 'n':
+                sys.exit("Keeping filtered files")
+            else:
+                for file in pre_existing_files:
+                    os.remove(file)
+
         for file in demultiplexed_dir.glob("*barcode*"):
             # if len(search) > 1:
             #     print(f"Length filtering and trimming multiple files in {folder}")
@@ -157,12 +166,14 @@ def main(project_dir, min_len, max_len, low_complex, min_depth, run_step,
             if low_complex == '-lc':
                 with open(log_file, "a") as handle:
                     handle.write(f"\nRunning: low complexity filter\n")
-                lowcom_filter_basename = Path(demultiplexed_dir, f"{barcode_number}_lowcom_filtered")
-                prinseqdir = Path(script_dir, "prinseq-lite-0.20.4")
-                prinseqfile = Path(prinseqdir, "prinseq-lite.pl")
-                lc_filter_cmd = f"perl {prinseqfile} -fastq {file} -lc_threshold 7 -lc_method dust -out_format 3 -out_bad null -out_good {lowcom_filter_basename} 2>&1 | tee -a {log_file}"
+                out_good = Path(demultiplexed_dir, f"{barcode_number}_lowcom_filtered.fastq")
+                out_bad = Path(demultiplexed_dir, f"{barcode_number}_lowcom_bad.fastq")
+                # prinseqdir = Path(script_dir, "prinseq-lite-0.20.4")
+                # prinseqfile = Path(prinseqdir, "prinseq-lite.pl")
+                # lc_filter_cmd = f"perl {prinseqfile} -fastq {file} -lc_threshold 7 -lc_method dust -out_format 3 -out_bad null -out_good {out_good} 2>&1 | tee -a {log_file}"
+                lc_filter_cmd = f"source $(conda info --base)/etc/profile.d/conda.sh && conda activate prinseq-plus-plus && prinseq++ -fastq {file} -threads {cpu_threads} -derep -VERBOSE=1 -lc_dust -out_bad {out_bad} -out_good {out_good} 2>&1 | tee -a {log_file} && conda activate meta"
                 print(lc_filter_cmd)
-                try_except_continue_on_fail(lc_filter_cmd)
+                subprocess.call(lc_filter_cmd, shell=True, executable="/bin/bash")
 
             else:
                 lowcom_filter_name = file
@@ -254,7 +265,7 @@ def main(project_dir, min_len, max_len, low_complex, min_depth, run_step,
                 total_reads = file_len(file) / 4
                 sample_name = file.stem
                 rib_ref_outfile = Path(raw_sample_dir, f"{sample_name}.18S.fastq")
-                minimap_cmd = f"minimap2 --secondary=no -a -Y -t 15 -x map-ont {rib_ref} {file} | samtools view -bF 2308 - | samtools fastq - > {rib_ref_outfile} 2>&1 | tee -a {log_file}"
+                minimap_cmd = f"minimap2 --secondary=no -a -Y -t 15 -x map-ont {rib_ref} {file} | samtools view -bF 2308 - | samtools fastq - > {rib_ref_outfile}"
                 print(minimap_cmd)
                 run = try_except_continue_on_fail(minimap_cmd)
                 if not run:
@@ -276,7 +287,7 @@ def main(project_dir, min_len, max_len, low_complex, min_depth, run_step,
                 if not sample_dir.exists():
                     Path(sample_dir).mkdir(mode=0o777, parents=True, exist_ok=True)
                 unmapped_outfile = Path(all_sample_dir, sample_name, f"{sample_name}.no_host.fastq")
-                minimap_cmd = f"minimap2 --secondary=no -a -Y -t 15 -x map-ont {host_name} {file} | samtools view -f4 - | samtools fastq - > {unmapped_outfile} 2>&1 | tee -a {log_file}"
+                minimap_cmd = f"minimap2 --secondary=no -a -Y -t 15 -x map-ont {host_name} {file} | samtools view -f4 - | samtools fastq - > {unmapped_outfile}"
                 print(minimap_cmd)
                 with open(log_file, "a") as handle:
                     handle.write(f"\n{minimap_cmd}\n")

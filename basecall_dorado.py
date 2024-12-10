@@ -19,8 +19,8 @@ def main(inpath, dorado_path, outpath, basecall_mode, real_time, script_folder,b
     pre_existing_files = list(outpath.glob("*.fastq"))
 
     if pre_existing_files:
-        input("Previous fastq file exists, overwrite (y/n)?")
-        if input == 'n':
+        answer = input("Previous fastq file exists, overwrite (y/n)?")
+        if answer == 'n':
             sys.exit()
     else:
         outpath.mkdir(mode=0o777, parents=True, exist_ok=True)
