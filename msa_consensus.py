@@ -160,7 +160,10 @@ def main(infile, log_file, chosen_ref_file, threads,
         mean_depth = mean(positional_depth_list)
 
         #get total number of reads and calculate % virus
-        total_reads = file_len(raw_sample_fastq)/4
+        if raw_sample_fastq.exists():
+            total_reads = file_len(raw_sample_fastq)/4
+        else:
+            total_reads = file_len(infile) / 4
         sam_view_cmd = f"samtools view -F 0x904 -c {ref_aligned_outfile} -o {reads_file} 2>&1 | tee -a {log_file}"
         print("\n", sam_view_cmd, "\n")
         run = try_except_continue_on_fail(sam_view_cmd)
@@ -178,7 +181,10 @@ def main(infile, log_file, chosen_ref_file, threads,
             fh.write(f"{sample_name},{ref_name},{mean_depth},{total_reads},{virus_reads},{percentage},{breadth}\n")
 
         # get total number of bases and calculate % virus and average length
-        awk_cmd = f'awk "NR % 4 == 0" ORS="" {raw_sample_fastq}|wc -m'
+        if raw_sample_fastq.exists():
+            awk_cmd = f'awk "NR % 4 == 0" ORS="" {raw_sample_fastq}|wc -m'
+        else:
+            awk_cmd = f'awk "NR % 4 == 0" ORS="" {infile}|wc -m'
         print("\n", awk_cmd, "\n")
         total_basecount = int(subprocess.check_output(awk_cmd, shell=True))
 

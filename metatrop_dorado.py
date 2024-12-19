@@ -14,8 +14,6 @@ from demultiplex_dorado import main as dorado_demultiplex
 from src.misc_functions import try_except_continue_on_fail
 from src.misc_functions import try_except_exit_on_fail
 from src.misc_functions import cat_sample_names_filtered
-from src.misc_functions import filter_length_trim_seq
-from src.misc_functions import filter_length
 from src.misc_functions import fasta_to_dct
 from src.misc_functions import file_len
 from src.misc_functions import remove_gaps_in_fasta
@@ -41,6 +39,7 @@ def main(project_dir, min_len, max_len, low_complex, min_depth, run_step,
     # pass_dir = Path(fastq_dir, "pass")
     demultiplexed_dir = Path(project_dir, "demultiplexed")
     dorado_dir = Path(script_dir, "dorado-0.7.0-linux-x64/bin")
+    nanoplot_dir = Path(project_dir, "nanoplot")
     all_sample_dir = Path(project_dir, "samples")
     raw_sample_dir = Path(project_dir, "raw_samples")
     sample_names_file = Path(project_dir, "sample_names.csv")
@@ -77,6 +76,10 @@ def main(project_dir, min_len, max_len, low_complex, min_depth, run_step,
 
     # basecalling
     if run_step == 0:
+        answer = input("Are you happy with the reference file in the metatropics folder (y/n)?")
+        if answer == 'n':
+            sys.exit()
+
         if not sample_names_file.exists():
             sys.exit("Could not find sample_names.csv in project dir")
         print(f"\n________________\n\nRunning: basecalling\n________________\n")
@@ -93,12 +96,15 @@ def main(project_dir, min_len, max_len, low_complex, min_depth, run_step,
             sys.exit("Basecalling failed")
 
     if run_step == 1:
+        if demultiplexed_dir.exists():
+            sys.exit("Demultiplexed files exist already, exiting")
         if not sample_names_file.exists():
             sys.exit("Could not find sample_names.csv in project dir")
         print(f"\n________________\n\nRunning: demultiplexing________________\n")
         with open(log_file, "a") as handle:
             handle.write(f"\nRunning: demultiplexing\n")
-
+        if nanoplot_dir.exists():
+            os.remove(nanoplot_dir)
         if not list(fastq_dir.glob("*.fastq*")):
             sys.exit(f"No calls.fastq files found in {str(fastq_dir)}")
         else:
@@ -116,16 +122,44 @@ def main(project_dir, min_len, max_len, low_complex, min_depth, run_step,
         if not sample_names_file.exists():
             sys.exit("Could not find sample_names.csv in project dir")
 
-        print("\n________________\n\nRunning: concatenate, length filtering, primer trim, rename, combine barcodes, and nanoplot\n________________\n")
+        print("\n________________\n\nRunning: nanoplot, filtering, trimming, and renaming\n________________\n")
         with open(log_file, "a") as handle:
-            handle.write(f"\nRunning: concatenate, length filtering, primer trim, rename, combine barcodes, and nanoplot\n")
+            handle.write(f"\nRunning: nanoplot, filtering, trimming, and renaming\n")
+
+        # do Nanoplot
+        nanoplot = ""
+
+        if nanoplot_dir.exists():
+            answer = input("Previous nanoplot files exists, overwrite (y/n)?")
+            if answer == 'y':
+                nanoplot = 'yes'
+            else:
+                nanoplot = 'no'
+                print(f"\nKeeping previous NanoPlot output\n")
+                with open(log_file, "a") as handle:
+                    handle.write(f"\nKeeping previous NanoPlot output\n")
+        else:
+            nanoplot = 'yes'
+        if nanoplot == 'yes':
+            print(f"\nPerforming NanoPlot on demultiplexed fastqs\n")
+            with open(log_file, "a") as handle:
+                handle.write(f"\nPerforming NanoPlot on demultiplexed fastqs\n")
+            for folder in project_dir.glob("nanoplot"):
+                shutil.rmtree(folder)
+            all_nanoplot_files = demultiplexed_dir.glob("*_barcode*")
+            for barcode_fastq in all_nanoplot_files:
+                sample_name = Path(barcode_fastq).stem
+                nanoplotoutputdir = Path(project_dir, f"nanoplot/{sample_name}")
+                nanoplotcmd = f"NanoPlot --fastq {barcode_fastq} -o {nanoplotoutputdir}"
+                print(nanoplotcmd)
+                subprocess.call(nanoplotcmd, shell=True)
+
         raw_sample_dir.mkdir(mode=0o777, parents=True, exist_ok=True)
 
         classified_reads = 0
-        unclassified_reads = 0
         unclassified_file  = Path(demultiplexed_dir, "unclassified.fastq")
-        unclassified_reads += file_len(unclassified_file) / 4
-        pre_existing_files = list(demultiplexed_dir.glob("*_lowcom_*"))
+        unclassified_reads = file_len(unclassified_file) / 4
+        pre_existing_files = list(demultiplexed_dir.glob("*_bad.*"))
         if pre_existing_files:
             answer = input("Previous filtered files exists, overwrite (y/n)?")
             if answer == 'n':
@@ -134,64 +168,50 @@ def main(project_dir, min_len, max_len, low_complex, min_depth, run_step,
                 for file in pre_existing_files:
                     os.remove(file)
 
-        for file in demultiplexed_dir.glob("*barcode*"):
-            # if len(search) > 1:
-            #     print(f"Length filtering and trimming multiple files in {folder}")
-            #     barcode_number = Path(search[0]).parent.parts[-1]
-            #     concat_outfile_name = f'cat_{barcode_number}.fastq'
-            #     concat_outfile = Path(demultiplexed_dir, concat_outfile_name)
-            #     cat_cmd = f"cat "
-            #     for file in search:
-            #         cat_cmd += f"{str(file)} "
-            #     cat_cmd += f"> {concat_outfile}"
-            #     try_except_exit_on_fail(cat_cmd)
-            #     classified_reads += file_len(concat_outfile) / 4
-            #     new_name = Path(demultiplexed_dir, f"{run_name}_{barcode_number}.fastq")
-            #     if barcodes == "CUST" or barcodes == "SQK-RPB114-24":
-            #         print(min_len, max_len, 0)
-            #         filtered_file = filter_length(concat_outfile, new_name, max_len, min_len)
-            #     else:
-            #         print(min_len, max_len, 27)
-            #         filtered_file = filter_length_trim_seq(concat_outfile, new_name, max_len, min_len, 27, 27)
-            #     os.unlink(str(concat_outfile))
-            #     if not filtered_file:
-            #         print(f"No sequences in file after length filtering and primer trimming for {concat_outfile}\n")
+        print(f"\nFiltering and trimming with following parameters\n")
+        with open(log_file, "a") as handle:
+            handle.write(f"\nFiltering and trimming with following parameters\n")
+        left_trim = ''
+        right_trim = ''
+        lowcomp = ''
 
-            print(f"Length filtering and primer trimming {file}")
+        if barcodes == "CUST" or barcodes == "SQK-RPB114-24":
+            print(f"min_length = {min_len},max_length = {max_len}, trimmed 0bp")
+            with open(log_file, "a") as handle:
+                handle.write(f"min_length = {min_len},max_length = {max_len}, trimmed 0bp")
+        else:
+            print(f"min_length = {min_len},max_length = {max_len}, trimmed 18bp solA")
+            with open(log_file, "a") as handle:
+                handle.write(f"min_length = {min_len},max_length = {max_len}, trimmed 18bp solA")
+            left_trim = '-trim_left 18'
+            right_trim = '-trim_right 18'
+        if low_complex == '-lc':
+            lowcomp = '-lc_dust 0.1 -derep'
+            print (f"0.1 low complexity and replicates filter applied")
+            with open(log_file, "a") as handle:
+                handle.write(f"0.1 low complexity and replicates filter applied")
+
+        for file in demultiplexed_dir.glob("*_barcode*"):
+
             barcode_number = file.parts[-1].split('.')[0].split('_')[-1]
-            print(barcode_number)
-            classified_reads += file_len(file) / 4
-            length_filter_name = Path(demultiplexed_dir, f"{barcode_number}_length_filtered.fastq")
-            lowcom_filter_name = Path(demultiplexed_dir, f"{barcode_number}_lowcom_filtered.fastq")
-            if low_complex == '-lc':
-                with open(log_file, "a") as handle:
-                    handle.write(f"\nRunning: low complexity filter\n")
-                out_good = Path(demultiplexed_dir, f"{barcode_number}_lowcom_filtered.fastq")
-                out_bad = Path(demultiplexed_dir, f"{barcode_number}_lowcom_bad.fastq")
-                # prinseqdir = Path(script_dir, "prinseq-lite-0.20.4")
-                # prinseqfile = Path(prinseqdir, "prinseq-lite.pl")
-                # lc_filter_cmd = f"perl {prinseqfile} -fastq {file} -lc_threshold 7 -lc_method dust -out_format 3 -out_bad null -out_good {out_good} 2>&1 | tee -a {log_file}"
-                lc_filter_cmd = f"source $(conda info --base)/etc/profile.d/conda.sh && conda activate prinseq-plus-plus && prinseq++ -fastq {file} -threads {cpu_threads} -derep -VERBOSE=1 -lc_dust -out_bad {out_bad} -out_good {out_good} 2>&1 | tee -a {log_file} && conda activate meta"
-                print(lc_filter_cmd)
-                subprocess.call(lc_filter_cmd, shell=True, executable="/bin/bash")
+            classified_reads += (file_len(file) / 4)
+            out_good = Path(demultiplexed_dir, f"{barcode_number}_good.fastq")
+            out_bad = Path(demultiplexed_dir, f"{barcode_number}_bad.fastq")
+            prinseq_cmd = f"source $(conda info --base)/etc/profile.d/conda.sh && conda activate prinseq-plus-plus && prinseq++ -fastq {file} -threads {cpu_threads} {lowcomp} {left_trim} {right_trim} -min_len {min_len} -max_len {max_len} -VERBOSE=1 -out_bad {out_bad} -out_good {out_good} 2>&1 | tee -a {log_file} && conda activate meta"
+            print(f"\nFiltering and trimming {file}\n {prinseq_cmd}\n")
+            subprocess.call(prinseq_cmd, shell=True, executable="/bin/bash")
+            if not out_good:
+                print(f"No sequences in file after filtering and primer trimming for {file}\n")
 
-            else:
-                lowcom_filter_name = file
-
-            if barcodes == "CUST" or barcodes == "SQK-RPB114-24":
-                print(f"min_length = {min_len},max_length = {max_len}, trimmed 0bp")
-                filtered_file = filter_length(lowcom_filter_name, length_filter_name, max_len, min_len)
-            else:
-                print(f"min_length = {min_len},max_length = {max_len}, trimmed 18bp solA")
-                filtered_file = filter_length_trim_seq(lowcom_filter_name, length_filter_name, max_len, min_len, 18, 18)
-            if not filtered_file:
-                print(f"No sequences in file after length filtering and primer trimming for {file}\n")
         percentage_unclassified = unclassified_reads/(classified_reads+unclassified_reads)*100
+        print(f"\nPercentage unclassified reads is {percentage_unclassified}\n")
         with open(demulti_host_file, 'w') as fh:
             fh.write(f"percentage_unclassified,{percentage_unclassified}\n")
 
         # do rename
-
+        print(f"\nRenaming and concatenating\n")
+        with open(log_file, "a") as handle:
+            handle.write(f"\nRenaming and concatenating\n")
         sample_names_df = pd.read_csv(sample_names_file, sep=None, keep_default_na=False, na_values=['NA'],
                                       engine="python")
         sample_names_df['barcode_1'] = sample_names_df['barcode_1'].apply(lambda x: cat_sample_names_filtered(x))
@@ -220,26 +240,17 @@ def main(project_dir, min_len, max_len, low_complex, min_depth, run_step,
                     handle.write("\nMissing one or more demultiplexed files for this sample\n")
                 continue
 
-        filtered_files = list(demultiplexed_dir.glob("*filtered.fastq"))
+        filtered_files = list(demultiplexed_dir.glob("*good.fastq"))
         for file in filtered_files:
             file.unlink()
 
-        # do Nanoplot
-        for folder in Path(project_dir).glob("nanoplot"):
-            shutil.rmtree(folder)
-        all_nanoplot_files = Path(raw_sample_dir).glob("*.fastq")
-        for sample_fastq in all_nanoplot_files:
-            sample_name = Path(sample_fastq).stem
-            nanoplotoutputdir = Path(project_dir, f"nanoplot/{sample_name}")
-            nanoplotcmd = f"NanoPlot --fastq {sample_fastq} -o {nanoplotoutputdir}"
-            print(nanoplotcmd)
-            subprocess.call(nanoplotcmd, shell=True)
         if not rerun_step_only:
             run_step = 3
         elif rerun_step_only:
-            sys.exit("Concatenate, length filtering, primer trim, rename, combine barcodes, and nanoplot completed, exiting")
+            sys.exit("Nanoplot, filtering, trimming, and renaming completed, exiting")
         else:
-            sys.exit("Concatenate, length filtering, primer trim, rename, combine barcodes, and nanoplot failed")
+            sys.exit("Nanoplot, filtering, trimming, and renaming failed")
+
 
     if run_step == 3:
         print("\n________________\n\nRunning: host removal using minimap2\n________________\n")
@@ -323,7 +334,7 @@ def main(project_dir, min_len, max_len, low_complex, min_depth, run_step,
 
     # Reference-based assembly
     if run_step == 4:
-
+    
         os.chdir(all_sample_dir)
 
         # delete pre existing files in project dir
@@ -353,7 +364,7 @@ def main(project_dir, min_len, max_len, low_complex, min_depth, run_step,
             handle.write(f"\nRunning: reference-based assembly\n")
 
         # get number of samples and threads
-        number_samples = (len(list(all_sample_dir.glob('*/*.no_host.fastq'))))
+        number_samples = (len(list(all_sample_dir.glob('*/*.fastq'))))
         print("number of samples=" + str(number_samples))
         max_threads = cpu_threads
         used_threads = 0
@@ -366,7 +377,7 @@ def main(project_dir, min_len, max_len, low_complex, min_depth, run_step,
         with open(log_file_msa_temp, "a") as handle:
             handle.write(f"\nmin_depth = {min_depth}\n")
 
-        all_sample_files = Path(all_sample_dir).glob("*/*.no_host.fastq")
+        all_sample_files = Path(all_sample_dir).glob("*/*.fastq")
         sample_no = 0
         for sample_fastq in all_sample_files:
 

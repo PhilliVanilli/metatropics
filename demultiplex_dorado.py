@@ -19,7 +19,7 @@ def main(inpath, dorado_path, outpath, barcodes, one_end):
     if one_end:
         print("--barcode_one_end\n")
     inpath = pathlib.Path(inpath).absolute()
-    pre_existing_files = list(inpath.glob("*fastq*"))
+    pre_existing_files = list(outpath.glob("*fastq*"))
     if pre_existing_files:
         answer = input("Previous demultiplexed files exist, overwrite (y/n)?")
         if answer == 'n':

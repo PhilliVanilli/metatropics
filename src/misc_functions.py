@@ -97,7 +97,8 @@ def remove_gaps_in_fasta(fasta_file):
     with open(fasta_file, 'w') as file:
         for line in lines:
             if line.startswith(">"):
-                file.write(line)
+                modified_name = line.replace(" ", "_").strip()
+                file.write(modified_name + "\n")
             else:
                 modified_sequence = line.replace("-", "").strip()
                 file.write(modified_sequence + "\n")
@@ -356,7 +357,7 @@ def rename_fasta(fasta_file_name_path, sample_name, cons_type):
 
 def cat_sample_names_filtered(barcode):
     if barcode != '':
-        file_name = f"{barcode}_length_filtered.fastq"
+        file_name = f"{barcode}_good.fastq"
     else:
         file_name = " "
 
