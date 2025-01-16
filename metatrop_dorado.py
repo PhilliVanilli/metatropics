@@ -41,6 +41,7 @@ def main(project_dir, min_len, max_len, low_complex, min_depth, run_step,
     dorado_dir = Path(script_dir, "dorado-0.7.0-linux-x64/bin")
     nanoplot_dir = Path(project_dir, "nanoplot")
     all_sample_dir = Path(project_dir, "samples")
+    no_host_dir = Path(project_dir, "no_host_samples")
     raw_sample_dir = Path(project_dir, "raw_samples")
     sample_names_file = Path(project_dir, "sample_names.csv")
     # seq_folder = Path(project_dir, "seq_files")
@@ -163,7 +164,7 @@ def main(project_dir, min_len, max_len, low_complex, min_depth, run_step,
         if pre_existing_files:
             answer = input("Previous filtered files exists, overwrite (y/n)?")
             if answer == 'n':
-                sys.exit("Keeping filtered files")
+                sys.exit("\nKeeping filtered files, exiting\n")
             else:
                 for file in pre_existing_files:
                     os.remove(file)
@@ -219,9 +220,11 @@ def main(project_dir, min_len, max_len, low_complex, min_depth, run_step,
         sample_names_dict = sample_names_df.set_index('sample_name').T.to_dict(orient='list')
 
         for sample_name, [barcode_1, barcode_2] in sample_names_dict.items():
-            sample_dir = Path(all_sample_dir, sample_name)
-            if not sample_dir.exists():
-                Path(sample_dir).mkdir(mode=0o777, parents=True, exist_ok=True)
+
+            # sample_dir = Path(all_sample_dir, sample_name)
+            # if not sample_dir.exists():
+            #     Path(sample_dir).mkdir(mode=0o777, parents=True, exist_ok=True)
+
             barcode_1_file = Path(demultiplexed_dir, barcode_1)
             # allow for case where only one barcode was specified per sample.
             if barcode_2 == " ":
@@ -261,6 +264,7 @@ def main(project_dir, min_len, max_len, low_complex, min_depth, run_step,
             sys.exit("No files found in raw sample folder\n")
 
         if host != '':
+            no_host_dir.mkdir(mode=0o777, parents=True, exist_ok=True)
             host_dir = Path(script_dir, "host_genomes", host)
             host_name = list(host_dir.glob("*.fasta"))[0]
             with open(demulti_host_file, 'a') as fh:
@@ -294,10 +298,7 @@ def main(project_dir, min_len, max_len, low_complex, min_depth, run_step,
             for file in pre_existing_files:
                 total_reads = file_len(file) / 4
                 sample_name = file.stem
-                sample_dir = Path(all_sample_dir, sample_name)
-                if not sample_dir.exists():
-                    Path(sample_dir).mkdir(mode=0o777, parents=True, exist_ok=True)
-                unmapped_outfile = Path(all_sample_dir, sample_name, f"{sample_name}.no_host.fastq")
+                unmapped_outfile = Path(no_host_dir, f"{sample_name}.no_host.fastq")
                 minimap_cmd = f"minimap2 --secondary=no -a -Y -t 15 -x map-ont {host_name} {file} | samtools view -f4 - | samtools fastq - > {unmapped_outfile}"
                 print(minimap_cmd)
                 with open(log_file, "a") as handle:
@@ -314,16 +315,10 @@ def main(project_dir, min_len, max_len, low_complex, min_depth, run_step,
                     with open(demulti_host_file, 'a') as fh:
                         fh.write(f"{sample_name},{total_reads},{percentage_host}\n")
         else:
-            print(f'No host genome to remove, copying files to sample dirs')
+            print(f'No host genome to remove')
             with open(log_file, "a") as handle:
-                handle.write(f"\nNo host genome to remove, copying files to sample dirs\n")
-            for file in pre_existing_files:
-                sample_name = file.stem
-                sample_dir = Path(all_sample_dir, sample_name)
-                if not sample_dir.exists():
-                    Path(sample_dir).mkdir(mode=0o777, parents=True, exist_ok=True)
-                unmapped_outfile = Path(all_sample_dir, sample_name, f"{sample_name}.no_host.fastq")
-                shutil.copyfile(file, unmapped_outfile)
+                handle.write(f"\nNo host genome to remove\n")
+
 
         if not rerun_step_only:
             run_step = 4
@@ -334,12 +329,23 @@ def main(project_dir, min_len, max_len, low_complex, min_depth, run_step,
 
     # Reference-based assembly
     if run_step == 4:
-    
+
+        if not all_sample_dir.exists():
+            all_sample_dir.mkdir(mode=0o777, parents=True, exist_ok=True)
         os.chdir(all_sample_dir)
 
+        pre_existing_files = list(raw_sample_dir.glob("*.fastq"))
+        if not pre_existing_files:
+            sys.exit("No files found in raw sample folder, exiting\n")
+        if host != '':
+            pre_existing_files = list(no_host_dir.glob("*.fastq"))
+            if not pre_existing_files:
+                sys.exit("No files found in no host sample folder, exiting\n")
+
+
         # delete pre existing files in project dir
-        for file in Path(project_dir).glob("*.fasta"):
-            os.remove(file)
+        # for file in Path(project_dir).glob("*.fasta"):
+        #     os.remove(file)
 
         for file in Path(project_dir).glob("*.txt"):
             if "msa" in str(file):
@@ -349,22 +355,24 @@ def main(project_dir, min_len, max_len, low_complex, min_depth, run_step,
         for folder in glob.glob("*/*/"):
             shutil.rmtree(folder)
 
-        # delete pre existing files
-        for file in Path(all_sample_dir).glob("*/*.*"):
-            if not str(file).endswith(".fastq"):
-                os.remove(file)
+        # delete pre existing files in sample folders
+        for file in all_sample_dir.glob("*/*.*"):
+            os.remove(file)
 
-        # delete pre existing files in sample dir
-        for file in Path(all_sample_dir).glob("*/*.*"):
-            if not ".fastq" in str(file):
-                os.remove(file)
+
+        for file in raw_sample_dir.glob("*.fastq"):
+            sample_name = file.stem
+            sample_dir = Path(all_sample_dir, sample_name)
+            if not sample_dir.exists():
+                Path(sample_dir).mkdir(mode=0o777, parents=True, exist_ok=True)
+
 
         print("\n________________\n\nRunning: reference-based assembly\n________________\n")
         with open(log_file, "a") as handle:
             handle.write(f"\nRunning: reference-based assembly\n")
 
         # get number of samples and threads
-        number_samples = (len(list(all_sample_dir.glob('*/*.fastq'))))
+        number_samples = (len(list(raw_sample_dir.glob('*.fastq'))))
         print("number of samples=" + str(number_samples))
         max_threads = cpu_threads
         used_threads = 0
@@ -377,7 +385,10 @@ def main(project_dir, min_len, max_len, low_complex, min_depth, run_step,
         with open(log_file_msa_temp, "a") as handle:
             handle.write(f"\nmin_depth = {min_depth}\n")
 
-        all_sample_files = Path(all_sample_dir).glob("*/*.fastq")
+        if host != '':
+            all_sample_files = Path(no_host_dir).glob("*.fastq")
+        else:
+            all_sample_files = Path(raw_sample_dir).glob("*.fastq")
         sample_no = 0
         for sample_fastq in all_sample_files:
 
@@ -567,7 +578,7 @@ if __name__ == "__main__":
                         help="use gap characters when making the consensus sequences", required=False)
     parser.add_argument("-rt", "--real_time", default=False, action="store_true",
                         help="start basecalling pod5 files in batches during sequencing", required=False)
-    parser.add_argument("-ho", "--host", default='', type=str, choices=["homo_sapiens","mastomys_natalensis", "mus_musculus", "bos_taurus"], required=False,
+    parser.add_argument("-ho", "--host", default='', type=str, choices=["homo_sapiens","culex","mastomys_natalensis", "mus_musculus", "bos_taurus"], required=False,
                         help="name of host species to remove")
     parser.add_argument("-bc", "--barcodes", type=str, choices=["CUST","SQK-NBD114-24", "SQK-RPB114-24"], required=True,
                         help="Specify barcodes used for demultiplexing, if NBC, 27bp are trimmed from both ends of each read after demultiplexing")
