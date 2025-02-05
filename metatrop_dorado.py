@@ -51,6 +51,7 @@ def main(project_dir, min_len, max_len, low_complex, min_depth, run_step,
         os.remove(file)
     percentages_file = Path(project_dir, "virus_percentages.csv")
     demulti_host_file = Path(project_dir, "demulti_host.csv")
+    msa_consensus_path = f"{script_dir}/msa_consensus.py"
 
     seq_summary_file = ""
     for file in project_dir.glob('sequencing_summary*.txt'):
@@ -427,7 +428,7 @@ def main(project_dir, min_len, max_len, low_complex, min_depth, run_step,
                     f"\n\n------->Running majority consensus pipeline for {sample_no} st/nd sample {sample_name} in new window\n")
 
             # start majority consensus pipeline in new window
-            majority_cmd = f"python ~/metatropics/msa_consensus.py -in {sample_fastq} -lf {log_file_msa_sample} " \
+            majority_cmd = f"python {msa_consensus_path} -in {sample_fastq} -lf {log_file_msa_sample} " \
                            f"-rs {reference_seqs_file} " \
                            f"-t {msa_threads} -d {min_depth} {use_gaps} -b {basecall_mode}"
             print(majority_cmd)
