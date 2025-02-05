@@ -38,7 +38,9 @@ def main(project_dir, min_len, max_len, low_complex, min_depth, run_step,
     fastq_dir = Path(project_dir, "fastq")
     # pass_dir = Path(fastq_dir, "pass")
     demultiplexed_dir = Path(project_dir, "demultiplexed")
-    dorado_dir = Path(script_dir, "dorado-0.7.0-linux-x64/bin")
+    dorado_dir = ""
+    for folder in Path(script_dir).glob("dorado-*-linux-x64/bin"):
+        dorado_dir = folder
     nanoplot_dir = Path(project_dir, "nanoplot")
     all_sample_dir = Path(project_dir, "samples")
     no_host_dir = Path(project_dir, "no_host_samples")
@@ -97,8 +99,6 @@ def main(project_dir, min_len, max_len, low_complex, min_depth, run_step,
             sys.exit("Basecalling failed")
 
     if run_step == 1:
-        if demultiplexed_dir.exists():
-            sys.exit("Demultiplexed files exist already, exiting")
         if not sample_names_file.exists():
             sys.exit("Could not find sample_names.csv in project dir")
         print(f"\n________________\n\nRunning: demultiplexing________________\n")
@@ -158,7 +158,8 @@ def main(project_dir, min_len, max_len, low_complex, min_depth, run_step,
         raw_sample_dir.mkdir(mode=0o777, parents=True, exist_ok=True)
 
         classified_reads = 0
-        unclassified_file  = Path(demultiplexed_dir, "unclassified.fastq")
+
+        unclassified_file  = list(Path(demultiplexed_dir).glob("*unclassified.fastq"))[0]
         unclassified_reads = file_len(unclassified_file) / 4
         pre_existing_files = list(demultiplexed_dir.glob("*_bad.*"))
         if pre_existing_files:
